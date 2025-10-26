@@ -1,55 +1,61 @@
-// script.js - simple interactions for WowMe company page
+// script.js — minimal interactions
 
 document.addEventListener('DOMContentLoaded', function () {
   const navToggle = document.getElementById('navToggle');
-  const globalNav = document.getElementById('globalNav');
+  const nav = document.getElementById('nav');
+  const modal = document.getElementById('modal');
+  const openModal = document.getElementById('openModal');
+  const modalClose = document.getElementById('modalClose');
 
-  if (navToggle && globalNav) {
-    navToggle.addEventListener('click', function () {
-      const expanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', String(!expanded));
-      if (!expanded) {
-        globalNav.style.display = 'flex';
-        globalNav.style.flexDirection = 'column';
-        globalNav.style.gap = '12px';
-      } else {
-        globalNav.style.display = 'none';
-      }
-    });
-
-    // ensure responsive state on resize
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 980) {
-        globalNav.style.display = 'flex';
-        globalNav.style.flexDirection = 'row';
-      } else {
-        globalNav.style.display = 'none';
-        navToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  // contact form handling - basic client-side feedback (production: replace with API)
-  window.handleForm = function (e) {
-    e.preventDefault();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
-
-    if (!name || !email || !message) {
-      alert('必須項目をすべて入力してください。');
-      return false;
+  navToggle?.addEventListener('click', () => {
+    if (!nav) return;
+    if (nav.style.display === 'flex') {
+      nav.style.display = 'none';
+    } else {
+      nav.style.display = 'flex';
+      nav.style.flexDirection = 'column';
+      nav.style.position = 'absolute';
+      nav.style.right = '24px';
+      nav.style.top = '66px';
+      nav.style.background = 'rgba(255,255,255,0.98)';
+      nav.style.padding = '12px';
+      nav.style.borderRadius = '10px';
+      nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
     }
+  });
 
-    // Simulate send
-    console.log('Contact form send:', { name, email, message });
-    alert('お問い合わせを受け付けました。追ってご連絡いたします。');
-    e.target.reset();
-    return false;
-  };
+  openModal?.addEventListener('click', () => {
+    if (modal) modal.style.display = 'flex';
+  });
 
-  window.resetForm = function () {
-    const form = document.getElementById('contactForm');
-    if (form) form.reset();
-  };
+  modalClose?.addEventListener('click', () => {
+    if (modal) modal.style.display = 'none';
+  });
+
+  // Close modal by clicking overlay
+  window.addEventListener('click', (e) => {
+    if (!modal) return;
+    if (e.target === modal) modal.style.display = 'none';
+  });
+
+  // smooth scroll for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        if (nav && window.innerWidth < 980) nav.style.display = 'none';
+      }
+    });
+  });
 });
+
+
+// 例：ホバーしたときに動画再生、離れたら一時停止
+const video = document.querySelector('.video-thumb video');
+
+video.addEventListener('mouseenter', () => video.play());
+video.addEventListener('mouseleave', () => video.pause());

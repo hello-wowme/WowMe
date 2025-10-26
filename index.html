@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>合同会社WowMe</title>
-  <meta name="description" content="合同会社WowMe（ワオミー）。推しとファンをつなぐ動画メッセージプラットフォーム『WowMe』の企画・開発・運営を行っています。" />
+  <title>WowMe — 推しとつながる動画メッセージ</title>
+  <meta name="description" content="WowMeはタレントやクリエイターがファンのために“特別な動画メッセージ”を届けるサービスです。" />
   <link rel="stylesheet" href="./resource/css/style.css" />
   <link rel="icon" href="./resource/img/WowMe.png">
 </head>
@@ -12,16 +12,17 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="#">
-        <div class="brand-mark" aria-hidden="true">W</div>
+        <div class="logo">W</div>
         <div class="brand-text">
-          <div class="brand-title">合同会社WowMe</div>
-          <div class="brand-sub">推しとファンをつなぐプラットフォーム</div>
+          <div class="brand-title">WowMe</div>
+          <div class="brand-sub">推しとつながる動画メッセージ</div>
         </div>
       </a>
-      <nav id="globalNav" class="nav">
-        <a href="#service">サービス</a>
-        <a href="#company">会社概要</a>
-        <a href="#contact">お問い合わせ</a>
+
+      <nav class="nav" id="nav">
+        <a href="#how">使い方</a>
+        <a href="#features">特徴</a>
+        <a href="#plans">リターン</a>
       </nav>
     </div>
   </header>
@@ -29,113 +30,126 @@
   <main>
     <!-- HERO -->
     <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <h1>推しとファンを、心でつなぐ。</h1>
-          <p class="lead">WowMeは、タレントやインフルエンサーがファンへ“特別な動画メッセージ”を届ける動画ギフトプラットフォームです。誕生日や結婚式、友人へのサプライズにも対応します。</p>
-          <p class="kicker">設立：2026年 10月（予定）　／　代表社員：山本 涼太</p>
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <h1>推しからの特別な一言を、あなたに。</h1>
+          <p class="lead">WowMeはタレントやクリエイターがあなた宛てに短いサプライズ動画を届けるプラットフォームです。誕生日・記念日・サプライズに。</p>
+          <div class="hero-ctas">
+            <a class="btn" href="https://camp-fire.jp/projects/896176/view" target="_blank">今すぐ支援する</a>
+            <a class="btn-outline" href="#how">使い方を見る</a>
+          </div>
+
+          <ul class="stats">
+            <li><strong>審査制</strong><span>安心のタレント登録</span></li>
+            <li><strong>90%</strong><span>タレント還元率</span></li>
+            <li><strong>限定配信</strong><span>プライバシー保護</span></li>
+          </ul>
         </div>
-        <div class="hero-card" aria-hidden="true">
-          <div class="mock-phone">
-            <div class="mock-screen">
-              <!-- <div class="mock-text">WowMe — 画面イメージ</div> -->
+
+        <div class="hero-right" aria-hidden="true">
+          <div class="card-mock">
+            <div class="card-top">WowMe</div>
+            <div class="card-body">
+              <div class="video-thumb">
+                <video autoplay muted loop playsinline>
+                  <source src="./resource/video/Happybirthday_video.mp4" type="video/mp4">
+                  お使いのブラウザは動画タグに対応していません。
+                </video>
+              </div>
+
+              <h4>推しの〇〇さんから誕生日動画</h4>
+              <p class="muted">10秒・限定公開リンク</p>
+              <div class="price">¥3,000</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- COMPANY INFO -->
-    <section id="company" class="section">
+    <!-- HOW -->
+    <section id="how" class="section">
       <div class="container">
-        <h2>会社概要</h2>
-        <div class="grid two-col">
-          <dl>
-            <dt>会社名</dt>
-            <dd>合同会社WowMe</dd>
-
-            <dt>代表者</dt>
-            <dd>代表社員：山本 涼太</dd>
-
-            <dt>所在地</dt>
-            <dd>東京都渋谷区（登記住所を記載）</dd>
-
-            <dt>設立</dt>
-            <dd>2026年 10月（予定）</dd>
-
-            <dt>事業内容</dt>
-            <dd>
-              ・動画メッセージアプリ「WowMe」の企画・開発・運営<br/>
-              ・タレント・インフルエンサーの動画コンテンツ配信事業<br/>
-              ・SNSマーケティング・プロモーション支援
-            </dd>
-          </dl>
-
-          <div class="box">
-            <h3>MVV</h3>
-            <p><strong>Mission</strong><br/>推しとファンの“心の距離”を近づける。</p>
-            <p><strong>Vision</strong><br/>推し活が、もっと日常に溶け込む世界をつくる。</p>
-            <p><strong>Value</strong><br/>ファンファースト・タレントファースト・誠実な運営</p>
+        <h2>使い方（3ステップ）</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <h3>リクエストを送る</h3>
+            <p>推しに言ってほしいセリフを入力して指定したタレントに依頼します。</p>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <h3>タレントが撮影</h3>
+            <p>審査を通ったタレントが指定内容で動画を作成します。</p>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <h3>限定公開で受け取る</h3>
+            <p>運営が検品後、限定公開リンクで動画をお届けします。</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SERVICE -->
-    <section id="service" class="section bg-light">
+    <!-- FEATURES -->
+    <section id="features" class="section bg-soft">
       <div class="container">
-        <h2>主なサービス</h2>
-        <div class="grid three-col">
-          <article class="card">
-            <h4>WowMe（アプリ）</h4>
-            <p>推しに動画をリクエストし、タレントから限定動画が届く体験を提供します。誕生日・結婚式・友人サプライズなど様々な利用シーンに対応。</p>
+        <h2>WowMeの特徴</h2>
+        <div class="features-grid">
+          <article class="feature">
+            <h4>特別な一言</h4>
+            <p>世界でひとつだけの動画メッセージを届けます。</p>
           </article>
-          <article class="card">
-            <h4>タレント支援</h4>
-            <p>クリエイターが収益化できる仕組みを提供。タレントファーストの還元率・管理ツールで活動をサポートします。</p>
+          <article class="feature">
+            <h4>安心の審査制</h4>
+            <p>信頼できるタレントのみが出品できる仕組みです。</p>
           </article>
-          <article class="card">
-            <h4>プロモーション支援</h4>
-            <p>SNSやイベントと連携したプロモーション、企業タイアップ・スポンサー枠の設計を行います。</p>
+          <article class="feature">
+            <h4>高還元</h4>
+            <p>タレントに90%還元。クリエイターを大切にします。</p>
+          </article>
+          <article class="feature">
+            <h4>スポンサー機能</h4>
+            <p>アプリ内でスポンサー掲載が可能。活動支援につなげます。</p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section">
+    <!-- PLANS -->
+    <section id="plans" class="section">
       <div class="container">
-        <h2>お問い合わせ</h2>
-        <p>事務所タレント登録・業務提携・取材のご依頼は下記フォームまたは公式LINEからご連絡ください。</p>
-
-        <div class="contact-grid">
-          <form id="contactForm" class="contact-form" action="https://formspree.io/f/mgvnqrdp" method="POST">
-            <label for="name">お名前（法人名可） <span class="required">必須</span></label>
-            <input id="name" name="name" type="text" required />
-
-            <label for="email">メールアドレス <span class="required">必須</span></label>
-            <input id="email" name="email" type="email" required />
-
-            <label for="message">お問い合わせ内容 <span class="required">必須</span></label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-
-            <div class="form-actions">
-              <button class="btn primary" type="submit">送信する</button>
-            </div>
-            <p class="footnote">送信いただいた情報はお問い合わせ対応のみに使用します。</p>
-          </form>
-
-          <div class="contact-info" aria-hidden="false">
-            <h3>運営情報</h3>
-            <p><strong>合同会社WowMe</strong></p>
-            <p>メール：<a href="mailto:support@wowme.app" target="_blank">hello.wowme@gmail.com</a></p>
-            <p>公式LINE：<a href="https://lin.ee/HYPnk4e" target="_blank">https://lin.ee/HYPnk4e</a></p>
-            <div class="socials">
-              <a href="https://x.com/wowme_surprise" target="_blank" aria-label="X">X</a>
-              <a href="https://www.instagram.com/wowme.surprise/" target="_blank" aria-label="Instagram">Instagram</a>
-              <a href="https://www.tiktok.com/@wowme.surprise" target="_blank" aria-label="TikTok">TikTok</a>
-            </div>
+        <h2>クラウドファンディング リターンの一例</h2>
+        <div class="plans-grid">
+          <div class="plan">
+            <h3>¥500</h3>
+            <p>感謝のメール</p>
           </div>
+          <div class="plan">
+            <h3>¥3,000</h3>
+            <p>WowMe先行利用権+支援者様のお名前を公式Xでポストします</p>
+          </div>
+          <div class="plan">
+            <h3>¥30,000</h3>
+            <p>アプリ内に「特別スポンサー」として掲載。</p>
+          </div>
+          <div class="plan">
+            <h3>¥100,000</h3>
+            <p>WowMeアンバサダープラン</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPPORT -->
+    <section id="support" class="section cta-strong">
+      <div class="container cta-grid">
+        <div>
+          <h2>今すぐプロジェクトを支援して、推し活の未来をつくろう</h2>
+          <p class="lead">CAMPFIREにてクラウドファンディング実施中。目標117万円。</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn" href="https://camp-fire.jp/projects/896176/view" target="_blank">支援ページへ</a>
+          <button id="openModal" class="btn-outline">お問い合わせ</button>
         </div>
       </div>
     </section>
@@ -143,15 +157,19 @@
     <!-- FOOTER -->
     <footer class="site-footer">
       <div class="container footer-inner">
-        <div>© 2025 合同会社WowMe</div>
-        <nav class="small-nav" aria-label="footer">
-          <a href="https://docs.google.com/document/d/1asbBn_lOfS-2ewz_0VHU0ZXlLBwNO2b9blE940KIVec/edit?usp=sharing" target="_blank">利用規約</a>
-          <a href="https://docs.google.com/document/d/1RiF5H04dgOvY6yyttqOvKtdv3teZL_jk6duwVr7aCfI/edit?usp=sharing" target="_blank">プライバシーポリシー</a>
-          <a href="https://docs.google.com/document/d/1zxIcj7XLSL5-CVI6TbV3ta5OVUkP4C4i7rljYbFMpPI/edit?usp=sharing" target="_blank">特定商取引法に基づく表記</a>
-        </nav>
+        <div class="copyright">&copy; 2025 WowMe運営事務局. All Rights Reserved.</div>
       </div>
     </footer>
   </main>
+
+  <!-- modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-inner">
+      <button id="modalClose" class="modal-close" aria-label="閉じる">✕</button>
+      <h3>お問い合わせ</h3>
+      <p>ご質問・ご相談はこちらからどうぞ。お問い合わせは <a href="hello.wowme@gmail.com" target="_blank">hello.wowme@gmail.com</a> まで。</p>
+    </div>
+  </div>
 
   <script src="./resource/js/script.js"></script>
 </body>
