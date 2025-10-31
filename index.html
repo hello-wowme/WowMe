@@ -1,176 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WowMe — 推しとつながる動画メッセージ</title>
-  <meta name="description" content="WowMeはタレントやクリエイターがファンのために“特別な動画メッセージ”を届けるサービスです。" />
-  <link rel="stylesheet" href="./resource/css/style.css" />
-  <link rel="icon" href="./resource/img/WowMe.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WowMe | 推しとファンをつなぐ動画メッセージアプリ</title>
+  <link rel="stylesheet" href="/resource/css/style.css">
+  <link rel="icon" href="/resource/img/WowMe.png">
+  <script defer src="/resource/js/script.js"></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="#">
-        <div class="logo">W</div>
-        <div class="brand-text">
-          <div class="brand-title">WowMe</div>
-          <div class="brand-sub">推しとつながる動画メッセージ</div>
-        </div>
-      </a>
-
-      <nav class="nav" id="nav">
-        <a href="#how">使い方</a>
-        <a href="#features">特徴</a>
-        <a href="#plans">リターン</a>
-      </nav>
-    </div>
+  <!-- ナビゲーション -->
+  <header class="header">
+    <div class="logo">WowMe</div>
+    <nav class="nav">
+      <a href="/index.html" class="active">HOME</a>
+      <a href="/resource/page/about.html">ABOUT</a>
+      <a href="/resource/page/features.html">FEATURES</a>
+      <a href="/resource/page/contact.html">CONTACT</a>
+    </nav>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-left">
-          <h1>推しからの特別な一言を、あなたに。</h1>
-          <p class="lead">WowMeはタレントやクリエイターがあなた宛てに短いサプライズ動画を届けるプラットフォームです。誕生日・記念日・サプライズに。</p>
-          <div class="hero-ctas">
-            <a class="btn" href="https://camp-fire.jp/projects/896176/view" target="_blank">今すぐ支援する</a>
-            <a class="btn-outline" href="#how">使い方を見る</a>
-          </div>
+  <!-- Heroセクション -->
+  <section class="hero">
+    <!-- 背景動画やアニメーションをここに挿入 -->
+    <!-- 例：<video autoplay muted loop class="hero-video"><source src="wowme_intro.mp4" type="video/mp4"></video> -->
+    <div class="hero-content">
+      <h1 class="fade-in-up">推しが、あなたの名前を呼ぶ。</h1>
+      <p class="fade-in-up delay1">WowMeはタレントとファンを動画でつなぐ新しい体験。</p>
+      <a href="https://camp-fire.jp/projects/896176/view" target="_blank" class="btn-primary fade-in-up delay2">クラウドファンディング実施中</a>
+    </div>
+  </section>
 
-          <ul class="stats">
-            <li><strong>審査制</strong><span>安心のタレント登録</span></li>
-            <li><strong>90%</strong><span>タレント還元率</span></li>
-            <li><strong>限定配信</strong><span>プライバシー保護</span></li>
-          </ul>
-        </div>
-
-        <div class="hero-right" aria-hidden="true">
-          <div class="card-mock">
-            <div class="card-top">WowMe</div>
-            <div class="card-body">
-              <div class="video-thumb">
-                <video autoplay muted loop playsinline>
-                  <source src="./resource/video/Happybirthday_video.mp4" type="video/mp4">
-                  お使いのブラウザは動画タグに対応していません。
-                </video>
-              </div>
-
-              <h4>推しの〇〇さんから誕生日動画</h4>
-              <p class="muted">10秒・限定公開リンク</p>
-              <div class="price">¥3,000</div>
-            </div>
-          </div>
-        </div>
+  <!-- 特徴セクション -->
+  <section class="features-preview">
+    <h2 class="section-title slide-up">WowMeの特徴</h2>
+    <div class="feature-grid">
+      <div class="feature-card slide-left">
+        <h3>🎥 特別な動画体験</h3>
+        <p>推しがあなたのために動画を撮影。世界に一つだけのメッセージを。</p>
       </div>
-    </section>
-
-    <!-- HOW -->
-    <section id="how" class="section">
-      <div class="container">
-        <h2>使い方（3ステップ）</h2>
-        <div class="steps">
-          <div class="step">
-            <div class="num">1</div>
-            <h3>リクエストを送る</h3>
-            <p>推しに言ってほしいセリフを入力して指定したタレントに依頼します。</p>
-          </div>
-          <div class="step">
-            <div class="num">2</div>
-            <h3>タレントが撮影</h3>
-            <p>審査を通ったタレントが指定内容で動画を作成します。</p>
-          </div>
-          <div class="step">
-            <div class="num">3</div>
-            <h3>限定公開で受け取る</h3>
-            <p>運営が検品後、限定公開リンクで動画をお届けします。</p>
-          </div>
-        </div>
+      <div class="feature-card slide-right">
+        <h3>💌 安心の審査制</h3>
+        <p>登録タレントはすべて審査制。安全で健全な推し活文化を守ります。</p>
       </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section id="features" class="section bg-soft">
-      <div class="container">
-        <h2>WowMeの特徴</h2>
-        <div class="features-grid">
-          <article class="feature">
-            <h4>特別な一言</h4>
-            <p>世界でひとつだけの動画メッセージを届けます。</p>
-          </article>
-          <article class="feature">
-            <h4>安心の審査制</h4>
-            <p>信頼できるタレントのみが出品できる仕組みです。</p>
-          </article>
-          <article class="feature">
-            <h4>高還元</h4>
-            <p>タレントに90%還元。クリエイターを大切にします。</p>
-          </article>
-          <article class="feature">
-            <h4>スポンサー機能</h4>
-            <p>アプリ内でスポンサー掲載が可能。活動支援につなげます。</p>
-          </article>
-        </div>
+      <div class="feature-card slide-left">
+        <h3>🔍 推しを見つけやすい</h3>
+        <p>カテゴリや人気順でお気に入りのタレントを探せます。</p>
       </div>
-    </section>
-
-    <!-- PLANS -->
-    <section id="plans" class="section">
-      <div class="container">
-        <h2>クラウドファンディング リターンの一例</h2>
-        <div class="plans-grid">
-          <div class="plan">
-            <h3>¥500</h3>
-            <p>感謝のメール</p>
-          </div>
-          <div class="plan">
-            <h3>¥3,000</h3>
-            <p>WowMe先行利用権+支援者様のお名前を公式Xでポストします</p>
-          </div>
-          <div class="plan">
-            <h3>¥30,000</h3>
-            <p>アプリ内に「特別スポンサー」として掲載。</p>
-          </div>
-          <div class="plan">
-            <h3>¥100,000</h3>
-            <p>WowMeアンバサダープラン</p>
-          </div>
-        </div>
+      <div class="feature-card slide-right">
+        <h3>💬 スポンサーコラボ</h3>
+        <p>企業やブランドがタレントとコラボする機会も。</p>
       </div>
-    </section>
-
-    <!-- SUPPORT -->
-    <section id="support" class="section cta-strong">
-      <div class="container cta-grid">
-        <div>
-          <h2>今すぐプロジェクトを支援して、推し活の未来をつくろう</h2>
-          <p class="lead">CAMPFIREにてクラウドファンディング実施中。目標117万円。</p>
-        </div>
-        <div class="cta-actions">
-          <a class="btn" href="https://camp-fire.jp/projects/896176/view" target="_blank">支援ページへ</a>
-          <button id="openModal" class="btn-outline">お問い合わせ</button>
-        </div>
+      <div class="feature-card slide-left">
+        <h3>💴 収益の90％をタレントに還元</h3>
+        <p>WowMeは運営手数料10％のみ。タレントがより自由に活動を続けられる公正なエコシステムを構築。</p>
       </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <div class="copyright">&copy; 2025 WowMe運営事務局. All Rights Reserved.</div>
+      <div class="feature-card slide-right">
+        <h3>🎂 感動を共有できる</h3>
+        <p>誕生日や記念日、サプライズプレゼントにも最適。ファンが推しの動画を見て「人生で一番うれしい瞬間」を体験できる。</p>
       </div>
-    </footer>
-  </main>
+    </div>
+  </section>
 
-  <!-- modal -->
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-inner">
-      <button id="modalClose" class="modal-close" aria-label="閉じる">✕</button>
-      <h3>お問い合わせ</h3>
-      <p>ご質問・ご相談はこちらからどうぞ。お問い合わせは <a href="hello.wowme@gmail.com" target="_blank">hello.wowme@gmail.com</a> まで。</p>
+  <!-- ギャラリー -->
+  <section class="gallery">
+    <h2 class="section-title slide-up">アプリギャラリー</h2>
+    <div class="gallery-scroll">
+      <img src="/resource/img/Preview_01-portrait.png" alt="アプリ画面1">
+      <img src="/resource/img/Preview_02-portrait.png" alt="アプリ画面2">
+      <img src="/resource/img/Preview_03-portrait.png" alt="アプリ画面3">
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta fade-in-up">
+    <h2>あなたの推し活を、WowMeで。</h2>
+    <a href="https://camp-fire.jp/projects/896176/view" target="_blank" class="btn-primary">クラウドファンディングを見る</a>
+  </section>
+
+  <!-- ▼ モーダル（共通でOK） -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <div id="modal-body">
+        <!-- モーダル本文はJSで差し込みます -->
+      </div>
     </div>
   </div>
 
-  <script src="./resource/js/script.js"></script>
+  <!-- フッター -->
+  <footer class="footer">
+    <p>© 2025 WowMe運営事務局</p>
+    <div class="footer-links">
+      <a href="#" id="privacy-link">プライバシーポリシー</a>
+      <span>|</span>
+      <a href="#" id="legal-link">特定商取引法に基づく表記</a>
+    </div>
+  </footer>
 </body>
 </html>
