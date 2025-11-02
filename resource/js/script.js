@@ -10,19 +10,19 @@ const showOnScroll = () => {
 window.addEventListener('scroll', showOnScroll);
 showOnScroll();
 
-// ハンバーガーメニュー（スマホ対応）
-const nav = document.querySelector('.nav');
-const header = document.querySelector('.header');
-if(window.innerWidth < 768){
-  const btn = document.createElement('button');
-  btn.className = 'menu-btn';
-  btn.innerHTML = '☰';
-  header.insertBefore(btn, nav);
-  nav.style.display = 'none';
-  btn.onclick = ()=>{
-    nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
-  };
-}
+// // ハンバーガーメニュー（スマホ対応）
+// const nav = document.querySelector('.nav');
+// const header = document.querySelector('.header');
+// if(window.innerWidth < 768){
+//   const btn = document.createElement('button');
+//   btn.className = 'menu-btn';
+//   btn.innerHTML = '☰';
+//   header.insertBefore(btn, nav);
+//   nav.style.display = 'none';
+//   btn.onclick = ()=>{
+//     nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
+//   };
+// }
 
 // ページ読み込み時のフェードイン
 window.addEventListener('load', ()=>{
