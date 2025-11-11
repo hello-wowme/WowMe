@@ -52,7 +52,7 @@ const privacyHTML = `
 
 const legalHTML = `
   <h2>特定商取引法に基づく表記</h2>
-  <p>販売事業者：株式会社WowMe（設立予定）</p>
+  <p>販売事業者：合同会社WowMe（設立予定）</p>
   <p>代表責任者：山本 涼太</p>
   <p>お問い合わせ：hello.wowme@gmail.com</p>
   <p>販売価格：各サービス紹介ページに記載</p>
