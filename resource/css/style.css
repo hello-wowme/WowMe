@@ -28,7 +28,7 @@ body{
   top:0;
   z-index:10;
 }
-.logo{font-weight:700;color:var(--pink);}
+.logo{font-weight:700;color:var(--pink); text-align: center;}
 .nav a{
   color:#333;text-decoration:none;margin:0 10px;font-weight:600;
 }
@@ -340,3 +340,20 @@ body{
   from {opacity: 0; transform: translateY(20px);}
   to {opacity: 1; transform: translateY(0);}
 }
+
+/* ▼ モバイル時はナビゲーション非表示 */
+@media (max-width: 768px) {
+  .nav {
+    display: none !important;
+  }
+  .header {
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  .logo {
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
