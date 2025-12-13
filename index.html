@@ -584,6 +584,89 @@
             font-size: 1.5rem;
         }
 
+        /* --- NEWS PAGE --- */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 133, 161, 0.2);
+            border-color: var(--primary-light);
+        }
+
+        .news-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #f0f0f0; /* 画像がない時の背景色 */
+        }
+
+        .news-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .news-date {
+            color: var(--text-gray);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .news-category {
+            background: var(--bg-color);
+            color: var(--primary);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .news-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            /* 長すぎる文章を省略 */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
         /* --- 3. TALENT PAGE --- */
         .talent-hero {
             text-align: center; /* テキストを中央揃え */
@@ -942,6 +1025,7 @@
                 </li>
                 
                 <li><a onclick="showSection('top')" data-section="top" class="nav-link active">TOP</a></li>
+                <li><a onclick="showSection('news')" data-section="news" class="nav-link">NEWS</a></li>
                 <li><a onclick="showSection('about')" data-section="about" class="nav-link">ABOUT</a></li>
                 <li><a onclick="showSection('talent')" data-section="talent" class="nav-link">TALENT</a></li>
                 <li><a onclick="showSection('special')" data-section="special" class="nav-link">SPECIAL</a></li>
@@ -1054,6 +1138,12 @@
                     </a>
                 </div>
             </div>
+        </section>
+
+        <section id="news">
+            <h2>News</h2>
+            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">WowMeからの最新情報をお届けします</p>
+            <div id="news-list" class="news-grid"></div>
         </section>
 
         <section id="about">
@@ -1371,6 +1461,70 @@
 
     // 実行
     renderSupporters();
+
+    // --- News Data & Rendering ---
+    const newsData = [
+        // ▼▼▼ ここにニュースを追加してください ▼▼▼
+        {
+            date: "2025.10.29",
+            category: "メディア",
+            title: "Webメディア：「クラウドファンディング名鑑」にWowMeが掲載されました",
+            image: "https://placehold.co/600x400/FF85A1/white?text=Media", // 画像がない場合は空文字でOK（プレースホルダーが出ます）
+            link: "https://crowdfunding.meikan.org/project/campfire-896176/",
+            text: "WowMeがメディアとXで紹介されました。"
+        },
+        {
+            date: "2025.12.11",
+            category: "キャンペーン",
+            title: "【プレゼント企画】推しへの初リクエスト無料キャンペーン開催中！",
+            image: "https://placehold.co/600x400/80DEEA/white?text=Campaign",
+            link: "https://x.com/wowme_surprise/status/1999090124647440414",
+            text: "WowMeアンケート回答でAmazonギフト券1,000円分が5名様に当たるチャンス！"
+        },
+        {
+            date: "2025.12.13",
+            category: "アップデート",
+            title: "WowMe（ワオミー）公式サイトの公開を開始しました",
+            image: "https://placehold.co/600x400/ffcc33/white?text=Update", // 画像URL
+            link: "https://hello-wowme.github.io/WowMe/", // リンク先（詳細ページなど）
+            text: "かわいいデザインと直感的な操作性を追求した公式サイトが完成しました。"
+        },
+    ];
+
+    function renderNews() {
+        const container = document.getElementById('news-list');
+        
+        // 日付の新しい順に並び替えたい場合はコメントアウトを外す
+        // newsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        newsData.forEach(item => {
+            // 画像がない場合のデフォルト画像
+            const imgUrl = item.image ? item.image : 'https://placehold.co/600x400/EEE/999?text=No+Image';
+
+            const card = document.createElement('a');
+            card.className = 'news-card';
+            card.href = item.link;
+            // 外部サイトの場合は別タブで開くなどの処理を入れてもOK
+            // card.target = "_blank"; 
+
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${item.title}" class="news-image">
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">${item.date}</span>
+                        <span class="news-category">${item.category}</span>
+                    </div>
+                    <h3 class="news-title">${item.title}</h3>
+                    <p class="news-excerpt">${item.text}</p>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+    
+    // 実行
+    renderNews();
 
     // --- Sales Simulation Logic ---
     function calculateSales() {
