@@ -813,6 +813,28 @@
             .close-menu { display: none; }
         }
 
+        /* --- FOOTER --- */
+        footer {
+            text-align: center; /* 文字を中央揃えにする */
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 133, 161, 0.2); /* 薄いピンクの線 */
+        }
+        
+        footer a {
+            color: var(--text-dark);
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        footer a:hover {
+            color: var(--primary);
+        }
+
     </style>
 </head>
 <body>
@@ -1055,7 +1077,12 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 WowMe. All rights reserved.</p>
+        <div style="margin-bottom: 1rem;">
+            <a href="#">運営会社</a> | 
+            <a href="#">プライバシーポリシー</a> | 
+            <a href="#">利用規約</a>
+        </div>
+        <p>&copy; 2025 WowMe. All Rights Reserved.</p>
     </footer>
 
     <script>
