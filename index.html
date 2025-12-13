@@ -494,7 +494,88 @@
             font-weight: 700;
         }
 
-        /* --- 3. TALENT PAGE --- */
+        /* --- Simulation Tool (About Page) --- */
+        .sim-container {
+            margin-top: 4rem;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 2px solid var(--primary-light);
+        }
+
+        .sim-title {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 800;
+        }
+
+        .sim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sim-input-box label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .sim-input-box input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #EEE;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: 'Quicksand', sans-serif;
+            text-align: right;
+            transition: border-color 0.3s;
+        }
+
+        .sim-input-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .sim-result-box {
+            background: var(--bg-color);
+            padding: 2rem;
+            border-radius: 16px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-val {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .highlight-val {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
         /* --- 3. TALENT PAGE --- */
         .talent-hero {
             text-align: center; /* テキストを中央揃え */
@@ -988,6 +1069,45 @@
                     </div>
                 </div>
             </div>
+
+            <div class="sim-container">
+                <h3 class="sim-title"><i class="fas fa-calculator"></i> タレント報酬シミュレーション</h3>
+                
+                <div class="sim-grid">
+                    <div class="sim-input-box">
+                        <label>1本あたりの金額 (円)</label>
+                        <input type="number" id="sim-price" value="5000" min="0" oninput="calculateSales()">
+                    </div>
+                    <div class="sim-input-box">
+                        <label>動画の長さ (秒)</label>
+                        <input type="number" id="sim-duration" value="30" min="1" oninput="calculateSales()">
+                    </div>
+                    <div class="sim-input-box">
+                        <label>月販売本数 (本)</label>
+                        <input type="number" id="sim-count" value="10" min="1" oninput="calculateSales()">
+                    </div>
+                </div>
+
+                <div class="sim-result-box">
+                    <div class="result-row">
+                        <span>💰 総売上</span>
+                        <span class="result-val" id="res-total">50,000円</span>
+                    </div>
+                    <div class="result-row">
+                        <span>🎀 WowMe手数料 (20%)</span>
+                        <span class="result-val" id="res-fee" style="color:var(--text-gray);">10,000円</span>
+                    </div>
+                    <div class="result-row" style="background: white; padding: 1rem; border-radius: 10px; margin-top: 1rem; border:none;">
+                        <span>👤 <b>タレント報酬 (80%)</b></span>
+                        <span class="result-val highlight-val" id="res-reward">40,000円</span>
+                    </div>
+                    <div class="result-row" style="color: var(--primary); font-weight:bold; margin-top: 1rem; border:none;">
+                        <span>⏱ 秒給 (1秒あたりの収益)</span>
+                        <span class="result-val" id="res-wage">133円</span>
+                    </div>
+                </div>
+                <p style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 10px;">※あくまで目安です</p>
+            </div>
         </section>
 
         <section id="talent">
@@ -1209,7 +1329,7 @@
 
         // --- Special Page: Supporters List Generation ---
         const supporters = [
-            // ▼ ここに支援者のデータを追加してください ▼
+            // ▼ ここにクラファン支援者のデータを追加してください ▼
             { name: "WowMe公式", id: "@wowme_surprise", url: "https://twitter.com/wowme_surprise" },
             { name: "ただのりた", id: "@tadanorita3", url: "https://twitter.com/tadanorita3" },
             { name: "いっぬ社長", id: "@inu__ceo", url: "https://twitter.com/inu__ceo" },
@@ -1243,6 +1363,33 @@
 
     // 実行
     renderSupporters();
+
+    // --- Sales Simulation Logic ---
+    function calculateSales() {
+        // 入力値の取得（空の場合は0として扱う）
+        const price = parseFloat(document.getElementById('sim-price').value) || 0;
+        const duration = parseFloat(document.getElementById('sim-duration').value) || 1; // 0除算防止
+        const count = parseFloat(document.getElementById('sim-count').value) || 0;
+
+        // 計算
+        const totalSales = price * count;
+        const fee = totalSales * 0.2;
+        const reward = totalSales * 0.8;
+        
+        // 秒給 = (タレント報酬) ÷ (動画長さ × 本数)
+        // ※「1本あたりの単価 × 0.8 ÷ 動画の長さ」でも同じ結果になります
+        const totalSeconds = duration * count;
+        let wage = 0;
+        if (totalSeconds > 0) {
+            wage = reward / totalSeconds;
+        }
+
+        // 表示の更新（カンマ区切り）
+        document.getElementById('res-total').innerText = Math.floor(totalSales).toLocaleString() + '円';
+        document.getElementById('res-fee').innerText = Math.floor(fee).toLocaleString() + '円';
+        document.getElementById('res-reward').innerText = Math.floor(reward).toLocaleString() + '円';
+        document.getElementById('res-wage').innerText = Math.floor(wage).toLocaleString() + '円';
+    }
     </script>
 </body>
 </html>
