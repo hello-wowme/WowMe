@@ -979,15 +979,23 @@
                 padding: 0.5rem 0; /* タップしやすい範囲は維持 */
             }
 
-            /* 閉じるボタン */
+            /* ▼▼▼ 追加：メニューが開いている時は、ハンバーガーアイコン(三)を消す ▼▼▼ */
+            #nav-menu.active + .menu-toggle {
+                opacity: 0;
+                pointer-events: none; /* クリック不可にする */
+                transition: opacity 0.3s;
+            }
+
+            /* 閉じるボタン(×)の位置を、ハンバーガーアイコンと重なる位置に微調整 */
             .close-menu {
                 position: absolute;
-                top: 20px;
-                right: 30px;
-                font-size: 2.5rem;
+                top: 25px;  /* ヘッダーのpaddingに合わせて調整 */
+                right: 30px; /* 右端からの距離 */
+                font-size: 2rem;
                 color: var(--primary);
                 cursor: pointer;
                 display: block;
+                z-index: 2001; /* 最前面に */
             }
         }
 
