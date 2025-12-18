@@ -898,6 +898,83 @@
             background: #FF6584;
         }
 
+        /* --- Modal Window --- */
+        .modal-overlay {
+            display: none; /* 初期状態は非表示 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* 背景の半透明の黒 */
+            z-index: 3000; /* 最前面 */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh; /* 画面の80%までの高さ */
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow-y: auto; /* コンテンツが長い場合はスクロール */
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* 閉じるボタン（×） */
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--primary);
+        }
+
+        /* モーダル内の見出し */
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 1rem;
+        }
+        
+        .modal-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            text-align: left; /* 左揃え */
+        }
+
+        .modal-body h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
         /* --- Mobile Responsive & Hamburger Menu Animation --- */
         @media (max-width: 768px) {
             h2 { font-size: 1.8rem; }
@@ -1314,12 +1391,186 @@
 
     <footer>
         <div style="margin-bottom: 1rem;">
-            <a href="#">運営会社</a> | 
-            <a href="#">プライバシーポリシー</a> | 
-            <a href="#">利用規約</a>
+            <!-- <a href="#">運営会社</a> |  -->
+            <a href="#" onclick="openModal('modal-privacy'); return false;">プライバシーポリシー</a> | 
+            <a href="#" onclick="openModal('modal-terms'); return false;">利用規約</a> |
+            <a href="#" onclick="openModal('modal-scta'); return false;">特定商取引法に基づく表記</a>
         </div>
         <p>&copy; 2025 WowMe. All Rights Reserved.</p>
     </footer>
+
+    <div id="modal-privacy" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="modal-close-btn" onclick="closeModalBtn('modal-privacy')">&times;</span>
+            <h3>プライバシーポリシー</h3>
+            <div class="modal-body">
+                WowMe プライバシーポリシー <br>
+                最終更新日：2025年10月16日 <br>
+                WowMe運営事務局（以下「当運営」といいます。）は、当運営が提供するアプリケーションサービス「WowMe」（以下「本サービス」といいます。）の利用に際して取得する利用者の個人情報について、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます。）を定めます。
+
+                <h4>第1条（個人情報の定義）</h4>
+                <p>「個人情報」とは、氏名、メールアドレス、SNSアカウント、決済情報など、特定の個人を識別できる情報を指します。</p>
+
+                <h4>第2条（個人情報の取得方法）</h4>
+                <p>
+                    当運営は、ユーザー登録時・動画依頼時・お問い合わせ時などに、ユーザーから以下の情報を取得します。
+                    ・氏名またはニックネーム<br>
+                    ・メールアドレス、パスワード<br>
+                    ・SNSアカウント情報<br>
+                    ・決済に関する情報（決済代行会社を通じて処理）<br>                
+                    ・利用履歴・アクセスログ
+                </p>
+
+                <h4>第3条（個人情報の利用目的）</h4>
+                <p>取得した個人情報は、以下の目的のために利用します。
+                    ・サービス提供および動画依頼の取引遂行<br>
+                    ・本人確認、アカウント管理<br>
+                    ・お問い合わせ対応<br>
+                    ・新機能・サービスの案内<br>
+                    ・不適切な依頼内容等の調査および防止措置<br>
+                    ・法令に基づく開示要請への対応
+                </p>
+
+
+                <h4>第4条（第三者提供）</h4>
+                当運営は、法令で認められる場合を除き、本人の同意なく第三者に個人情報を提供しません。
+                ただし、動画制作に必要な範囲で、依頼者情報をタレントに共有する場合があります。
+
+                <h4>第5条（個人情報の管理）</h4>
+                当運営は、個人情報の漏洩・改ざん・紛失を防止するため、適切な安全管理措置を講じます。
+
+                <h4>第6条（個人情報の開示・訂正・削除）</h4>
+                ユーザー本人からの請求により、保有する個人情報の開示・訂正・削除に応じます。
+                お問い合わせは、下記メールアドレスまでご連絡ください。<br>
+                <u>hello.wowme@gmail.com</u>
+
+                <h4>第7条（Cookie等の使用）</h4>
+                本サービスでは、利便性向上やアクセス解析のためにCookieを使用する場合があります。
+                ブラウザの設定によりCookieを無効にすることも可能です。
+
+               <h4> 第8条（プライバシーポリシーの変更）</h4>
+                本ポリシーは、必要に応じて改定されることがあります。変更後の内容は、本サービス上で公表した時点で効力を生じます。
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-terms" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="modal-close-btn" onclick="closeModalBtn('modal-terms')">&times;</span>
+            <h3>利用規約</h3>
+            <div class="modal-body">
+                <p>WowMe 利用規約 <br>
+                    最終更新日：2025年12月19日 <br>
+                    この利用規約（以下「本規約」といいます。）は、WowMe運営事務局（以下「当運営」といいます。）が提供するアプリケーションサービス「WowMe」（以下「本サービス」といいます。）の利用条件を定めるものです。本サービスを利用される前に、必ず本規約をお読みください。利用者は、本サービスを利用することにより、本規約に同意したものとみなします。
+                </p>
+                <h4>第1条（定義）</h4>
+                <p>
+                    「ユーザー」とは、本サービスを利用するすべての個人または法人をいいます。
+                    「タレント・インフルエンサー」とは、本サービス上で動画の制作・販売を行う登録者をいいます。
+                    「依頼動画」とは、ユーザーがタレントに対してリクエストを行い、タレントが制作・提供する動画コンテンツを指します。
+                </p>
+
+                <h4>第2条（本サービスの内容）</h4>
+                本サービスは、ユーザーがタレント・インフルエンサーに対して動画メッセージの制作を依頼し、個別の動画を受け取ることができるプラットフォームです。
+                依頼動画はユーザー個人向けに制作され、著作権はタレントまたは当運営に帰属します。
+
+                <h4>第3条（利用登録）</h4>
+                ユーザーは、当運営が定める方法に従い、正確かつ最新の情報をもって登録を行うものとします。虚偽の情報に基づく登録は禁止します。
+
+                <h4>第4条（料金・支払い）</h4>
+                動画依頼に係る料金は、依頼時に表示される金額とします。
+                支払いは、指定の決済方法により前払いで行います。
+                一度支払われた料金は、原則として返金いたしません。
+
+                <h4>第5条（禁止事項）</h4>
+                ユーザーは、以下の行為を行ってはなりません。<br>
+                ・タレント・他ユーザー・第三者を誹謗中傷する行為 <br>
+                ・公序良俗に反する依頼内容の送信 <br>
+                ・個人情報、機密情報の不正な投稿 <br>
+                ・本サービスの運営を妨げる行為 <br> 
+                ・法令に違反する行為
+
+                <h4>第6条（不適切なメッセージ内容の確認）</h4>
+                本サービスでは、ユーザーから送信された動画依頼メッセージの内容について、当運営が事前に確認を行います。
+                不適切なサプライズメッセージや、タレントに精神的負担を与えるおそれのある内容が含まれている場合、当運営の判断により依頼を拒否することがあります。
+                その際、返金は行われません。ユーザーはこの点に同意の上で依頼を行うものとします。
+
+                <h4>第7条（動画の納品・権利）</h4>
+                依頼動画の納品は、タレントが制作を完了し、本サービスを通じてユーザーに提供された時点で完了とします。
+                ユーザーは、当運営およびタレントの許可なく動画を再配布・販売・公開してはなりません。
+                動画の著作権は当運営またはタレントに帰属します。
+
+                <h4>第8条（免責事項）</h4>
+                当運営は、タレントの都合や体調不良等により動画が制作できなかった場合、返金を行うことがありますが、その範囲は支払金額のみに限られます。
+                通信環境や端末の不具合による動画受信不可について、当運営は責任を負いません。
+                本サービスの停止・中断によって生じた損害について、当運営は一切の責任を負いません。
+
+                <h4>第9条（利用停止・アカウント削除）</h4>
+                当運営は、ユーザーが本規約に違反した場合、事前の通知なくアカウント停止または削除を行うことができます。
+
+                <h4>第10条（規約の変更）</h4>
+                当運営は、本規約を随時変更できるものとします。変更後の内容は、本サービス上またはウェブサイト上で公表された時点で効力を生じます。
+
+                </h4>第11条（準拠法および裁判管轄）</h4>
+                本規約は日本法を準拠法とし、本サービスに関する一切の紛争は、東京地方裁判所を第一審の専属的合意管轄裁判所とします。<br>
+
+                お問い合わせ先<br>
+                WowMe運営事務局<br>
+                Email：hello.wowme@gmail.com
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-scta" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="modal-close-btn" onclick="closeModalBtn('modal-scta')">&times;</span>
+            <h3>特定商取引法に基づく表記</h3>
+            <div class="modal-body">
+                <p>
+                    事業者名：山本 涼太（WowMe）<br>
+                    運営責任者名：山本 涼太<br>
+                    メールアドレス：hello.wowme@gmail.com <br>
+                    販売URL：<a href="https://hello-wowme.github.io/WowMe/" target="_blank"><u>https://hello-wowme.github.io/WowMe/</u></a>
+
+                </p>
+                <h4>販売価格</h4>
+                <p>各動画依頼ページに表示される金額（消費税込）となります。</p>
+
+                <h4>商品代金以外の必要料金</h4>
+                </p>通信料、振込手数料等はお客様負担となります。</p>
+
+                <h4>支払方法</h4>
+                <p>
+                    ・クレジットカード決済<br>
+                    ・デビットカード決済
+                </p>
+
+                <h4>支払時期</h4>
+                <p>注文確定時に決済が行われます。</p>
+
+                <h4>商品の引き渡し時期</h4>
+                <p>動画依頼に応じて、タレントが制作を完了後、順次配信いたします。
+                    納期は各タレントのスケジュールにより異なります。</p>
+
+                <h4>返品・キャンセルについて</h4>
+                <p>サービスの性質上、購入後の返金・キャンセルは原則受け付けておりません。
+                    ただし、当運営またはタレントの都合による制作中止の場合のみ、返金を行う場合があります。</p>
+
+                <h4>不適切なメッセージ依頼について</h4>
+                <p>ユーザーからの依頼内容が不適切であると当運営が判断した場合、返金なしで動画の提供を中止することがあります。</p>
+
+                <h4>免責事項</h4>
+                <p>本サービスの利用によって生じたいかなる損害についても、当運営は責任を負いかねます。
+                    本サービスは、タレントのスケジュールや技術的問題により一時停止する場合があります。</p>
+
+                <h4>お問い合わせ先</h4>
+                <p>WowMe運営事務局<br>
+                    hello.wowme@gmail.com <br>
+                    受付時間：平日10:00〜18:00（土日祝除く）</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         // --- Navigation Logic ---
@@ -1576,6 +1827,44 @@
         document.getElementById('res-fee').innerText = Math.floor(fee).toLocaleString() + '円';
         document.getElementById('res-reward').innerText = Math.floor(reward).toLocaleString() + '円';
         document.getElementById('res-wage').innerText = Math.floor(wage).toLocaleString() + '円';
+    }
+
+    // --- Modal Logic ---
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex'; // まずdisplayを設定
+            // 少し遅らせてクラスを追加することでフェードインアニメーションさせる
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // 背景スクロール固定
+        }
+    }
+
+    // ×ボタンで閉じる場合
+    function closeModalBtn(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // アニメーション終了後に非表示
+            document.body.style.overflow = 'auto'; // スクロール解除
+        }
+    }
+
+    // モーダルウィンドウ
+    // 余白（背景）タップで閉じる場合
+    function closeModal(event) {
+        // クリックされた場所がオーバーレイ（背景）そのものの場合のみ閉じる
+        if (event.target.classList.contains('modal-overlay')) {
+            event.target.classList.remove('active');
+            setTimeout(() => {
+                event.target.style.display = 'none';
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
     }
     </script>
 </body>
