@@ -505,11 +505,18 @@
         /* --- Simulation Tool (About Page) --- */
         .sim-container {
             margin-top: 4rem;
+            margin-bottom: 6rem;
             background: white;
             padding: 2.5rem;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             border: 2px solid var(--primary-light);
+            
+            /* ▼▼▼ 修正箇所：幅を制限して中央寄せにする設定 ▼▼▼ */
+            max-width: 900px; /* 広がりすぎないように制限 */
+            margin-left: auto;
+            margin-right: auto;
+            /* ▲▲▲ ここまで ▲▲▲ */
         }
 
         .sim-title {
@@ -721,6 +728,262 @@
             color: var(--primary);
             margin-bottom: 1rem;
         }
+
+                /* =========================
+        TALENT 横スクロール
+        ========================= */
+
+        .talent-scroll {
+        padding: 60px 20px 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--pink);
+            font-size: 22px;
+            margin-top: 20px;
+        }
+
+        .talent-scroll-wrapper {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 10px 4px 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .talent-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .talent-card {
+            position: relative;
+            flex: 0 0 auto;
+            width: 150px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
+            scroll-snap-align: start;
+            transition: transform 0.3s ease;
+        }
+
+        .talent-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .talent-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        /* 価格タグ */
+        .price-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--pink);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 999px;
+            box-shadow: 0 4px 10px rgb(255, 0, 128,1);
+        }
+
+        /* 名前 */
+        .talent-name {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--pink);
+        }
+
+        /* カテゴリタグ */
+        .talent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .tag {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        /* 種類別カラー */
+        .tag.birthday {
+            background: #ffe0ec;
+            color: #e91e63;
+        }
+
+        .tag.cheer {
+            background: #e0f2ff;
+            color: #2196f3;
+        }
+
+        .tag.thanks {
+            background: #eaffea;
+            color: #4caf50;
+        }
+
+        .tag.surprise {
+            background: #fff4cc;
+            color: #ff9800;
+        }
+
+        /* スワイプ案内 */
+        .scroll-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        /* --- Talent List (Horizontal Scroll) --- */
+        .talent-list-container {
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        /* 見出しを確実に中央にする設定 */
+        .talent-list-container h2 {
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin: 0 auto 2rem; /* 上下の余白と左右の中央揃え */
+            color: var(--primary);
+        }
+
+        .talent-scroll {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 1rem 1rem 2rem; /* スクロールバー用の余白 */
+            justify-content: flex-start; /* 左から並べる */
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* PCでのスクロールバー調整 */
+        .talent-scroll::-webkit-scrollbar { height: 8px; }
+        .talent-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .talent-scroll::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+
+        .talent-card-item {
+            flex: 0 0 220px; /* カードの幅 */
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.3s;
+            scroll-snap-align: center;
+            border: 2px solid transparent;
+            text-align: left;
+        }
+
+        .talent-card-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .talent-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .talent-info {
+            padding: 1rem;
+        }
+
+        .talent-name-card {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .talent-price-mini {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* --- Talent Detail Modal --- */
+        .talent-modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .talent-modal-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--primary-light);
+            box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3);
+        }
+
+        .talent-modal-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .surprise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .surprise-tag {
+            background: var(--bg-color);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .talent-price-box {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .price-label { font-size: 0.9rem; color: var(--text-gray); }
+        .price-value { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); font-family: 'Quicksand'; }
+
+        .btn-purchase {
+            display: block;
+            width: 100%;
+            background: #006AFF; /* Squareカラー風 */
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: opacity 0.3s;
+        }
+        .btn-purchase:hover { opacity: 0.9; }
 
         /* --- 4. SPECIAL PAGE --- */
         /* --- SPECIAL PAGE EXTENSIONS (Supporters) --- */
@@ -1269,7 +1532,7 @@
                 <h2>For Talents</h2>
                 <p>あなたの才能が、誰かへのプレゼントになる。</p>
             </div>
-
+            
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon"><i class="fas fa-coins"></i></div>
@@ -1288,14 +1551,15 @@
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 4rem;">
-                <a href="https://forms.gle/kmYBqprTT28VKnDE7" target="_blank" class="btn btn-primary">
-                    今すぐタレント登録する <i class="fas fa-arrow-right"></i>
-                </a>
+            <div class="talent-list-container">
+                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
+                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
+                <div id="talent-list" class="talent-scroll">
+                    </div>
             </div>
 
             <div class="sim-container">
-                <h3 class="sim-title"><i class="fas fa-calculator"></i> タレント報酬シミュレーション</h3>
+                <h3 class="sim-title"><i class="fas fa-calculator"></i> タレント売上シミュレーション</h3>
                 
                 <div class="sim-grid">
                     <div class="sim-input-box">
@@ -1307,7 +1571,7 @@
                         <input type="number" id="sim-duration" value="30" min="1" oninput="calculateSales()">
                     </div>
                     <div class="sim-input-box">
-                        <label>月販売本数 (本)</label>
+                        <label>販売本数 (本)</label>
                         <input type="number" id="sim-count" value="10" min="1" oninput="calculateSales()">
                     </div>
                 </div>
@@ -1332,6 +1596,12 @@
                 </div>
                 <p style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 10px;">※あくまで目安です</p>
             </div>
+
+            <div style="text-align: center; margin-top: 4rem;">
+                <a href="https://forms.gle/eo7UndV7qUzSbJuw5" target="_blank" class="btn btn-primary">
+                    今すぐタレント登録する <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </section>
 
         <section id="special">
@@ -1347,7 +1617,6 @@
                     初期メンバー（Founders）の皆様です。<br>
                     <span style="font-size: 0.9rem;">※お名前とXアカウントを掲載させていただいております</span>
                 </p>
-
                 <div id="supporters-list" class="supporters-grid"></div>
             </div>
         </section>
@@ -1387,6 +1656,14 @@
                 <p id="form-status" style="text-align: center; margin-top: 1rem; font-weight: bold; min-height: 1.5em;"></p>
             </form>
         </section>
+
+            <div id="modal-talent-detail" class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <span class="modal-close-btn" onclick="closeModalBtn('modal-talent-detail')">&times;</span>
+                <div id="talent-modal-body">
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -1865,6 +2142,105 @@
             document.body.style.overflow = 'auto';
         }
     }
+
+    // --- Talent Data & Modal Logic ---
+    const talentsData = [
+        {
+            id: 1,
+            name: "いっぬ社長",
+            image: "./assets/images/talent/いっぬ社長.JPG",
+            types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
+            price: 100,
+            link: "https://square.link/u/dEIuwh0p", // Square決済リンク
+        },
+        {
+            id: 2,
+            name: "V-Streamer KEN",
+            image: "https://placehold.co/400x400/80DEEA/white?text=KEN",
+            types: ["ネタ動画", "お悩み相談"],
+            price: 3000,
+            link: "#"
+        },
+        {
+            id: 3,
+            name: "白猫 ミミ",
+            image: "https://placehold.co/400x400/FFC2D1/white?text=Mimi",
+            types: ["記念日", "おやすみ", "告白"],
+            price: 8000,
+            link: "#"
+        },
+        {
+            id: 4,
+            name: "Guitarist YU",
+            image: "https://placehold.co/400x400/333/white?text=YU",
+            types: ["弾き語り", "バースデーソング"],
+            price: 6000,
+            link: "#"
+        },
+        {
+            id: 5,
+            name: "Gaming REX",
+            image: "https://placehold.co/400x400/4CAF50/white?text=REX",
+            types: ["ゲーム実況風", "勝利ボイス"],
+            price: 4000,
+            link: "#"
+        }
+    ];
+
+    // タレントリスト（カード）の生成
+    function renderTalents() {
+        const container = document.getElementById('talent-list');
+        
+        talentsData.forEach(talent => {
+            const card = document.createElement('div');
+            card.className = 'talent-card-item';
+            card.onclick = () => openTalentModal(talent.id); // クリックでモーダルを開く
+
+            card.innerHTML = `
+                <img src="${talent.image}" alt="${talent.name}" class="talent-img">
+                <div class="talent-info">
+                    <div class="talent-name-card">${talent.name}</div>
+                    <div class="talent-price-mini">¥${talent.price.toLocaleString()}</div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // タレント詳細モーダルを開く
+    function openTalentModal(id) {
+        const talent = talentsData.find(t => t.id === id);
+        if (!talent) return;
+
+        const modalBody = document.getElementById('talent-modal-body');
+        
+        // タグのHTML生成
+        const tagsHtml = talent.types.map(tag => `<span class="surprise-tag">${tag}</span>`).join('');
+
+        // モーダルの中身を生成
+        modalBody.innerHTML = `
+            <div class="talent-modal-header">
+                <img src="${talent.image}" class="talent-modal-img">
+                <h3 class="talent-modal-name">${talent.name}</h3>
+                <div class="surprise-tags">${tagsHtml}</div>
+            </div>
+            
+            <div class="talent-price-box">
+                <div class="price-label">動画メッセージ料金</div>
+                <div class="price-value">¥${talent.price.toLocaleString()}</div>
+            </div>
+
+            <a href="${talent.link}" class="btn-purchase" target="_blank">
+                <i class="fas fa-shopping-cart"></i> 購入する
+            </a>
+            <p style="font-size:0.8rem; color:#999; margin-top:1rem;">※外部決済サイトへ移動します</p>
+        `;
+
+        openModal('modal-talent-detail');
+    }
+
+    // 初期化実行
+    renderTalents();
     </script>
 </body>
 </html>
