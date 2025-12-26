@@ -2010,6 +2010,14 @@
     const newsData = [
         // ▼▼▼ ここにニュースを追加してください ▼▼▼
         {
+            date: "2025.12.25",
+            category: "メディア",
+            title: "【ついに完成】WowMe公式サイトが完成しました！",
+            image: "https://placehold.co/600x400/FF85A1/white?text=YouTube", // 画像がない場合は空文字でOK（プレースホルダーが出ます）
+            link: "https://youtu.be/4BbMsEDo90M?si=uQ4pJBN7R2_3ue7Y",
+            text: "WowMe公式サイトを公開しました！サイトの見どころや機能を動画でご紹介します。"
+        },
+        {
             date: "2025.12.16",
             category: "メデイア",
             title: "【YouTube】ChatGPTに10年後のWowMeを予想してもらった結果！？",
@@ -2057,7 +2065,7 @@
             card.className = 'news-card';
             card.href = item.link;
             // 外部サイトの場合は別タブで開くなどの処理を入れてもOK
-            // card.target = "_blank"; 
+            card.target = "_blank"; 
 
             card.innerHTML = `
                 <img src="${imgUrl}" alt="${item.title}" class="news-image">
