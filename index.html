@@ -987,7 +987,6 @@
 
         /* --- 4. SPECIAL PAGE --- */
         /* --- SPECIAL PAGE EXTENSIONS (Supporters) --- */
-        
         .supporters-intro {
             text-align: center;
             margin: 3rem 0 2rem;
@@ -1103,6 +1102,78 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
             100% { transform: scale(1); }
+        }
+
+        /* --- Q&A (Accordion) Styles --- */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 2px solid #FFF0F5; /* 薄いピンクの枠線 */
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.02);
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-light);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .faq-question span::first-letter {
+            color: var(--primary); /* "Q."の文字をピンクに */
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        /* 開いている時のスタイル */
+        .faq-question.active {
+            background-color: #FFF0F5;
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg); /* 矢印を回転 */
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out; /* 開閉のアニメーション */
+            background-color: white;
+        }
+
+        .faq-answer-body {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+            border-top: 1px dashed #EEE;
         }
 
         /* --- 5. CONTACT PAGE --- */
@@ -1261,7 +1332,7 @@
                 
                 /* ▼▼▼ 追加：画面からはみ出た場合にスクロールさせる設定 ▼▼▼ */
                 justify-content: flex-start; /* 上詰めにしてスクロールバグを防ぐ */
-                padding-top: 4rem; /* 上に少し余白 */
+                padding-top: 10rem; /* 上に少し余白 */
                 overflow-y: auto;  /* 縦スクロール許可 */
                 /* ▲▲▲ ここまで ▲▲▲ */
 
@@ -1286,6 +1357,7 @@
             /* activeクラスがついたら画面内（0%）に戻す */
             nav ul.active {
                 transform: translateX(0);
+                padding-top: 5rem;
             }
 
             /* リストアイテムのスタイル調整 */            
@@ -1303,12 +1375,14 @@
                 transform: translateY(0);
             }
             /* 少しずつ遅らせて表示 */
-            nav ul.active li:nth-child(1) { transition-delay: 0.1s; }
-            nav ul.active li:nth-child(2) { transition-delay: 0.2s; }
-            nav ul.active li:nth-child(3) { transition-delay: 0.3s; }
-            nav ul.active li:nth-child(4) { transition-delay: 0.4s; }
-            nav ul.active li:nth-child(5) { transition-delay: 0.5s; }
-            nav ul.active li:nth-child(6) { transition-delay: 0.6s; }
+            nav ul.active li:nth-child(1) { transition-delay: 0.1s; } /* CLOSE BUTTON */
+            nav ul.active li:nth-child(2) { transition-delay: 0.2s; } /* TOP */
+            nav ul.active li:nth-child(3) { transition-delay: 0.3s; } /* NEWS */
+            nav ul.active li:nth-child(4) { transition-delay: 0.4s; } /* ABOUT */
+            nav ul.active li:nth-child(5) { transition-delay: 0.5s; } /* TALENT */  
+            nav ul.active li:nth-child(6) { transition-delay: 0.6s; } /* SPECIAL */
+            nav ul.active li:nth-child(7) { transition-delay: 0.7s; } /* Q&A */
+            nav ul.active li:nth-child(8) { transition-delay: 0.8s; } /* CONTACT */
 
             /* 文字サイズも少し調整して収まりを良くする場合（お好みで） */
             nav ul li a {
@@ -1365,13 +1439,10 @@
         footer a:hover {
             color: var(--primary);
         }
-
     </style>
 </head>
 <body>
-
     <div id="particles"></div>
-
     <header>
         <a href="#" class="logo-link" onclick="showSection('top')">
             <img src="assets/images/WowMe_Logo.png" alt="WowMe Logo" class="logo-img">
@@ -1388,6 +1459,7 @@
                 <li><a onclick="showSection('about')" data-section="about" class="nav-link">ABOUT</a></li>
                 <li><a onclick="showSection('talent')" data-section="talent" class="nav-link">TALENT</a></li>
                 <li><a onclick="showSection('special')" data-section="special" class="nav-link">SPECIAL</a></li>
+                <li><a onclick="showSection('qa')" data-section="qa" class="nav-link">Q&A</a></li>
                 <li><a onclick="showSection('contact')" data-section="contact" class="nav-link">CONTACT</a></li>
             </ul>
 
@@ -1457,7 +1529,8 @@
                 </div>
             </div>
 
-            <div class="gallery-container">
+            <!-- ギャラリー後で表示する -->
+            <!-- <div class="gallery-container">
                 <h2>App Gallery</h2>
                 <p style="text-align:center; color:var(--text-gray); margin-bottom:1rem;">実際のアプリ画面をチェック</p>
                 <div class="gallery-scroll">
@@ -1470,6 +1543,12 @@
                     <div class="app-screen"><img src="./assets/images/AppImg/7.png" alt="WowMe Screen"></div>
                     <div class="app-screen"><img src="./assets/images/AppImg/8.png" alt="WowMe Screen"></div>
                 </div>
+            </div> -->
+
+            <div class="talent-list-container">
+                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
+                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
+                <div id="talent-list-top" class="talent-scroll"></div>
             </div>
 
             <div class="cf-section">
@@ -1560,8 +1639,7 @@
             <div class="talent-list-container">
                 <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
                 <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
-                <div id="talent-list" class="talent-scroll">
-                    </div>
+                <div id="talent-list-page" class="talent-scroll"></div>
             </div>
 
             <div class="sim-container">
@@ -1601,6 +1679,73 @@
                     </div>
                 </div>
                 <p style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 10px;">※あくまで目安です</p>
+            </div>
+        </section>
+
+        <section id="qa">
+            <h2>Q & A</h2>
+            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">よくあるご質問</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. どのようなサービスですか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>WowMe（ワオミー）は、あなたの「推し」や憧れのタレントに、自分だけの動画メッセージを依頼できるサービスです。誕生日のお祝い、受験の応援、日々の励ましなど、あなたのためだけに語りかける動画が届きます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. 支払い方法は何がありますか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>現在はクレジットカード決済およびApplePay,GooglePay決済に対応しています。安心・安全な決済プラットフォーム「<a href="https://squareup.com/jp/ja" target="_blank">Square</a> 」を使用しています。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. 依頼してからどのくらいで動画が届きますか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>タレントのスケジュールによりますが、通常は依頼承認から数日〜2週間程度で納品されます。詳しい目安は各タレントのプロフィールページをご確認ください。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. キャンセルや返金はできますか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>オーダーメイド商品という性質上、お客様都合によるキャンセル・返金は原則としてお受けできません。ただし、タレント側の都合により制作が困難になった場合は、全額返金いたします。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. 不適切な依頼だと判断された場合はどうなりますか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>公序良俗に反する内容や誹謗中傷など、運営が不適切と判断した依頼はお断りさせていただきます。その際、利用規約に基づき返金はいたしかねますので、予めご了承ください。</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -1657,7 +1802,7 @@
             </form>
         </section>
 
-            <div id="modal-talent-detail" class="modal-overlay" onclick="closeModal(event)">
+        <div id="modal-talent-detail" class="modal-overlay" onclick="closeModal(event)">
                 <div class="modal-content" style="max-width: 400px; text-align: center;">
                     <span class="modal-close-btn" onclick="closeModalBtn('modal-talent-detail')">&times;</span>
                 <div id="talent-modal-body">
@@ -1819,7 +1964,8 @@
                 <h4>支払方法</h4>
                 <p>
                     ・クレジットカード決済<br>
-                    ・デビットカード決済
+                    ・Google Pay <br>
+                    ・Apple Pay <br>
                 </p>
 
                 <h4>支払時期</h4>
@@ -2158,14 +2304,29 @@
             name: "いっぬ社長",
             image: "./assets/images/talent/いっぬ社長.JPG",
             types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
-            price: 100,
+            price: 1000,
             link: "https://square.link/u/dEIuwh0p", // Square決済リンク
+        },
+        {
+            id: 2,
+            name: "桜風華",
+            image: "./assets/images/talent/桜風華.png",
+            types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
+            price: 2000,
+            link: "https://square.link/u/E5ta0WAN", // 購入リンク
         },
     ];
 
     // タレントリスト（カード）の生成
-    function renderTalents() {
-        const container = document.getElementById('talent-list');
+    // 引数 containerId を受け取るように変更
+    function renderTalents(containerId) {
+        const container = document.getElementById(containerId);
+        
+        // 指定したIDの要素がない場合は何もしない（エラー防止）
+        if (!container) return;
+
+        // 中身を一度クリア（重複表示防止）
+        container.innerHTML = '';
         
         talentsData.forEach(talent => {
             const card = document.createElement('div');
@@ -2182,6 +2343,9 @@
             container.appendChild(card);
         });
     }
+    // 初期化実行（TOP用とTALENTページ用の2箇所に描画する）
+    renderTalents('talent-list-top');
+    renderTalents('talent-list-page');
 
     // タレント詳細モーダルを開く
     function openTalentModal(id) {
@@ -2217,6 +2381,28 @@
 
     // 初期化実行
     renderTalents();
+
+    // --- Q&A Accordion Logic ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const acc = document.getElementsByClassName("faq-question");
+
+            for (let i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function() {
+                    // クリックされたボタンの active クラスを切り替え
+                    this.classList.toggle("active");
+
+                    // 次の要素（回答部分）を取得
+                    const panel = this.nextElementSibling;
+
+                    // 開閉ロジック（高さを操作してアニメーションさせる）
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
