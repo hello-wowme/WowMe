@@ -970,6 +970,25 @@
         .price-label { font-size: 0.9rem; color: var(--text-gray); }
         .price-value { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); font-family: 'Quicksand'; }
 
+        /* --- 追加：タレントラベル（公式マークなど） --- */
+        .talent-modal-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* ゴールドのグラデーション */
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 6px rgba(255, 165, 0, 0.4);
+            letter-spacing: 0.05em;
+        }
+        
+        /* アイコンの調整 */
+        .talent-modal-label i {
+            margin-right: 4px;
+        }
+
         .btn-purchase {
             display: block;
             width: 100%;
@@ -1701,6 +1720,30 @@
 
                 <div class="faq-item">
                     <button class="faq-question">
+                        <span>Q. 動画の価格はいくらですか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>タレントごとに価格が設定されています。詳しくはタレント一覧をご覧ください。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Q. 名前を呼んでもらえますか？</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-body">
+                            <p>はい。依頼時に指定した名前（かなorカナ）を入力すると動画内で呼んでもらえます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
                         <span>Q. 支払い方法は何がありますか？</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
@@ -1821,6 +1864,7 @@
         <p>&copy; 2025 WowMe. All Rights Reserved.</p>
     </footer>
 
+    <!-- プライバシーポリシー -->
     <div id="modal-privacy" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content">
             <span class="modal-close-btn" onclick="closeModalBtn('modal-privacy')">&times;</span>
@@ -1876,6 +1920,7 @@
         </div>
     </div>
 
+    <!-- 利用規約 -->
     <div id="modal-terms" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content">
             <span class="modal-close-btn" onclick="closeModalBtn('modal-terms')">&times;</span>
@@ -1943,6 +1988,7 @@
         </div>
     </div>
 
+    <!-- 特定商取引法に基づく表記 -->
     <div id="modal-scta" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content">
             <span class="modal-close-btn" onclick="closeModalBtn('modal-scta')">&times;</span>
@@ -2303,6 +2349,7 @@
             id: 1,
             name: "いっぬ社長",
             image: "./assets/images/talent/いっぬ社長.JPG",
+            label: "公式タレント",
             types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
             price: 1000,
             link: "https://square.link/u/dEIuwh0p", // Square決済リンク
@@ -2311,6 +2358,7 @@
             id: 2,
             name: "桜風華",
             image: "./assets/images/talent/桜風華.png",
+            label: "公式タレント",
             types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
             price: 2000,
             link: "https://square.link/u/E5ta0WAN", // 購入リンク
@@ -2356,13 +2404,18 @@
         
         // タグのHTML生成
         const tagsHtml = talent.types.map(tag => `<span class="surprise-tag">${tag}</span>`).join('');
+        
+        let labelHtml = '';
+        if (talent.label) {
+            labelHtml = `<div class="talent-modal-label"><i class="fas fa-check-circle"></i> ${talent.label}</div>`;
+        }
 
         // モーダルの中身を生成
         modalBody.innerHTML = `
             <div class="talent-modal-header">
                 <img src="${talent.image}" class="talent-modal-img">
                 <h3 class="talent-modal-name">${talent.name}</h3>
-                <div class="surprise-tags">${tagsHtml}</div>
+                ${labelHtml} <div class="surprise-tags">${tagsHtml}</div>
             </div>
             
             <div class="talent-price-box">
