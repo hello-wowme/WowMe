@@ -274,6 +274,10 @@
             text-align: left;
         }
 
+        .features-container p{
+            text-align: center;
+        }
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -783,6 +787,38 @@
             border-radius: 14px;
         }
 
+        /* --- Talent Search Box --- */
+        .search-box-container {
+            position: relative;
+            max-width: 400px;
+            /* 上に 2rem (約32px) の余白を追加 */
+            margin: 2rem auto 1.5rem; 
+        }
+
+        .search-box-container input {
+            width: 100%;
+            padding: 12px 15px 12px 45px; /* 左側にアイコン用の余白 */
+            border-radius: 50px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+        }
+
+        .search-box-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(255, 59, 140, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
         /* 価格タグ */
         .price-tag {
             position: absolute;
@@ -1196,12 +1232,18 @@
         }
 
         /* --- 5. CONTACT PAGE --- */
+        /* --- 5. CONTACT PAGE --- */
         .contact-form {
             background: white;
             padding: 3rem;
             border-radius: 20px;
             box-shadow: var(--box-shadow);
-            max-width: 600px;
+            
+            /* ▼▼▼ 修正箇所：幅を広げる（600px -> 900px） ▼▼▼ */
+            max-width: 900px; 
+            width: 100%; /* 親要素いっぱいまで広げる */
+            /* ▲▲▲ ここまで ▲▲▲ */
+            
             margin: 0 auto;
         }
 
@@ -1430,6 +1472,18 @@
                 display: block;
                 z-index: 2001; /* 最前面に */
             }
+
+            /* ▼▼▼ 追加：スマホでのContactフォーム調整 ▼▼▼ */
+            .contact-form {
+                padding: 1.5rem; /* パディングを狭めて、入力エリアを確保 */
+                border-radius: 15px; /* 角丸も少し控えめに */
+            }
+            
+            /* ボタンも押しやすく調整 */
+            button.btn-submit {
+                font-size: 1rem;
+                padding: 1rem;
+            }
         }
 
         /* PC画面では閉じるボタンを非表示 */
@@ -1513,7 +1567,8 @@
             </div>
 
             <div class="features-container">
-                <h2>Why WowMe?</h2>
+                <h2>What is WowMe?</h2>
+                <p>WowMeは、推しがあなたのためだけに届ける、特別な動画メッセージ体験を提供するサービスです。</p>
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-icon-box"><i class="fas fa-video"></i></div>
@@ -1567,7 +1622,16 @@
             <div class="talent-list-container">
                 <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
                 <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
+                <!-- <div class="search-box-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-top" placeholder="タレント名で検索..." oninput="filterTalents('search-top', 'talent-list-top')">
+                </div> -->
                 <div id="talent-list-top" class="talent-scroll"></div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a onclick="showSection('talent')" class="btn btn-secondary" style="border-radius: 50px; padding: 0.8rem 2rem; cursor:pointer;">
+                        タレントをもっと見る <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
 
             <div class="cf-section">
@@ -1628,7 +1692,7 @@
         <section id="talent">
             <div class="talent-hero">
                 <h2>For Talents</h2>
-                <p>あなたの才能が、誰かへのプレゼントになる。</p>
+                <p>あなたの声が、誰かの今日を救うプレゼントになる。</p>
             </div>
             
             <div class="benefits-grid">
@@ -1658,6 +1722,11 @@
             <div class="talent-list-container">
                 <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
                 <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
+
+                <div class="search-box-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-page" placeholder="タレント名で検索..." oninput="filterTalents('search-page', 'talent-list-page')">
+                </div>
                 <div id="talent-list-page" class="talent-scroll"></div>
             </div>
 
@@ -1725,7 +1794,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-body">
-                            <p>タレントごとに価格が設定されています。詳しくはタレント一覧をご覧ください。</p>
+                            <p>タレントごとに価格が設定されています。詳しくは <a onclick="showSection('talent')" style="color: var(--primary);">タレント一覧</a>をご覧ください。</p>
                         </div>
                     </div>
                 </div>
@@ -1792,25 +1861,9 @@
             </div>
         </section>
 
-        <section id="special">
-            <p class="coming-soon-label" style="text-align:center;">GRAND OPENING COUNTDOWN</p>
-            <div class="countdown-container">
-                <div id="countdown" class="countdown-timer">000:00:00:00</div>
-            </div>
-            
-            <div style="margin-top: 4rem; width: 100%;">
-                <h2>Special Thanks</h2>
-                <p class="supporters-intro">
-                    クラウドファンディングでご支援いただいた<br>
-                    初期メンバー（Founders）の皆様です。<br>
-                    <span style="font-size: 0.9rem;">※お名前とXアカウントを掲載させていただいております</span>
-                </p>
-                <div id="supporters-list" class="supporters-grid"></div>
-            </div>
-        </section>
-
         <section id="contact">
             <h2>Contact</h2>
+            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">お問い合わせ先</p>
             <form id="contactForm" class="contact-form" action="https://formspree.io/f/mgvnqrdp" method="POST">
                 <div class="form-group">
                     <label for="name">お名前</label>
@@ -1844,6 +1897,24 @@
                 <p id="form-status" style="text-align: center; margin-top: 1rem; font-weight: bold; min-height: 1.5em;"></p>
             </form>
         </section>
+
+        <section id="special">
+            <p class="coming-soon-label" style="text-align:center;">GRAND OPENING COUNTDOWN</p>
+            <div class="countdown-container">
+                <div id="countdown" class="countdown-timer">000:00:00:00</div>
+            </div>
+            
+            <div style="margin-top: 4rem; width: 100%;">
+                <h2>Special Thanks</h2>
+                <p class="supporters-intro">
+                    クラウドファンディングでご支援いただいた<br>
+                    初期メンバー（Founders）の皆様です。<br>
+                    <span style="font-size: 0.9rem;">※お名前とXアカウントを掲載させていただいております</span>
+                </p>
+                <div id="supporters-list" class="supporters-grid"></div>
+            </div>
+        </section>
+
 
         <div id="modal-talent-detail" class="modal-overlay" onclick="closeModal(event)">
                 <div class="modal-content" style="max-width: 400px; text-align: center;">
@@ -2365,21 +2436,34 @@
         },
     ];
 
-    // タレントリスト（カード）の生成
     // 引数 containerId を受け取るように変更
-    function renderTalents(containerId) {
+    // タレントリスト（カード）の生成
+    // ★修正：第2引数で data を受け取れるように変更（デフォルトは全件）
+    // --- Talent Data & Modal Logic ---
+    // （talentsData の定義はそのまま触らなくてOKです）
+
+    // ▼▼▼ ここから下を書き換え・上書きしてください ▼▼▼
+
+    // タレントリスト（カード）の生成
+    function renderTalents(containerId, data = talentsData) {
         const container = document.getElementById(containerId);
         
         // 指定したIDの要素がない場合は何もしない（エラー防止）
         if (!container) return;
 
-        // 中身を一度クリア（重複表示防止）
+        // 中身を一度クリア
         container.innerHTML = '';
+
+        // 検索結果が0件の場合のメッセージ
+        if (data.length === 0) {
+            container.innerHTML = '<p style="width:100%; text-align:center; color:#999; padding:2rem;">該当するタレントが見つかりませんでした 🙇‍♂️</p>';
+            return;
+        }
         
-        talentsData.forEach(talent => {
+        data.forEach(talent => {
             const card = document.createElement('div');
             card.className = 'talent-card-item';
-            card.onclick = () => openTalentModal(talent.id); // クリックでモーダルを開く
+            card.onclick = () => openTalentModal(talent.id);
 
             card.innerHTML = `
                 <img src="${talent.image}" alt="${talent.name}" class="talent-img">
@@ -2391,9 +2475,31 @@
             container.appendChild(card);
         });
     }
-    // 初期化実行（TOP用とTALENTページ用の2箇所に描画する）
-    renderTalents('talent-list-top');
+
+    // タレント検索機能（TALENTページ専用）
+    // 引数1: inputId (入力欄のID)
+    // 引数2: containerId (結果を表示するリストのID)
+    function filterTalents(inputId, containerId) {
+        // 指定された入力欄を取得
+        const inputElement = document.getElementById(inputId);
+        if (!inputElement) return;
+
+        const keyword = inputElement.value.toLowerCase();
+        
+        // 名前でデータを絞り込み（リアルタイム）
+        const filteredData = talentsData.filter(talent => 
+            talent.name.toLowerCase().includes(keyword)
+        );
+
+        // 指定されたリストだけを更新する
+        renderTalents(containerId, filteredData);
+    }
+    // --- 初期化実行 ---
+    // ページ読み込み時は、検索なし（全件）で両方のリストを表示
+    renderTalents('talent-list-top'); 
     renderTalents('talent-list-page');
+
+    // ▲▲▲ 書き換えここまで ▲▲▲
 
     // タレント詳細モーダルを開く
     function openTalentModal(id) {
@@ -2431,9 +2537,6 @@
 
         openModal('modal-talent-detail');
     }
-
-    // 初期化実行
-    renderTalents();
 
     // --- Q&A Accordion Logic ---
         document.addEventListener("DOMContentLoaded", function() {
