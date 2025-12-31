@@ -927,12 +927,32 @@
             scroll-snap-align: center;
             border: 2px solid transparent;
             text-align: left;
+            position: relative;
         }
 
         .talent-card-item:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
         }
+
+        .sns-status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        /* OKの時（緑や水色） */
+        .sns-ok { background: #00C853; }
+        
+        /* NGの時（赤やグレー） */
+        .sns-ng { background: #FF5252; }
 
         .talent-img {
             width: 100%;
@@ -2568,8 +2588,9 @@
             name: "いっぬ社長",
             image: "./assets/images/talent/いっぬ社長.JPG",
             label: "公式タレント",
-            types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
+            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
             price: 1000,
+            snsOk: false,
             link: "https://square.link/u/dEIuwh0p", // Square決済リンク
         },
         {
@@ -2577,9 +2598,20 @@
             name: "桜風華",
             image: "./assets/images/talent/桜風華.png",
             label: "公式タレント",
-            types: ["誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
+            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "お見舞い","ネタボイス"],
             price: 2000,
+            snsOk: true,
             link: "https://square.link/u/E5ta0WAN", // 購入リンク
+        },
+        {
+            id: 3,
+            name: "音葉はるか",
+            image: "./assets/images/talent/音葉はるか.png",
+            label: "公式タレント",
+            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "演出","エフェクト"],
+            price: 1000,
+            snsOk: true,
+            link: "https://square.link/u/OtsgMH82", // 購入リンク
         },
     ];
 
@@ -2592,16 +2624,13 @@
     // ▼▼▼ ここから下を書き換え・上書きしてください ▼▼▼
 
     // タレントリスト（カード）の生成
+    // タレントリスト（カード）の生成
     function renderTalents(containerId, data = talentsData) {
         const container = document.getElementById(containerId);
-        
-        // 指定したIDの要素がない場合は何もしない（エラー防止）
         if (!container) return;
 
-        // 中身を一度クリア
         container.innerHTML = '';
 
-        // 検索結果が0件の場合のメッセージ
         if (data.length === 0) {
             container.innerHTML = '<p style="width:100%; text-align:center; color:#999; padding:2rem;">該当するタレントが見つかりませんでした 🙇‍♂️</p>';
             return;
@@ -2612,8 +2641,15 @@
             card.className = 'talent-card-item';
             card.onclick = () => openTalentModal(talent.id);
 
+            // ▼▼▼ 追加：SNSラベルのHTML生成 ▼▼▼
+            // snsOkが true なら「SNS公開OK」、false なら「SNS公開NG」
+            const snsLabel = talent.snsOk ? "SNS公開OK" : "SNS公開NG";
+            const snsClass = talent.snsOk ? "sns-ok" : "sns-ng";
+            const badgeHtml = `<span class="sns-status-badge ${snsClass}">${snsLabel}</span>`;
+            // ▲▲▲ ここまで ▲▲▲
+
             card.innerHTML = `
-                <img src="${talent.image}" alt="${talent.name}" class="talent-img">
+                ${badgeHtml} <img src="${talent.image}" alt="${talent.name}" class="talent-img">
                 <div class="talent-info">
                     <div class="talent-name-card">${talent.name}</div>
                     <div class="talent-price-mini">¥${talent.price.toLocaleString()}</div>
