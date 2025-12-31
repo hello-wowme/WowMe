@@ -977,6 +977,18 @@
         }
 
         /* --- Talent Detail Modal --- */
+        .modal-x-link {
+            display: inline-block;
+            color: #000; /* 黒色 */
+            font-size: 1.2rem;
+            margin-left: 8px; /* 名前との隙間 */
+            vertical-align: middle;
+            transition: opacity 0.3s;
+        }
+        .modal-x-link:hover {
+            opacity: 0.6;
+        }
+
         .talent-modal-header {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -2587,6 +2599,7 @@
             id: 1,
             name: "いっぬ社長",
             image: "./assets/images/talent/いっぬ社長.JPG",
+            xUrl: "https://x.com/inu__ceo",
             label: "公式タレント",
             types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
             price: 1000,
@@ -2597,6 +2610,7 @@
             id: 2,
             name: "桜風華",
             image: "./assets/images/talent/桜風華.png",
+            xUrl: "https://x.com/fuuka_skr0108",
             label: "公式タレント",
             types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "お見舞い","ネタボイス"],
             price: 2000,
@@ -2607,6 +2621,7 @@
             id: 3,
             name: "音葉はるか",
             image: "./assets/images/talent/音葉はるか.png",
+            xUrl: "https://x.com/otoha_haruka64",
             label: "公式タレント",
             types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "演出","エフェクト"],
             price: 1000,
@@ -2694,17 +2709,30 @@
         // タグのHTML生成
         const tagsHtml = talent.types.map(tag => `<span class="surprise-tag">${tag}</span>`).join('');
         
+        // ラベルのHTML生成
         let labelHtml = '';
         if (talent.label) {
             labelHtml = `<div class="talent-modal-label"><i class="fas fa-check-circle"></i> ${talent.label}</div>`;
         }
 
+        // ▼▼▼ 追加：XリンクのHTML生成 ▼▼▼
+        // xUrlがある場合のみアイコンを表示
+        let xLinkHtml = '';
+        if (talent.xUrl) {
+            xLinkHtml = `<a href="${talent.xUrl}" target="_blank" class="modal-x-link"><i class="fa-brands fa-x-twitter"></i></a>`;
+        }
+        // ▲▲▲ ここまで ▲▲▲
+
         // モーダルの中身を生成
+        // 名前の横に ${xLinkHtml} を追加しています
         modalBody.innerHTML = `
             <div class="talent-modal-header">
                 <img src="${talent.image}" class="talent-modal-img">
-                <h3 class="talent-modal-name">${talent.name}</h3>
-                ${labelHtml} <div class="surprise-tags">${tagsHtml}</div>
+                <h3 class="talent-modal-name">
+                    ${talent.name}
+                    ${xLinkHtml} </h3>
+                ${labelHtml} 
+                <div class="surprise-tags">${tagsHtml}</div>
             </div>
             
             <div class="talent-price-box">
