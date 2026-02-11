@@ -1682,17 +1682,17 @@
             </div>
             
             <h1 class="hero-title">
-                あなたの<span style="color:var(--primary)">“推し”</span>から、<br>
+                大切な人の<span style="color:var(--primary)">“推し”</span>から、<br>
                 世界にひとつのプレゼント。
             </h1>
             <p class="hero-subtitle">
-                名前を呼んでもらえる。メッセージが届く。<br>
-                憧れのあの人との距離が、ぐっと縮まる動画メッセージアプリ。
+                大切な人を本気で感動させる、<br>
+                世界にひとつだけの動画メッセージ。
             </p>
 
             <div class="cta-group">
                 <a onclick="showSection('talent')" class="btn btn-primary">
-                    <i class="fas fa-star"></i> タレントとして登録
+                    <i class="fas fa-star"></i> サプライズを作る
                 </a>
                 <a onclick="showSection('about')" class="btn btn-secondary">
                     WowMeを知る
@@ -1701,7 +1701,7 @@
 
             <div class="features-container">
                 <h2>What is WowMe?</h2>
-                <p>WowMeは、推しがあなたのためだけに届ける、特別な動画メッセージ体験を提供するサービスです。</p>
+                <p>大切な人を感動させる準備はできていますか？</p>
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-icon-box"><i class="fas fa-video"></i></div>
@@ -1851,15 +1851,28 @@
                 <div class="letter-card closed" id="storyCard" onclick="toggleLetter()">
                     <div class="story-text">
                         <h3><i class="fas fa-envelope-open-text"></i> はじめに</h3>
-                        <p>このサービスは、あるひとつの想いから生まれました。</p>
-                        <br>
-                        <p>辛くてどうしようもなかった夜、<span class="story-highlight">推しの動画に救われたこと</span>はありませんか？</p>
-                        <p>「明日も頑張ろう」</p>
-                        <p>たった数秒の動画、たった一言の「頑張れ」が、誰かの人生を支えるお守りになることを、私たちは知っています。</p>
-                        <br>
-                        <p>WowMeは、単なる動画販売アプリではありません。</p>
-                        <p>タレントからファンへ贈られる、世界でひとつの<span class="story-highlight">「心動かすプレゼント」</span>です。</p>
-                        <p>箱を開ける瞬間のドキドキを、あなたにも。</p>
+                        <p>
+                            このサービスは、あるひとつの体験から生まれました。<br><br>
+
+                            大切な人を、本気で驚かせたい。<br>
+                            そして、心から笑顔にしたい。<br><br>
+
+                            推しがいる友達や恋人に、<br>
+                            何を贈れば一番喜ぶだろうと悩んだことはありませんか？<br><br>
+
+                            「え、うそ…！」<br><br>
+
+                            画面の向こうから、推しが名前を呼ぶ。<br>
+                            たった数秒の動画、たった一言の「おめでとう」が、<br>
+                            一生忘れられない記憶になることを、私たちは知っています。<br><br>
+
+                            WowMeは、単なる動画販売アプリではありません。<br><br>
+
+                            あなたが仕掛ける、<br>
+                            世界でひとつの“心を動かすサプライズ”。<br><br>
+
+                            今度はあなたが、感動をつくる番です。
+                        </p>
                         <div style="text-align: right; margin-top: 2rem; font-family: 'Quicksand'; color: var(--primary);">
                             From WowMe Team
                         </div>
@@ -1869,11 +1882,22 @@
         </section>
 
         <section id="talent">
-            <div class="talent-hero">
+            <div class="talent-list-container">
+                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
+                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
+
+                <div class="search-box-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-page" placeholder="タレント名で検索..." oninput="filterTalents('search-page', 'talent-list-page')">
+                </div>
+                <div id="talent-list-page" class="talent-scroll"></div>
+            </div>
+
+             <div class="talent-hero">
                 <h2>For Talents</h2>
                 <p>あなたの声が、誰かの今日を救うプレゼントになる。</p>
             </div>
-            
+
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon"><i class="fas fa-coins"></i></div>
@@ -1898,17 +1922,6 @@
                 </a>
             </div>
 
-            <div class="talent-list-container">
-                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
-                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
-
-                <div class="search-box-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-page" placeholder="タレント名で検索..." oninput="filterTalents('search-page', 'talent-list-page')">
-                </div>
-                <div id="talent-list-page" class="talent-scroll"></div>
-            </div>
-
             <div class="sim-container">
                 <h3 class="sim-title"><i class="fas fa-calculator"></i> タレント売上シミュレーション</h3>
                 
@@ -1917,10 +1930,10 @@
                         <label>1本あたりの金額 (円)</label>
                         <input type="number" id="sim-price" value="5000" min="0" oninput="calculateSales()">
                     </div>
-                    <div class="sim-input-box">
+                    <!-- <div class="sim-input-box">
                         <label>動画の長さ (秒)</label>
                         <input type="number" id="sim-duration" value="30" min="1" oninput="calculateSales()">
-                    </div>
+                    </div> -->
                     <div class="sim-input-box">
                         <label>販売本数 (本)</label>
                         <input type="number" id="sim-count" value="10" min="1" oninput="calculateSales()">
@@ -1940,10 +1953,10 @@
                         <span>👤 <b>タレント報酬 (80%)</b></span>
                         <span class="result-val highlight-val" id="res-reward">40,000円</span>
                     </div>
-                    <div class="result-row" style="color: var(--primary); font-weight:bold; margin-top: 1rem; border:none;">
+                    <!-- <div class="result-row" style="color: var(--primary); font-weight:bold; margin-top: 1rem; border:none;">
                         <span>⏱ 秒給 (1秒あたりの収益)</span>
                         <span class="result-val" id="res-wage">133円</span>
-                    </div>
+                    </div> -->
                 </div>
                 <p style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 10px;">※あくまで目安です</p>
             </div>
