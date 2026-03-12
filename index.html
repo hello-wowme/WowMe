@@ -1159,6 +1159,96 @@
             line-height: 1.6;
         }
 
+        .wowme-pyramid-wrapper {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        /* ピラミッドのコンテナ */
+        .pyramid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px; /* 段の間の隙間 */
+        }
+
+        /* 各階層の共通スタイル */
+        .tier {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            height: 60px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tier:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        /* テキストのスタイル */
+        .rate {
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .rank {
+            font-size: 14px;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* 各階層の幅と色の設定（上が狭く、下が広い） */
+        .tier-4 {
+            width: 40%;
+            background: linear-gradient(135deg, #FFD700, #FDB931); /* VIP: ゴールド */
+        }
+
+        .tier-3 {
+            width: 60%;
+            background: linear-gradient(135deg, #FF7E5F, #FEB47B); /* PRO: プラチナ/オレンジ */
+        }
+
+        .tier-2 {
+            width: 80%;
+            background: linear-gradient(135deg, #43E97B, #38F9D7); /* ADVANCE: エメラルド */
+        }
+
+        .tier-1 {
+            width: 100%;
+            background: linear-gradient(135deg, #4FACFE, #00F2FE); /* STANDARD: ブルー */
+        }
+
+        /* 条件表示エリア */
+        .info-display {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 14px;
+            min-height: 20px;
+            transition: all 0.3s ease;
+        }
+
         /* PC画面で矢印などを装飾したい場合（オプション） */
         @media (min-width: 1024px) {
             .flow-grid {
@@ -1725,8 +1815,8 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon-box"><i class="fas fa-coins"></i></div>
-                        <h3>収益の80％を還元</h3>
-                        <p>運営手数料は20％のみ。タレントが自由に活動できるエコシステムを構築。</p>
+                        <h3>収益の最大80％を還元</h3>
+                        <p>運営手数料は最低20％のみ。タレントが自由に活動できるエコシステムを構築。</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon-box"><i class="fas fa-birthday-cake"></i></div>
@@ -1812,6 +1902,30 @@
                     </a>
                 </div>
             </div>
+
+            <!-- バック率ピラミッド図 -->
+            <!-- <div class="wowme-pyramid-wrapper">
+            <h2>クリエイター還元率ステップアップ</h2>
+            <div class="pyramid-container">
+                <div class="tier tier-4" data-info="条件: 月間売上〇〇万円以上 または 特別オファー">
+                    <span class="rate">80%</span>
+                    <span class="rank">VIP</span>
+                </div>
+                <div class="tier tier-3" data-info="条件: 月間売上〇〇万円以上">
+                    <span class="rate">75%</span>
+                    <span class="rank">PRO</span>
+                </div>
+                <div class="tier tier-2" data-info="条件: 月間売上〇〇万円以上">
+                    <span class="rate">70%</span>
+                    <span class="rank">ADVANCE</span>
+                </div>
+                <div class="tier tier-1" data-info="条件: 初期スタートライン">
+                    <span class="rate">60%</span>
+                    <span class="rank">STANDARD</span>
+                </div>
+            </div>
+            <div id="info-display" class="info-display">ランクにカーソルを合わせると条件が表示されます</div>
+        </div> -->
 
             <div class="cf-section">
                 <div class="warp-star" style="top:10%; left:10%; width:20px; height:20px;"></div>
@@ -1950,7 +2064,7 @@
                         <span class="result-val" id="res-fee" style="color:var(--text-gray);">10,000円</span>
                     </div>
                     <div class="result-row" style="background: white; padding: 1rem; border-radius: 10px; margin-top: 1rem; border:none;">
-                        <span>👤 <b>タレント報酬 (80%)</b></span>
+                        <span>👤 <b>タレント報酬 (最大80%)</b></span>
                         <span class="result-val highlight-val" id="res-reward">40,000円</span>
                     </div>
                     <div class="result-row" style="color: var(--primary); font-weight:bold; margin-top: 1rem; border:none;">
@@ -2124,7 +2238,7 @@
             <a href="#" onclick="openModal('modal-terms'); return false;">利用規約</a> |
             <a href="#" onclick="openModal('modal-scta'); return false;">特定商取引法に基づく表記</a>
         </div>
-        <p>&copy; 2025 WowMe. All Rights Reserved.</p>
+        <p>&copy; 2025 - 2026 WowMe. All Rights Reserved.</p>
     </footer>
 
     <!-- プライバシーポリシー -->
