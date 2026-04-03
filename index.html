@@ -1,2905 +1,356 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hello-wowme.github.io/WowMe/"> <meta property="og:title" content="WowMe｜推しから届く、特別なプレゼント">
-    <meta property="og:description" content="推しから、あなただけに向けた動画メッセージが届く！次世代の推し活のカタチ。">
-    <meta property="og:image" content="https://hello-wowme.github.io/WowMe/assets/images/WowMe_X_meta.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@wowme_surprise"> <meta name="twitter:title" content="WowMe｜推しから届く、特別なプレゼント">
-    <meta name="twitter:description" content="推しから、あなただけに向けた、世界にひとつの動画メッセージが届く。">
-    <meta name="twitter:image" content="https://hello-wowme.github.io/WowMe/assets/images/WowMe_X_meta.png">
-
-    <title>WowMe｜推しから届く、特別なプレゼント</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="icon" href="./assets/images/WowMe_1024px.png" type="image/png">
-    
-    <style>
-        :root {
-            --primary:#FF3B8C; /* メインのピンク */
-            --primary-light: #FFC2D1;
-            --accent: #0080FF; /* アクセントの水色 */
-            --text-dark: #4A4A4A;
-            --text-gray: #7A7A7A;
-            --bg-color: #FFF0F5; /* ほんのりピンクがかった白 */
-            --white: #FFFFFF;
-            --box-shadow: 0 10px 25px rgba(255, 133, 161, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            line-height: 1.8;
-        }
-
-        /* 背景のアニメーションパーティクル */
-        #particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .particle {
-            position: absolute;
-            opacity: 0.6;
-            animation: floatUp linear infinite;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* ▼ Header & Logo 変更点 ▼ */
-        header {
-            position: fixed; /* ヘッダー全体を固定 */
-            top: 0;
-            left: 0; /* 左端を明示 */
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between; /* ロゴを左、ナビを右に配置 */
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        /* ロゴを囲むリンクのスタイル */
-        .logo-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            /* 左上に配置されるため、特別な位置指定は不要 */
-        }
-
-        /* ロゴ画像のスタイル設定 */
-        .logo-img {
-            height: 60px; /* ヘッダーの高さに合わせて調整してください */
-            width: auto;  /* アスペクト比を維持 */
-            display: block;
-        }
-        /* ▲ Header & Logo 変更点ここまで ▲ */
-
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 700;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        nav a:hover, nav a.active {
-            color: var(--primary);
-        }
-
-        /* Mobile Nav Toggle */
-        .menu-toggle {
-            display: none;
-            font-size: 1.5rem;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* Main Container */
-        main {
-            padding-top: 80px; /* ヘッダーの高さ分余白を開ける */
-            min-height: 100vh;
-        }
-
-        section {
-            display: none; /* JSで切り替え */
-            padding: 4rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--primary);
-            position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        h2::after {
-            content: '';
-            display: block;
-            width: 50%;
-            height: 4px;
-            background: var(--accent);
-            margin: 0.5rem auto 0;
-            border-radius: 2px;
-        }
-
-        /* --- 1. TOP PAGE --- */
-        #top {
-            text-align: center;
-            padding-top: 6rem;
-        }
-
-        .hero-box {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            background: var(--primary);
-            margin: 0 auto 3rem;
-            border-radius: 20px;
-            box-shadow: var(--box-shadow);
-            animation: bounceBox 2s infinite ease-in-out;
-            cursor: pointer;
-        }
-        
-        /* Box Ribbon */
-        .hero-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 50%;
-            width: 30px; height: 100%;
-            background: var(--white);
-            transform: translateX(-50%);
-        }
-        .hero-box::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 0;
-            width: 100%; height: 30px;
-            background: var(--white);
-            transform: translateY(-50%);
-        }
-        
-        /* Lid Top */
-        .box-lid {
-            position: absolute;
-            top: -20px; left: -10px;
-            width: 170px; height: 40px;
-            background: var(--primary-light);
-            border-radius: 10px;
-            z-index: 10;
-        }
-
-        @keyframes bounceBox {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.05); }
-        }
-
-        .hero-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            line-height: 1.4;
-            margin-bottom: 2rem;
-            font-weight: 800;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            margin-bottom: 4rem;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            font-weight: 800;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 133, 161, 0.5);
-        }
-
-        /* --- TOP PAGE EXTENSIONS --- */
-        
-        /* 特徴セクション (Features) */
-        .features-container {
-            margin-top: 6rem;
-            text-align: left;
-        }
-
-        .features-container p{
-            text-align: center;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-item {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            transition: transform 0.3s;
-            border: 1px solid rgba(255, 133, 161, 0.1);
-        }
-
-        .feature-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .feature-icon-box {
-            width: 60px;
-            height: 60px;
-            background: var(--bg-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-
-        .feature-item h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-
-        .feature-item p {
-            font-size: 0.95rem;
-            color: var(--text-gray);
-            line-height: 1.6;
-        }
-
-        /* アプリギャラリー (Horizontal Scroll) */
-        /* App Gallery (Horizontal Scroll) */
-        .gallery-container {
-            margin-top: 6rem;
-            padding: 2rem 0;
-            overflow: hidden; /* はみ出し防止 */
-            text-align: center; /* タイトルなどのテキストは中央揃え */
-        }
-
-        /* ギャラリー内の見出し位置調整 */
-        .gallery-container h2 {
-            display: block;
-            position: static;
-            transform: none;
-            left: auto;
-            margin: 0 auto 1.5rem;
-        }
-
-        .gallery-container h2::after {
-            margin: 0.5rem auto 0;
-        }
-
-        .gallery-scroll {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto; /* 横スクロールを許可 */
-            
-            /* ▼▼▼ 修正箇所：PCでも左から詰める＆パディングで調整 ▼▼▼ */
-            justify-content: flex-start; 
-            padding: 1rem 5vw 2rem; /* 左右に適度な余白を持たせる */
-            
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            
-            /* PCでスクロールバーを操作しやすくする */
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-light) #f1f1f1;
-        }
-
-        /* スクロールバーのデザイン（Webkit系ブラウザ用） */
-        .gallery-scroll::-webkit-scrollbar {
-            height: 10px;
-        }
-        .gallery-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-            margin: 0 20px; /* 端までバーが伸びないように調整 */
-        }
-        .gallery-scroll::-webkit-scrollbar-thumb {
-            background: var(--primary-light);
-            border-radius: 10px;
-            border: 2px solid #f1f1f1; /* 浮き出るようなデザインに */
-        }
-
-        .app-screen {
-            flex: 0 0 200px;
-            height: 400px;
-            /* background-color: #333; */
-            border-radius: 24px;
-            scroll-snap-align: center; /* スクロール時にピタッと止まる位置 */
-            /* box-shadow: 0 10px 20px rgba(0,0,0,0.1); */
-            position: relative;
-            overflow: hidden;
-            /* border: 4px solid var(--text-dark); */
-            
-            /* PCで画像が選択されないようにする（ドラッグスクロール対策） */
-            user-select: none;
-        }
-        
-        .app-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none; /* 画像ドラッグ防止 */
-        }
-
-        /* クラウドファンディング (CF) */
-        .cf-section {
-            margin-top: 6rem;
-            margin-bottom: 4rem;
-            background: linear-gradient(135deg, var(--white) 0%, #FFF0F5 100%);
-            padding: 4rem 2rem;
-            border-radius: 30px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid var(--primary-light);
-            text-align: center;
-        }
-
-        .cf-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .cf-badge {
-            background: var(--accent);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            letter-spacing: 1px;
-        }
-
-        /* 既存の .cf-title を以下のコードに差し替えてください */
-        .cf-title {
-            /* 全局h2の設定をリセットして、素直に中央揃えにする */
-            display: block;
-            left: auto;
-            transform: none;
-            width: 100%;
-            text-align: center;
-            
-            font-size: clamp(1.5rem, 4vw, 2.2rem);
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
-        .cf-text {
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            color: var(--text-dark);
-        }
-        
-        /* 宇宙へワープするような装飾 */
-        .warp-star {
-            position: absolute;
-            background: var(--accent);
-            border-radius: 50%;
-            opacity: 0.3;
-        }
-
-        /* --- 2. ABOUT PAGE --- */
-        .letter-container {
-            perspective: 1000px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .letter-card {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: var(--box-shadow);
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s, max-height 0.6s;
-            cursor: pointer;
-            overflow: hidden;
-            text-align: left;
-            border-top: 10px solid var(--accent);
-        }
-
-        .letter-card.closed {
-            max-height: 200px;
-        }
-        .letter-card.closed::after {
-            content: 'Tap to Open the Letter...';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 100px;
-            background: linear-gradient(transparent, white);
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 20px;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .story-text h3 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-        
-        .story-highlight {
-            background: linear-gradient(transparent 60%, var(--primary-light) 60%);
-            font-weight: 700;
-        }
-
-        /* --- Simulation Tool (About Page) --- */
-        .sim-container {
-            margin-top: 4rem;
-            margin-bottom: 6rem;
-            background: white;
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 2px solid var(--primary-light);
-            
-            /* ▼▼▼ 修正箇所：幅を制限して中央寄せにする設定 ▼▼▼ */
-            max-width: 900px; /* 広がりすぎないように制限 */
-            margin-left: auto;
-            margin-right: auto;
-            /* ▲▲▲ ここまで ▲▲▲ */
-        }
-
-        .sim-title {
-            text-align: center;
-            color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            font-weight: 800;
-        }
-
-        .sim-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .sim-input-box label {
-            display: block;
-            font-weight: 700;
-            color: var(--text-gray);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .sim-input-box input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #EEE;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-family: 'Quicksand', sans-serif;
-            text-align: right;
-            transition: border-color 0.3s;
-        }
-
-        .sim-input-box input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .sim-result-box {
-            background: var(--bg-color);
-            padding: 2rem;
-            border-radius: 16px;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px dashed rgba(0,0,0,0.1);
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .result-val {
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .highlight-val {
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-
-        /* --- NEWS PAGE --- */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .news-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(255, 133, 161, 0.2);
-            border-color: var(--primary-light);
-        }
-
-        .news-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background-color: #f0f0f0; /* 画像がない時の背景色 */
-        }
-
-        .news-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            font-size: 0.85rem;
-        }
-
-        .news-date {
-            color: var(--text-gray);
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        .news-category {
-            background: var(--bg-color);
-            color: var(--primary);
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
-
-        .news-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-        
-        .news-excerpt {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            line-height: 1.6;
-            /* 長すぎる文章を省略 */
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* --- 3. TALENT PAGE --- */
-        .talent-hero {
-            text-align: center; /* テキストを中央揃え */
-            margin-bottom: 4rem;
-            width: 100%;
-        }
-
-        /* 見出しの位置をリセットして中央に配置 */
-        .talent-hero h2 {
-            display: block;
-            position: static;
-            transform: none;
-            left: auto;
-            margin: 0 auto 1.5rem;
-        }
-
-        /* 下線の位置調整 */
-        .talent-hero h2::after {
-            margin: 0.5rem auto 0;
-        }
-
-        /* サブタイトルの調整 */
-        .talent-hero p {
-            color: var(--text-gray);
-            font-size: 1.1rem;
-        }
-
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .benefit-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            text-align: center;
-            position: relative;
-            transition: transform 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .benefit-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-        }
-
-        .benefit-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-                /* =========================
-        TALENT 横スクロール
-        ========================= */
-
-        .talent-scroll {
-        padding: 60px 20px 40px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 16px;
-            color: var(--pink);
-            font-size: 22px;
-            margin-top: 20px;
-        }
-
-        .talent-scroll-wrapper {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding: 10px 4px 20px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .talent-scroll-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-
-        .talent-card {
-            position: relative;
-            flex: 0 0 auto;
-            width: 150px;
-            background: #fff;
-            border-radius: 20px;
-            padding: 12px;
-            text-align: center;
-            text-decoration: none;
-            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
-            scroll-snap-align: start;
-            transition: transform 0.3s ease;
-        }
-
-        .talent-card:hover {
-            transform: translateY(-6px);
-        }
-
-        .talent-card img {
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-            border-radius: 14px;
-        }
-
-        /* --- Talent Search Box --- */
-        .search-box-container {
-            position: relative;
-            max-width: 400px;
-            /* 上に 2rem (約32px) の余白を追加 */
-            margin: 2rem auto 1.5rem; 
-        }
-
-        .search-box-container input {
-            width: 100%;
-            padding: 12px 15px 12px 45px; /* 左側にアイコン用の余白 */
-            border-radius: 50px;
-            border: 2px solid #ddd;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            font-family: inherit;
-        }
-
-        .search-box-container input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(255, 59, 140, 0.2);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aaa;
-        }
-
-        /* 価格タグ */
-        .price-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--pink);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 10px;
-            border-radius: 999px;
-            box-shadow: 0 4px 10px rgb(255, 0, 128,1);
-        }
-
-        /* 名前 */
-        .talent-name {
-            margin-top: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--pink);
-        }
-
-        /* カテゴリタグ */
-        .talent-tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .tag {
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
-
-        /* 種類別カラー */
-        .tag.birthday {
-            background: #ffe0ec;
-            color: #e91e63;
-        }
-
-        .tag.cheer {
-            background: #e0f2ff;
-            color: #2196f3;
-        }
-
-        .tag.thanks {
-            background: #eaffea;
-            color: #4caf50;
-        }
-
-        .tag.surprise {
-            background: #fff4cc;
-            color: #ff9800;
-        }
-
-        /* スワイプ案内 */
-        .scroll-hint {
-            text-align: center;
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 6px;
-        }
-
-        /* --- Talent List (Horizontal Scroll) --- */
-        .talent-list-container {
-            margin-top: 4rem;
-            text-align: center;
-        }
-
-        /* 見出しを確実に中央にする設定 */
-        .talent-list-container h2 {
-            text-align: center;
-            display: block;
-            width: 100%;
-            margin: 0 auto 2rem; /* 上下の余白と左右の中央揃え */
-            color: var(--primary);
-        }
-
-        .talent-scroll {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding: 1rem 1rem 2rem; /* スクロールバー用の余白 */
-            justify-content: flex-start; /* 左から並べる */
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* PCでのスクロールバー調整 */
-        .talent-scroll::-webkit-scrollbar { height: 8px; }
-        .talent-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .talent-scroll::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
-
-        .talent-card-item {
-            flex: 0 0 220px; /* カードの幅 */
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: transform 0.3s;
-            scroll-snap-align: center;
-            border: 2px solid transparent;
-            text-align: left;
-            position: relative;
-        }
-
-        .talent-card-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .sns-status-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 800;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 10;
-        }
-        
-        /* OKの時（緑や水色） */
-        .sns-ok { background: #00C853; }
-        
-        /* NGの時（赤やグレー） */
-        .sns-ng { background: #FF5252; }
-
-        .talent-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            background: #eee;
-        }
-
-        .talent-info {
-            padding: 1rem;
-        }
-
-        .talent-name-card {
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .talent-price-mini {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        /* --- Talent Detail Modal --- */
-        .modal-x-link {
-            display: inline-block;
-            color: #000; /* 黒色 */
-            font-size: 1.2rem;
-            margin-left: 8px; /* 名前との隙間 */
-            vertical-align: middle;
-            transition: opacity 0.3s;
-        }
-        .modal-x-link:hover {
-            opacity: 0.6;
-        }
-
-        .talent-modal-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .talent-modal-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 1rem;
-            border: 4px solid var(--primary-light);
-            box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3);
-        }
-
-        .talent-modal-name {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-dark);
-        }
-
-        .surprise-tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-
-        .surprise-tag {
-            background: var(--bg-color);
-            color: var(--primary);
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .talent-price-box {
-            background: #f9f9f9;
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            margin: 1.5rem 0;
-        }
-
-        .price-label { font-size: 0.9rem; color: var(--text-gray); }
-        .price-value { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); font-family: 'Quicksand'; }
-
-        /* --- 追加：タレントラベル（公式マークなど） --- */
-        .talent-modal-label {
-            display: inline-block;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* ゴールドのグラデーション */
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 6px rgba(255, 165, 0, 0.4);
-            letter-spacing: 0.05em;
-        }
-        
-        /* アイコンの調整 */
-        .talent-modal-label i {
-            margin-right: 4px;
-        }
-
-        .btn-purchase {
-            display: block;
-            width: 100%;
-            background: #006AFF; /* Squareカラー風 */
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: opacity 0.3s;
-        }
-        .btn-purchase:hover { opacity: 0.9; }
-
-        .flow-container {
-            margin: 4rem auto 6rem;
-            max-width: 1000px;
-            padding: 0 1rem;
-        }
-
-        .flow-container h2 {
-            text-align: center;      /* 文字を中央に */
-            display: block;          /* ブロック要素にする */
-            width: 100%;             /* 横幅いっぱいに広げる */
-            
-            /* ▼ 全体のh2設定（ズレの原因）をリセット ▼ */
-            position: static;
-            transform: none;
-            left: auto;
-            
-            margin: 0 auto 2rem;     /* 上下の余白 */
-            color: var(--primary);   /* ピンク色にする */
-        }
-
-        .flow-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            justify-content: center;
-        }
-
-        .flow-card {
-            background: white;
-            padding: 2.5rem 1.5rem 1.5rem;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            text-align: center;
-            position: relative;
-            border: 2px solid #FFF0F5;
-            transition: transform 0.3s;
-        }
-
-        .flow-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-light);
-        }
-
-        /* 左上のSTEPバッジ */
-        .step-badge {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 10px rgba(255, 59, 140, 0.3);
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-
-        .flow-icon {
-            font-size: 2.5rem;
-            color: var(--accent); /* 水色アクセント */
-            margin-bottom: 1rem;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* STEP3, STEP5などはアイコン色を変えて賑やかに */
-        .flow-card:nth-child(3) .flow-icon { color: var(--primary); }
-        .flow-card:nth-child(5) .flow-icon { color: #FFD700; }
-
-        .flow-card h4 {
-            color: var(--text-dark);
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .flow-card p {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .wowme-pyramid-wrapper {
-            text-align: center;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            max-width: 600px;
-            width: 100%;
-        }
-
-        h2 {
-            color: var(--primary);
-            margin-bottom: 30px;
-        }
-
-        /* ピラミッドのコンテナ */
-        .pyramid-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px; /* 段の間の隙間 */
-        }
-
-        /* 各階層の共通スタイル */
-        .tier {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            height: 60px;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .tier:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-        }
-
-        /* テキストのスタイル */
-        .rate {
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        .rank {
-            font-size: 14px;
-            opacity: 0.9;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        /* 各階層の幅と色の設定（上が狭く、下が広い） */
-        .tier-4 {
-            width: 40%;
-            background: linear-gradient(135deg, #FFD700, #FDB931); /* VIP: ゴールド */
-        }
-
-        .tier-3 {
-            width: 60%;
-            background: linear-gradient(135deg, #FF7E5F, #FEB47B); /* PRO: プラチナ/オレンジ */
-        }
-
-        .tier-2 {
-            width: 80%;
-            background: linear-gradient(135deg, #43E97B, #38F9D7); /* ADVANCE: エメラルド */
-        }
-
-        .tier-1 {
-            width: 100%;
-            background: linear-gradient(135deg, #4FACFE, #00F2FE); /* STANDARD: ブルー */
-        }
-
-        /* 条件表示エリア */
-        .info-display {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #f1f5f9;
-            border-radius: 8px;
-            color: #475569;
-            font-size: 14px;
-            min-height: 20px;
-            transition: all 0.3s ease;
-        }
-
-        /* PC画面で矢印などを装飾したい場合（オプション） */
-        @media (min-width: 1024px) {
-            .flow-grid {
-                grid-template-columns: repeat(5, 1fr); /* 5列にする */
-                gap: 1rem;
-            }
-            .flow-card {
-                padding: 2rem 0.5rem 1rem; /* 少し詰め気味に */
-            }
-            .flow-card p {
-                font-size: 0.85rem;
-            }
-        }
-
-        /* --- 4. SPECIAL PAGE --- */
-        /* --- SPECIAL PAGE EXTENSIONS (Supporters) --- */
-        .supporters-intro {
-            text-align: center;
-            margin: 3rem 0 2rem;
-            color: var(--text-gray);
-        }
-
-        .supporters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* レスポンシブなグリッド */
-            gap: 1.5rem;
-            width: 100%;
-            padding: 1rem;
-        }
-
-        .supporter-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            border: 1px solid rgba(255, 133, 161, 0.2);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none; /* リンクの下線を消す */
-            color: var(--text-dark);
-        }
-
-        .supporter-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 133, 161, 0.15);
-            border-color: var(--primary);
-        }
-
-        .supporter-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--bg-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--text-dark); /* Xのロゴ色 */
-            flex-shrink: 0;
-        }
-
-        .supporter-info {
-            overflow: hidden;
-        }
-
-        .supporter-name {
-            font-weight: 800;
-            font-size: 1rem;
-            margin-bottom: 0.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .supporter-id {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        /* X(Twitter)アイコンのホバー時 */
-        .supporter-card:hover .supporter-icon {
-            background: black;
-            color: white;
-            transition: 0.3s;
-        }
-
-        /* --- 4. SPECIAL PAGE (Countdown) --- */
-        #special {
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            border-radius: 30px;
-            /* 他のセクションと同様にアニメーションを入れる場合 */
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .countdown-container {
-            text-align: center;
-            animation: pulse 2s infinite; /* 鼓動のようなアニメーション */
-            margin: 2rem 0;
-        }
-
-        .countdown-timer {
-            font-family: 'Quicksand', sans-serif; /* 数字は見やすいフォントで */
-            font-size: clamp(3rem, 8vw, 6rem); /* 画面幅に合わせてサイズ変動 */
-            font-weight: 700;
-            color: var(--primary);
-            margin: 1rem 0;
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .coming-soon-label {
-            color: var(--accent);
-            font-weight: 800;
-            letter-spacing: 0.2rem;
-            text-transform: uppercase;
-            font-size: 1rem;
-        }
-
-        /* 鼓動アニメーションの定義 */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        /* --- Q&A (Accordion) Styles --- */
-        .faq-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .faq-item {
-            margin-bottom: 1rem;
-            border: 2px solid #FFF0F5; /* 薄いピンクの枠線 */
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.02);
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
-
-        .faq-item:hover {
-            border-color: var(--primary-light);
-        }
-
-        .faq-question {
-            width: 100%;
-            background: none;
-            border: none;
-            padding: 1.2rem 1.5rem;
-            text-align: left;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .faq-question span::first-letter {
-            color: var(--primary); /* "Q."の文字をピンクに */
-            font-size: 1.2em;
-            margin-right: 5px;
-        }
-
-        .faq-question i {
-            color: var(--primary);
-            transition: transform 0.3s ease;
-        }
-
-        /* 開いている時のスタイル */
-        .faq-question.active {
-            background-color: #FFF0F5;
-        }
-
-        .faq-question.active i {
-            transform: rotate(180deg); /* 矢印を回転 */
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out; /* 開閉のアニメーション */
-            background-color: white;
-        }
-
-        .faq-answer-body {
-            padding: 1.5rem;
-            font-size: 0.95rem;
-            color: var(--text-gray);
-            line-height: 1.8;
-            border-top: 1px dashed #EEE;
-        }
-
-        /* --- 5. CONTACT PAGE --- */
-        /* --- 5. CONTACT PAGE --- */
-        .contact-form {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: var(--box-shadow);
-            
-            /* ▼▼▼ 修正箇所：幅を広げる（600px -> 900px） ▼▼▼ */
-            max-width: 900px; 
-            width: 100%; /* 親要素いっぱいまで広げる */
-            /* ▲▲▲ ここまで ▲▲▲ */
-            
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            color: var(--text-gray);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #EEE;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        button.btn-submit {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            font-size: 1.2rem;
-            padding: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        button.btn-submit:hover {
-            background: #FF6584;
-        }
-
-        /* --- Modal Window --- */
-        .modal-overlay {
-            display: none; /* 初期状態は非表示 */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6); /* 背景の半透明の黒 */
-            z-index: 3000; /* 最前面 */
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh; /* 画面の80%までの高さ */
-            border-radius: 20px;
-            padding: 2.5rem;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow-y: auto; /* コンテンツが長い場合はスクロール */
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        /* 閉じるボタン（×） */
-        .modal-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            color: var(--text-gray);
-            cursor: pointer;
-            transition: color 0.3s;
-            line-height: 1;
-        }
-
-        .modal-close-btn:hover {
-            color: var(--primary);
-        }
-
-        /* モーダル内の見出し */
-        .modal-content h3 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            text-align: center;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 1rem;
-        }
-        
-        .modal-body {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: var(--text-dark);
-            text-align: left; /* 左揃え */
-        }
-
-        .modal-body h4 {
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-        }
-
-        /* --- Mobile Responsive & Hamburger Menu Animation --- */
-        @media (max-width: 768px) {
-            h2 { font-size: 1.8rem; }
-            .letter-card { padding: 1.5rem; }
-
-            /* ハンバーガーアイコン */
-            .menu-toggle {
-                display: block;
-                position: relative;
-                z-index: 2000; /* 最前面に */
-                font-size: 1.8rem;
-            }
-
-            /* ナビゲーションメニュー本体（スマホ用スタイル） */
-            nav ul {
-                /* 既存のスタイル */
-                display: flex !important;
-                flex-direction: column;
-                justify-content: center; /* 画面に収まる場合は中央寄せ */
-                align-items: center;
-                
-                /* ▼▼▼ 追加：画面からはみ出た場合にスクロールさせる設定 ▼▼▼ */
-                justify-content: flex-start; /* 上詰めにしてスクロールバグを防ぐ */
-                padding-top: 10rem; /* 上に少し余白 */
-                overflow-y: auto;  /* 縦スクロール許可 */
-                /* ▲▲▲ ここまで ▲▲▲ */
-
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 100%;
-                height: 100vh;
-                
-                background: rgba(255, 255, 255, 0.98); /* 背景色 */
-                backdrop-filter: blur(10px);
-                
-                /* アニメーションの要：初期状態は右側（100%）に隠す */
-                transform: translateX(100%);
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* シュッと出てくる動き */
-                
-                z-index: 1500; /* ヘッダーより手前 */
-                padding: 0;
-                margin: 0;
-            }
-
-            /* activeクラスがついたら画面内（0%）に戻す */
-            nav ul.active {
-                transform: translateX(0);
-                padding-top: 5rem;
-            }
-
-            /* リストアイテムのスタイル調整 */            
-            nav ul li {
-                /* ▼▼▼ 修正箇所：間隔を狭くしました（1.5rem → 0.8rem） ▼▼▼ */
-                margin: 0.8rem 0; 
-                opacity: 0; 
-                transform: translateY(20px);
-                transition: opacity 0.4s, transform 0.4s;
-            }
-
-            /* メニューが開いた時に文字がふわっと出る演出 */
-            nav ul.active li {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            /* 少しずつ遅らせて表示 */
-            nav ul.active li:nth-child(1) { transition-delay: 0.1s; } /* CLOSE BUTTON */
-            nav ul.active li:nth-child(2) { transition-delay: 0.2s; } /* TOP */
-            nav ul.active li:nth-child(3) { transition-delay: 0.3s; } /* NEWS */
-            nav ul.active li:nth-child(4) { transition-delay: 0.4s; } /* ABOUT */
-            nav ul.active li:nth-child(5) { transition-delay: 0.5s; } /* TALENT */  
-            nav ul.active li:nth-child(6) { transition-delay: 0.6s; } /* SPECIAL */
-            nav ul.active li:nth-child(7) { transition-delay: 0.7s; } /* Q&A */
-            nav ul.active li:nth-child(8) { transition-delay: 0.8s; } /* CONTACT */
-
-            /* 文字サイズも少し調整して収まりを良くする場合（お好みで） */
-            nav ul li a {
-                /* ▼▼▼ 必要であれば少し小さくしてください（例: 1.5rem → 1.3rem） ▼▼▼ */
-                font-size: 1.3rem; 
-                color: var(--text-dark);
-                display: block;
-                padding: 0.5rem 0; /* タップしやすい範囲は維持 */
-            }
-
-            /* ▼▼▼ 追加：メニューが開いている時は、ハンバーガーアイコン(三)を消す ▼▼▼ */
-            #nav-menu.active + .menu-toggle {
-                opacity: 0;
-                pointer-events: none; /* クリック不可にする */
-                transition: opacity 0.3s;
-            }
-
-            /* 閉じるボタン(×)の位置を、ハンバーガーアイコンと重なる位置に微調整 */
-            .close-menu {
-                position: absolute;
-                top: 25px;  /* ヘッダーのpaddingに合わせて調整 */
-                right: 30px; /* 右端からの距離 */
-                font-size: 2rem;
-                color: var(--primary);
-                cursor: pointer;
-                display: block;
-                z-index: 2001; /* 最前面に */
-            }
-
-            /* ▼▼▼ 追加：スマホでのContactフォーム調整 ▼▼▼ */
-            .contact-form {
-                padding: 1.5rem; /* パディングを狭めて、入力エリアを確保 */
-                border-radius: 15px; /* 角丸も少し控えめに */
-            }
-            
-            /* ボタンも押しやすく調整 */
-            button.btn-submit {
-                font-size: 1rem;
-                padding: 1rem;
-            }
-        }
-
-        /* PC画面では閉じるボタンを非表示 */
-        @media (min-width: 769px) {
-            .close-menu { display: none; }
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            text-align: center; /* 文字を中央揃えにする */
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.6);
-            color: var(--text-gray);
-            font-size: 0.9rem;
-            margin-top: 4rem;
-            border-top: 1px solid rgba(255, 133, 161, 0.2); /* 薄いピンクの線 */
-        }
-        
-        footer a {
-            color: var(--text-dark);
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.3s;
-        }
-        
-        footer a:hover {
-            color: var(--primary);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ryota Yamamoto | Portfolio</title>
+  <meta name="description" content="ゲーム・Web制作・プロモーションのポートフォリオ。シンプルで読みやすい政府系デザイン風UI。">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-xxxx" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- システムフォント優先で軽量化（公的サイト風の端正さ） -->
+  <link rel="icon" href="./resource/img/icon.png">
+  <link rel="stylesheet" href="./resource/css/style.css" />
 </head>
 <body>
-    <div id="particles"></div>
-    <header>
-        <a href="#" class="logo-link" onclick="showSection('top')">
-            <img src="assets/images/WowMe_Logo.png" alt="WowMe Logo" class="logo-img">
-        </a>
+  <a class="skip-link" href="#main">コンテンツへスキップ</a>
 
-        <nav>
-            <ul id="nav-menu">
-                <li class="close-menu" onclick="toggleMenu()">
-                    <i class="fas fa-times"></i>
-                </li>
-                
-                <li><a onclick="showSection('top')" data-section="top" class="nav-link active">TOP</a></li>
-                <li><a onclick="showSection('news')" data-section="news" class="nav-link">NEWS</a></li>
-                <li><a onclick="showSection('about')" data-section="about" class="nav-link">ABOUT</a></li>
-                <li><a onclick="showSection('talent')" data-section="talent" class="nav-link">TALENT</a></li>
-                <li><a onclick="showSection('special')" data-section="special" class="nav-link">SPECIAL</a></li>
-                <li><a onclick="showSection('qa')" data-section="qa" class="nav-link">Q&A</a></li>
-                <li><a onclick="showSection('contact')" data-section="contact" class="nav-link">CONTACT</a></li>
-            </ul>
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="#">RYOTA YAMAMOTO</a>
+      <nav class="site-nav" aria-label="主要ナビゲーション">
+        <ul>
+          <li><a href="#about">プロフィール</a></li>
+          <li><a href="#news">お知らせ</a></li>
+          <li><a href="#projects">制作物</a></li>
+          <li><a href="#story">ストーリー</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </div>
-        </nav>
-    </header>
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <h1 class="hero-title">
+          シンプルに、正しく伝わる。<br/>
+          見やすさを最優先にした<br class="sp-only">ポートフォリオ
+        </h1>
+        <p class="hero-lead">
+          ゲーム制作・Web制作の経験を活かし、<br class="sp-only">パソコンスキルを基盤に新たな業務にも積極的に取り組みます。
+        </p>
+        <div class="hero-cta">
+          <a class="button primary" href="#projects" aria-label="制作物へ移動">制作物を見る</a>
+          <a class="button ghost" href="#contact" aria-label="お問い合わせへ移動">問い合わせる</a>
+        </div>
+      </div>
+    </section>
 
-    <main>
-        <section id="top" class="active">
-            <div class="hero-box" onclick="showSection('about')">
-                <div class="box-lid"></div>
-            </div>
-            
-            <h1 class="hero-title">
-                大切な人の<span style="color:var(--primary)">“推し”</span>から、<br>
-                世界にひとつのプレゼント。
-            </h1>
-            <p class="hero-subtitle">
-                大切な人を本気で感動させる、<br>
-                世界にひとつだけの動画メッセージ。
+    <!-- About -->
+    <section id="about" class="section">
+      <div class="container">
+        <h2 class="section-title">プロフィール</h2>
+        <div class="about">
+          <div class="about-text">
+            <p>
+              趣味はゲーム開発（Unity/C#）/ アプリ開発（Adalo）とLINEスタンプの作成・販売をしています。<br class="sp-only">
             </p>
+            <ul class="about-list">
+              <li>得意分野：作業効率化、AI活用、アプリ開発</li>
+              <li>興味関心：スタートアップ、マーケティング、SNS運用</li>
+            </ul>
+          </div>
+          <div class="about-meta">
+            <dl>
+              <dt>名前</dt><dd>山本 涼太</dd>
+              <dt>所在地</dt><dd>東京都</dd>
+              <dt>スキル</dt><dd>Unity, C#, HTML, CSS, JS, Wix, Adalo, bubble</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <div class="cta-group">
-                <a onclick="showSection('talent')" class="btn btn-primary">
-                    <i class="fas fa-star"></i> サプライズを作る
-                </a>
-                <a onclick="showSection('about')" class="btn btn-secondary">
-                    WowMeを知る
-                </a>
+    <!-- News -->
+    <section id="news" class="section">
+      <div class="container">
+        <h2 class="section-title">お知らせ</h2>
+        <div class="cards">
+          <article class="card">
+            <time class="card-date" datetime="2025-08-24">2025-11-2</time>
+            <h3 class="card-title">推し活アプリ開発中です！</h3>
+            <p class="card-text">推しから“世界にひとつ”の動画メッセージが届くアプリ「WowMe」のクラウドファンディングをスタートしました。夢に向かう第一歩、ぜひ応援してください！</p>
+            <ul class="tags" aria-label="タグ">
+              <li>#アプリ開発</li><li>#クラウドファンディング</li><li>#推し活</li>
+            </ul>
+          </article> 
+          <article class="card">
+            <time class="card-date" datetime="2025-08-24">2025-08-24</time>
+            <h3 class="card-title">ポートフォリオを刷新しました</h3>
+            <p class="card-text">読みやすさ・アクセシビリティ・モバイル対応を強化しました。</p>
+            <ul class="tags" aria-label="タグ">
+              <li>#ポートフォリオ</li><li>#UI</li><li>#アクセシビリティ</li>
+            </ul>
+          </article> 
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section">
+      <div class="container">
+        <h2 class="section-title">制作物</h2>
+
+        <div class="cards">
+          <!-- Project: Unity Game -->
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/zhaeknxWIWM?si=jKut4cSlv0jN8zuv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">STOPLINE (Unity)</h3>
+              <p class="card-text">線を引いて水色のボールを◯と書かれた看板まで誘導するゲームです。</p>
+              <ul class="tags"><li>#Unity</li><li>#2Dカジュアルゲーム</li><li>#高校生</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://ph19-ryota.github.io/STOPLINE.VGA/" target="_blank" aria-disabled="true">WebGL（プレイ可能）</a>
+              </div>
             </div>
-
-            <div class="features-container">
-                <h2>What is WowMe?</h2>
-                <p>大切な人を感動させる準備はできていますか？</p>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-video"></i></div>
-                        <h3>特別な動画体験</h3>
-                        <p>推しがあなたのために動画を撮影。世界に一つだけのメッセージを。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-user-check"></i></div>
-                        <h3>安心の審査制</h3>
-                        <p>登録タレントはすべて審査制。安全で健全な推し活文化を守ります。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-search"></i></div>
-                        <h3>推しを見つけやすい</h3>
-                        <p>カテゴリや名前検索でお気に入りのタレントをすぐに探せます。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-handshake"></i></div>
-                        <h3>スポンサーコラボ</h3>
-                        <p>企業やブランドがタレントとコラボする機会も提供します。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-coins"></i></div>
-                        <h3>収益の最大80％を還元</h3>
-                        <p>運営手数料は最低20％のみ。タレントが自由に活動できるエコシステムを構築。</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon-box"><i class="fas fa-birthday-cake"></i></div>
-                        <h3>感動を共有できる</h3>
-                        <p>誕生日やサプライズに最適。「人生で一番うれしい瞬間」を体験できます。</p>
-                    </div>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/6xavpEWWis8?si=d4JeubqEZs7aYqQA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">鬼遊戯 (Unity)</h3>
+              <p class="card-text">鬼がいる屋敷から鬼に捕まらずに光を40個灯して、屋敷から逃げるゲームです。</p>
+              <ul class="tags"><li>#Unity</li><li>#3Dホラーゲーム</li><li>#高校生</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://ryqta-shop.booth.pm/items/2673313" target="_blank" aria-disabled="true">無料PCゲーム（Windowsプレイ可能）</a>
+              </div>
             </div>
-
-            <!-- ギャラリー後で表示する -->
-            <!-- <div class="gallery-container">
-                <h2>App Gallery</h2>
-                <p style="text-align:center; color:var(--text-gray); margin-bottom:1rem;">実際のアプリ画面をチェック</p>
-                <div class="gallery-scroll">
-                    <div class="app-screen"><img src="./assets/images/AppImg/1.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/2.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/3.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/4.png" alt="WowMe Player"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/5.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/6.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/7.png" alt="WowMe Screen"></div>
-                    <div class="app-screen"><img src="./assets/images/AppImg/8.png" alt="WowMe Screen"></div>
-                </div>
-            </div> -->
-
-            <div class="flow-container">
-                <h2 style="font-size: 2rem; margin-bottom: 2rem;">How to Use</h2>
-                <p style="text-align:center; color:var(--text-gray); margin-bottom:3rem;">動画が届くまでの5ステップ</p>
-                
-                <div class="flow-grid">
-                    <div class="flow-card">
-                        <div class="step-badge">STEP 01</div>
-                        <div class="flow-icon"><i class="fas fa-heart"></i></div>
-                        <h4>推しを探す</h4>
-                        <p>タレント一覧から、メッセージを依頼したいあなたの「推し」を見つけましょう。</p>
-                    </div>
-
-                    <div class="flow-card">
-                        <div class="step-badge">STEP 02</div>
-                        <div class="flow-icon"><i class="fas fa-external-link-alt"></i></div>
-                        <h4>購入ページへ移動</h4>
-                        <p>「購入する」ボタンを押し、外部の安全な決済サイト（Square）へ移動します。</p>
-                    </div>
-
-                    <div class="flow-card">
-                        <div class="step-badge">STEP 03</div>
-                        <div class="flow-icon"><i class="fas fa-pen-to-square"></i></div>
-                        <h4>リクエストを記入</h4>
-                        <p>サプライズの種類やコメントを入力します。<br>
-                        <span style="color:var(--primary); font-weight:bold; font-size:0.9em;">
-                            ※お名前は読みやすいよう「ひらがな」か「カタカナ」でご入力ください。
-                        </span></p>
-                    </div>
-
-                    <div class="flow-card">
-                        <div class="step-badge">STEP 04</div>
-                        <div class="flow-icon"><i class="fas fa-credit-card"></i></div>
-                        <h4>必須項目・決済入力</h4>
-                        <p>お名前・連絡先（メールアドレス等）・クレジットカード情報を入力し、決済を完了します。</p>
-                    </div>
-
-                    <div class="flow-card">
-                        <div class="step-badge">STEP 05</div>
-                        <div class="flow-icon"><i class="fas fa-video"></i></div>
-                        <h4>動画を待つだけ！</h4>
-                        <p>あとは推しからの動画を待つだけ。<br>
-                        登録したメールアドレスに、基本<span style="font-weight:bold;">2週間以内</span>に動画が届きます🎁</p>
-                    </div>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/BfYBUHoQHBE?si=XgekyPJyhiIJAtOv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">NCS (Unity)</h3>
+              <p class="card-text">左右から流れてくるノーツをタイミングよく真ん中でタップしましょう。ノーツ管理は全てTimelineで行いました。</p>
+              <ul class="tags"><li>#Unity</li><li>#2Dリズムゲーム</li><li>#高校生</li></ul>
+              <!-- <div class="actions">
+                <a class="button small" href="https://ryqta-shop.booth.pm/items/2673313" target="_blank" aria-disabled="true">無料PCゲーム（Windowsプレイ可能）</a>
+              </div> -->
             </div>
-
-            <div class="talent-list-container">
-                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
-                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
-                <!-- <div class="search-box-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-top" placeholder="タレント名で検索..." oninput="filterTalents('search-top', 'talent-list-top')">
-                </div> -->
-                <div id="talent-list-top" class="talent-scroll"></div>
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a onclick="showSection('talent')" class="btn btn-secondary" style="border-radius: 50px; padding: 0.8rem 2rem; cursor:pointer;">
-                        タレントをもっと見る <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Xyg3co0PoA0?si=C8lE9RTFQvDHef9b" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">走れ！！グリ男くん (Unity)</h3>
+              <p class="card-text">障害物を避けながら大阪の名物アイテムを取り、クリアを目指しましょう。</p>
+              <ul class="tags"><li>#Unity</li><li>#2Dランゲーム</li><li>#大阪府産学連携本選出場作品</li><li>#高校生</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://vantan.jp/specialty_osaka/" target="_blank" aria-disabled="true">記事に掲載されました</a>
+              </div>
             </div>
-
-            <!-- バック率ピラミッド図 -->
-            <!-- <div class="wowme-pyramid-wrapper">
-            <h2>クリエイター還元率ステップアップ</h2>
-            <div class="pyramid-container">
-                <div class="tier tier-4" data-info="条件: 月間売上〇〇万円以上 または 特別オファー">
-                    <span class="rate">80%</span>
-                    <span class="rank">VIP</span>
-                </div>
-                <div class="tier tier-3" data-info="条件: 月間売上〇〇万円以上">
-                    <span class="rate">75%</span>
-                    <span class="rank">PRO</span>
-                </div>
-                <div class="tier tier-2" data-info="条件: 月間売上〇〇万円以上">
-                    <span class="rate">70%</span>
-                    <span class="rank">ADVANCE</span>
-                </div>
-                <div class="tier tier-1" data-info="条件: 初期スタートライン">
-                    <span class="rate">60%</span>
-                    <span class="rank">STANDARD</span>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Gio60bpG4fo?si=XgKUQs-Mnq-qo8VW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">天才小学生vs怪力校長 (Unity)</h3>
+              <p class="card-text">PC vs VR勝つのはどちらか？！初のオンラインゲームを開発しました。</p>
+              <ul class="tags"><li>#Unity</li><li>#オンライン対戦ゲーム</li><li>#卒業作品</li><li>#高校生</li></ul>
+              <!-- <div class="actions">
+                <a class="button small" href="https://vantan.jp/specialty_osaka/" target="_blank" aria-disabled="true">記事に掲載されました</a>
+              </div> -->
             </div>
-            <div id="info-display" class="info-display">ランクにカーソルを合わせると条件が表示されます</div>
-        </div> -->
-
-            <div class="cf-section">
-                <div class="warp-star" style="top:10%; left:10%; width:20px; height:20px;"></div>
-                <div class="warp-star" style="bottom:20%; right:15%; width:40px; height:40px;"></div>
-                <div class="warp-star" style="top:30%; right:5%; width:10px; height:10px;"></div>
-
-                <div class="cf-content">
-                    <!-- <span class="cf-badge">CROWDFUNDING</span> -->
-                    <h2 class="cf-title">
-                        推し活の次世代へ<br>
-                        一緒にワープしませんか？
-                    </h2>
-                    <p class="cf-text">
-                        WowMeは、まだ始まったばかりの小さな星です。<br>
-                        しかし、皆さんの応援があれば、このプラットフォームは
-                        「推し」と「ファン」がもっと輝ける銀河へと進化します。<br>
-                        <br>
-                        あなたのその一歩が、誰かの夢を支える力になる。<br>
-                        私たちと一緒に、素敵な未来を創り上げましょう。
-                    </p>
-                    <a href="#" class="btn btn-primary" style="padding: 1.2rem 3rem; font-size:1.1rem;">
-                        <i class="fas fa-hand-holding-heart"></i>COMING SOON  <!--プロジェクトを支援する-->
-                    </a>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="content">
+              <div class="video">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/wIoU7AfTHqg?si=rbQgdx051_qIT2Qn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+              <h3 class="card-title">Reflexe Sniper (Unity)</h3>
+              <p class="card-text">NEFFEXの音楽をリズムに合わせて銃でノーツを撃つ新しいVRリズムゲームです。</p>
+              <ul class="tags"><li>#Unity</li><li>#VRリズムゲーム</li><li>#卒業作品</li><li>#高校生</li></ul>
+              <!-- <div class="actions">
+                <a class="button small" href="https://vantan.jp/specialty_osaka/" target="_blank" aria-disabled="true">記事に掲載されました</a>
+              </div> -->
             </div>
-        </section>
-
-        <section id="news">
-            <h2>News</h2>
-            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">WowMeからの最新情報をお届けします</p>
-            <div id="news-list" class="news-grid"></div>
-        </section>
-
-        <section id="about">
-            <h2>About WowMe</h2>
-            <div class="letter-container">
-                <div class="letter-card closed" id="storyCard" onclick="toggleLetter()">
-                    <div class="story-text">
-                        <h3><i class="fas fa-envelope-open-text"></i> はじめに</h3>
-                        <p>
-                            このサービスは、あるひとつの体験から生まれました。<br><br>
-
-                            大切な人を、本気で驚かせたい。<br>
-                            そして、心から笑顔にしたい。<br><br>
-
-                            推しがいる友達や恋人に、<br>
-                            何を贈れば一番喜ぶだろうと悩んだことはありませんか？<br><br>
-
-                            「え、うそ…！」<br><br>
-
-                            画面の向こうから、推しが名前を呼ぶ。<br>
-                            たった数秒の動画、たった一言の「おめでとう」が、<br>
-                            一生忘れられない記憶になることを、私たちは知っています。<br><br>
-
-                            WowMeは、単なる動画販売アプリではありません。<br><br>
-
-                            あなたが仕掛ける、<br>
-                            世界でひとつの“心を動かすサプライズ”。<br><br>
-
-                            今度はあなたが、感動をつくる番です。
-                        </p>
-                        <div style="text-align: right; margin-top: 2rem; font-family: 'Quicksand'; color: var(--primary);">
-                            From WowMe Team
-                        </div>
-                    </div>
-                </div>
+          </article>
+          <article class="card project">
+            <div class="media">
+              <!-- 画像がなくてもレイアウトが崩れないようプレースホルダ -->
+              <img src="./resource/img/MusicMood.png" alt="気分で音楽を探せるWebアプリ作成しました。おまけとして好きなアーティストを友達に共有できたり、SpotifyとAPI連携しているためすぐにアーティストの音楽を聴くことができます。" loading="lazy" aria-hidden="true">
+              <!-- <div class="media-fallback" aria-hidden="true">No Image</div> -->
             </div>
-        </section>
-
-        <section id="talent">
-            <div class="talent-list-container">
-                <h2 style="margin-bottom: 2rem; color: var(--primary);">Meet Our Talents</h2>
-                <p>世界にひとつだけ。推しから届く、あなただけの動画プレゼント。</p>
-
-                <div class="search-box-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-page" placeholder="タレント名で検索..." oninput="filterTalents('search-page', 'talent-list-page')">
-                </div>
-                <div id="talent-list-page" class="talent-scroll"></div>
+            <div class="content">
+              <h3 class="card-title">Music Mood</h3>
+              <p class="card-text">気分で音楽を探せたり、好きなアーティストを友達に共有することができます。</p>
+              <ul class="tags"><li>#v0.dev</li><li>#ノーコード</li><li>#気分で音楽を探せる</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://music-mood-spotify.vercel.app/?tab=mood" target="_blank" aria-disabled="true">サイトを見る</a>
+              </div>
             </div>
+          </article>
 
-             <div class="talent-hero">
-                <h2>For Talents</h2>
-                <p>あなたの声が、誰かの今日を救うプレゼントになる。</p>
+          <!-- Project: Web -->
+          <article class="card project">
+            <div class="media">
+              <img src="./resource/img/LINEスタンプ作成.png" alt="" loading="lazy" aria-hidden="true">
+              <!-- <div class="media-fallback" aria-hidden="true">No Image</div> -->
             </div>
-
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <div class="benefit-icon"><i class="fas fa-coins"></i></div>
-                    <h3>新しい収益の柱</h3>
-                    <p>ファンへの感謝を伝えながら、活動資金をしっかりと確保できます。</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon"><i class="fas fa-heart"></i></div>
-                    <h3>特別なファン体験</h3>
-                    <p>「名前呼び」という究極のパーソナライズで、ファンの熱量は最高潮に。</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>安心・安全な運用</h3>
-                    <p>不適切な依頼は運営がブロック。あなたはクリエイティブに集中するだけ。</p>
-                </div>
+            <div class="content">
+              <h3 class="card-title">LINEスタンプの販売</h3>
+              <p class="card-text">さまざまなデザインのポメラニアンをモチーフとしたLINEスタンプを販売しております。</p>
+              <ul class="tags"><li>#LINEスタンプ</li><li>#ChatGPT</li><li>#ポメラニアン</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://store.line.me/stickershop/author/5570258/ja" target="_blank" aria-disabled="true">スタンプを見る</a>
+              </div>
             </div>
+          </article>
 
-            <div style="text-align: center; margin-top: 4rem;">
-                <a href="https://forms.gle/7rKbjJKz7qEaPPr96" target="_blank" class="btn btn-primary">
-                    今すぐタレント登録する <i class="fas fa-arrow-right"></i>
-                </a>
+          <article class="card project">
+            <div class="media">
+              <img src="./resource/img/WowMe.png" alt="" loading="lazy" aria-hidden="true">
+              <!-- <div class="media-fallback" aria-hidden="true">No Image</div> -->
             </div>
-
-            <div class="sim-container">
-                <h3 class="sim-title"><i class="fas fa-calculator"></i> タレント売上シミュレーション</h3>
-                
-                <div class="sim-grid">
-                    <div class="sim-input-box">
-                        <label>1本あたりの金額 (円)</label>
-                        <input type="number" id="sim-price" value="5000" min="0" oninput="calculateSales()">
-                    </div>
-                    <div class="sim-input-box">
-                        <label>動画の長さ (秒)</label>
-                        <input type="number" id="sim-duration" value="30" min="1" oninput="calculateSales()">
-                    </div>
-                    <div class="sim-input-box">
-                        <label>販売本数 (本)</label>
-                        <input type="number" id="sim-count" value="10" min="1" oninput="calculateSales()">
-                    </div>
-                </div>
-
-                <div class="sim-result-box">
-                    <div class="result-row">
-                        <span>💰 総売上</span>
-                        <span class="result-val" id="res-total">50,000円</span>
-                    </div>
-                    <div class="result-row">
-                        <span>🎀 WowMe手数料 (20%)</span>
-                        <span class="result-val" id="res-fee" style="color:var(--text-gray);">10,000円</span>
-                    </div>
-                    <div class="result-row" style="background: white; padding: 1rem; border-radius: 10px; margin-top: 1rem; border:none;">
-                        <span>👤 <b>タレント報酬 (最大80%)</b></span>
-                        <span class="result-val highlight-val" id="res-reward">40,000円</span>
-                    </div>
-                    <div class="result-row" style="color: var(--primary); font-weight:bold; margin-top: 1rem; border:none;">
-                        <span>⏱ 秒給 (1秒あたりの収益)</span>
-                        <span class="result-val" id="res-wage">133円</span>
-                    </div>
-                </div>
-                <p style="text-align: right; font-size: 0.8rem; color: #999; margin-top: 10px;">※あくまで目安です</p>
+            <div class="content">
+              <h3 class="card-title">WowMe - 推し活プラットフォーム開発</h3>
+              <p class="card-text">推しがあなたのためだけに動画メッセージを届けてくれる“推し活プラットフォーム”を開発中</p>
+              <ul class="tags"><li>#WowMe</li><li>#推し活</li><li>#ノーコード</li><li>#Adalo</li></ul>
+              <div class="actions">
+                <a class="button small" href="https://hello-wowme.github.io/WowMe/" target="_blank" aria-disabled="true">サイトを見る</a>
+              </div>
             </div>
-        </section>
+          </article>
+        </div>
+      </div>
+    </section>
 
-        <section id="qa">
-            <h2>Q & A</h2>
-            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">よくあるご質問</p>
-            
-            <div class="faq-container">
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. どのようなサービスですか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>WowMe（ワオミー）は、あなたの「推し」や憧れのタレントに、自分だけの動画メッセージを依頼できるサービスです。誕生日のお祝い、受験の応援、日々の励ましなど、あなたのためだけに語りかける動画が届きます。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. 動画の価格はいくらですか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>タレントごとに価格が設定されています。詳しくは <a onclick="showSection('talent')" style="color: var(--primary);">タレント一覧</a>をご覧ください。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. 名前を呼んでもらえますか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>はい。依頼時に指定した名前（かなorカナ）を入力すると動画内で呼んでもらえます。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. 支払い方法は何がありますか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>現在はクレジットカード決済およびApplePay,GooglePay決済に対応しています。安心・安全な決済プラットフォーム「<a href="https://squareup.com/jp/ja" target="_blank">Square</a> 」を使用しています。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. 依頼してからどのくらいで動画が届きますか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>タレントのスケジュールによりますが、通常は依頼承認から数日〜2週間程度で納品されます。詳しい目安は各タレントのプロフィールページをご確認ください。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. キャンセルや返金はできますか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>オーダーメイド商品という性質上、お客様都合によるキャンセル・返金は原則としてお受けできません。ただし、タレント側の都合により制作が困難になった場合は、全額返金いたします。</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Q. 不適切な依頼だと判断された場合はどうなりますか？</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-body">
-                            <p>公序良俗に反する内容や誹謗中傷など、運営が不適切と判断した依頼はお断りさせていただきます。その際、利用規約に基づき返金はいたしかねますので、予めご了承ください。</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- Story (縦線タイムライン) -->
+    <section id="story" class="section">
+      <div class="container">
+        <h2 class="section-title">ストーリー</h2>
+        <ol class="timeline" aria-label="タイムライン">
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2019年4月〜2022年3月</p>
+              <h3>高校時代 – Unityに出会う</h3>
+              <p>2D/3D/VRのゲーム制作を専門学校で学び、学内最優秀賞を4回連続で受賞しました。</p>
             </div>
-        </section>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2022年4月〜2023年1月</p>
+              <h3>新卒入社 – DeNA</h3>
+              <p>研修後にIRIAMへ出向。Unityエンジニアとして実務経験を積む。</p>
+            </div>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2023年2月〜2023年3月</p>
+              <h3>「推し部屋」起業準備</h3>
+              <p>睡眠不足と労働過多により体調を崩す</p>
+            </div>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2023年5月〜2026年1月</p>
+              <h3>キャリア探索期間</h3>
+              <p>
+                ・宅配業務 <br>
+                ・キッズスクールのスタートメンバー<br>
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2025年10月〜現在</p>
+              <h3>WowMe公式サイト・アプリ開発</h3>
+              <p>「<a href="https://hello-wowme.github.io/WowMe/" target="_blank">WowMe</a>」というアプリの開発をしています。また、SNSでWowMeの魅力やアレコレを発信しています。</p>
+            </div>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2025年11月〜現在</p>
+              <h3>アルバイト - カラオケ</h3>
+              <p>カラオケの裏側はどうなっているんだろうという好奇心だけでアルバイト入社、同時並行で転職活動を進めています。</p>
+            </div>
+          </li>
+          <li class="timeline-item">
+            <div class="dot" aria-hidden="true"></div>
+            <div class="body">
+              <p>2026年3月〜現在</p>
+              <h3>インターン - Vライバー事務所</h3>
+              <p>SNSマーケティングについて学びを深めている</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-        <section id="contact">
-            <h2>Contact</h2>
-            <p style="text-align:center; color:var(--text-gray); margin-bottom:2rem;">お問い合わせ先</p>
-            <form id="contactForm" class="contact-form" action="https://formspree.io/f/mgvnqrdp" method="POST">
-                <div class="form-group">
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2 class="section-title">お問い合わせ</h2>
+            <form class="contact" action="https://formspree.io/f/mzzapdkj" method="POST">
+                <div class="field">
                     <label for="name">お名前</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="推し活 太郎" required>
+                    <input id="name" name="name" type="text" inputmode="text" autocomplete="name" required>
                 </div>
-                
-                <div class="form-group">
+                <div class="field">
                     <label for="email">メールアドレス</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="example@wowme.jp" required>
+                    <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required>
                 </div>
-        
-                <div class="form-group">
-                    <label for="subject">件名</label>
-                    <select id="subject" name="subject" class="form-control">
-                        <option value="タレント登録について">タレント登録について</option>
-                        <option value="利用方法について">利用方法について</option>
-                        <option value="取材・メディア掲載について">取材・メディア掲載について</option>
-                        <option value="その他">その他</option>
-                    </select>
+                <div class="field">
+                    <label for="msg">内容</label>
+                    <textarea id="msg" name="message" rows="5" required></textarea>
                 </div>
-                
-                <div class="form-group">
-                    <label for="message">メッセージ</label>
-                    <textarea id="message" name="message" class="form-control" rows="5" placeholder="ご自由にご記入ください" required></textarea>
+                <div class="actions">
+                    <button class="button primary" type="submit">送信</button>
+                    <button class="button ghost" type="reset">リセット</button>
                 </div>
-                
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <i class="fas fa-paper-plane"></i> メッセージを送る（送信）
-                </button>
-                
-                <p id="form-status" style="text-align: center; margin-top: 1rem; font-weight: bold; min-height: 1.5em;"></p>
+                <p class="note">※ このフォームは<a href="https://formspree.io/" target="_blank">Formspree</a>を利用しています。</p>
+                <!-- 送信結果を表示（非リダイレクト運用用） -->
+                <div class="form-status" role="status" aria-live="polite" aria-atomic="true"></div>
             </form>
-        </section>
-
-        <section id="special">
-            <p class="coming-soon-label" style="text-align:center;">GRAND OPENING COUNTDOWN</p>
-            <div class="countdown-container">
-                <div id="countdown" class="countdown-timer">000:00:00:00</div>
-            </div>
-            
-            <div style="margin-top: 4rem; width: 100%;">
-                <h2>Special Thanks</h2>
-                <p class="supporters-intro">
-                    クラウドファンディングでご支援いただいた<br>
-                    初期メンバー（Founders）の皆様です。<br>
-                    <span style="font-size: 0.9rem;">※お名前とXアカウントを掲載させていただいております</span>
-                </p>
-                <div id="supporters-list" class="supporters-grid"></div>
-            </div>
-        </section>
-
-
-        <div id="modal-talent-detail" class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-content" style="max-width: 400px; text-align: center;">
-                    <span class="modal-close-btn" onclick="closeModalBtn('modal-talent-detail')">&times;</span>
-                <div id="talent-modal-body">
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div style="margin-bottom: 1rem;">
-            <!-- <a href="#">運営会社</a> |  -->
-            <a href="#" onclick="openModal('modal-privacy'); return false;">プライバシーポリシー</a> | 
-            <a href="#" onclick="openModal('modal-terms'); return false;">利用規約</a> |
-            <a href="#" onclick="openModal('modal-scta'); return false;">特定商取引法に基づく表記</a>
-        </div>
-        <p>&copy; 2025 - 2026 WowMe. All Rights Reserved.</p>
-    </footer>
-
-    <!-- プライバシーポリシー -->
-    <div id="modal-privacy" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="modal-close-btn" onclick="closeModalBtn('modal-privacy')">&times;</span>
-            <h3>プライバシーポリシー</h3>
-            <div class="modal-body">
-                WowMe プライバシーポリシー <br>
-                最終更新日：2025年10月16日 <br>
-                WowMe運営事務局（以下「当運営」といいます。）は、当運営が提供するアプリケーションサービス「WowMe」（以下「本サービス」といいます。）の利用に際して取得する利用者の個人情報について、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます。）を定めます。
-
-                <h4>第1条（個人情報の定義）</h4>
-                <p>「個人情報」とは、氏名、メールアドレス、SNSアカウント、決済情報など、特定の個人を識別できる情報を指します。</p>
-
-                <h4>第2条（個人情報の取得方法）</h4>
-                <p>
-                    当運営は、ユーザー登録時・動画依頼時・お問い合わせ時などに、ユーザーから以下の情報を取得します。<br>
-                    ・氏名またはニックネーム<br>
-                    ・メールアドレス、パスワード<br>
-                    ・SNSアカウント情報<br>
-                    ・決済に関する情報（決済代行会社を通じて処理）<br>                
-                    ・利用履歴・アクセスログ
-                </p>
-
-                <h4>第3条（個人情報の利用目的）</h4>
-                <p>取得した個人情報は、以下の目的のために利用します。<br>
-                    ・サービス提供および動画依頼の取引遂行<br>
-                    ・本人確認、アカウント管理<br>
-                    ・お問い合わせ対応<br>
-                    ・新機能・サービスの案内<br>
-                    ・不適切な依頼内容等の調査および防止措置<br>
-                    ・法令に基づく開示要請への対応
-                </p>
-
-
-                <h4>第4条（第三者提供）</h4>
-                当運営は、法令で認められる場合を除き、本人の同意なく第三者に個人情報を提供しません。<br>
-                ただし、動画制作に必要な範囲で、依頼者情報をタレントに共有する場合があります。
-
-                <h4>第5条（個人情報の管理）</h4>
-                当運営は、個人情報の漏洩・改ざん・紛失を防止するため、適切な安全管理措置を講じます。
-
-                <h4>第6条（個人情報の開示・訂正・削除）</h4>
-                ユーザー本人からの請求により、保有する個人情報の開示・訂正・削除に応じます。<br>
-                お問い合わせは、下記メールアドレスまでご連絡ください。<br>
-                <u>hello.wowme@gmail.com</u>
-
-                <h4>第7条（Cookie等の使用）</h4>
-                本サービスでは、利便性向上やアクセス解析のためにCookieを使用する場合があります。<br>
-                ブラウザの設定によりCookieを無効にすることも可能です。
-
-               <h4> 第8条（プライバシーポリシーの変更）</h4>
-                本ポリシーは、必要に応じて改定されることがあります。変更後の内容は、本サービス上で公表した時点で効力を生じます。
-            </div>
-        </div>
-    </div>
-
-    <!-- 利用規約 -->
-    <div id="modal-terms" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="modal-close-btn" onclick="closeModalBtn('modal-terms')">&times;</span>
-            <h3>利用規約</h3>
-            <div class="modal-body">
-                <p>WowMe 利用規約 <br>
-                    最終更新日：2025年12月19日 <br>
-                    この利用規約（以下「本規約」といいます。）は、WowMe運営事務局（以下「当運営」といいます。）が提供するアプリケーションサービス「WowMe」（以下「本サービス」といいます。）の利用条件を定めるものです。本サービスを利用される前に、必ず本規約をお読みください。利用者は、本サービスを利用することにより、本規約に同意したものとみなします。
-                </p>
-                <h4>第1条（定義）</h4>
-                <p>
-                    「ユーザー」とは、本サービスを利用するすべての個人または法人をいいます。
-                    「タレント・インフルエンサー」とは、本サービス上で動画の制作・販売を行う登録者をいいます。
-                    「依頼動画」とは、ユーザーがタレントに対してリクエストを行い、タレントが制作・提供する動画コンテンツを指します。
-                </p>
-
-                <h4>第2条（本サービスの内容）</h4>
-                本サービスは、ユーザーがタレント・インフルエンサーに対して動画メッセージの制作を依頼し、個別の動画を受け取ることができるプラットフォームです。
-                依頼動画はユーザー個人向けに制作され、著作権はタレントまたは当運営に帰属します。
-
-                <h4>第3条（利用登録）</h4>
-                ユーザーは、当運営が定める方法に従い、正確かつ最新の情報をもって登録を行うものとします。虚偽の情報に基づく登録は禁止します。
-
-                <h4>第4条（料金・支払い）</h4>
-                動画依頼に係る料金は、依頼時に表示される金額とします。
-                支払いは、指定の決済方法により前払いで行います。
-                一度支払われた料金は、原則として返金いたしません。
-
-                <h4>第5条（禁止事項）</h4>
-                ユーザーは、以下の行為を行ってはなりません。<br>
-                ・タレント・他ユーザー・第三者を誹謗中傷する行為 <br>
-                ・公序良俗に反する依頼内容の送信 <br>
-                ・個人情報、機密情報の不正な投稿 <br>
-                ・本サービスの運営を妨げる行為 <br> 
-                ・法令に違反する行為
-
-                <h4>第6条（不適切なメッセージ内容の確認）</h4>
-                本サービスでは、ユーザーから送信された動画依頼メッセージの内容について、当運営が事前に確認を行います。
-                不適切なサプライズメッセージや、タレントに精神的負担を与えるおそれのある内容が含まれている場合、当運営の判断により依頼を拒否することがあります。
-                その際、返金は行われません。ユーザーはこの点に同意の上で依頼を行うものとします。
-
-                <h4>第7条（動画の納品・権利）</h4>
-                依頼動画の納品は、タレントが制作を完了し、本サービスを通じてユーザーに提供された時点で完了とします。
-                ユーザーは、当運営およびタレントの許可なく動画を再配布・販売・公開してはなりません。
-                動画の著作権は当運営またはタレントに帰属します。
-
-                <h4>第8条（免責事項）</h4>
-                当運営は、タレントの都合や体調不良等により動画が制作できなかった場合、返金を行うことがありますが、その範囲は支払金額のみに限られます。
-                通信環境や端末の不具合による動画受信不可について、当運営は責任を負いません。
-                本サービスの停止・中断によって生じた損害について、当運営は一切の責任を負いません。
-
-                <h4>第9条（利用停止・アカウント削除）</h4>
-                当運営は、ユーザーが本規約に違反した場合、事前の通知なくアカウント停止または削除を行うことができます。
-
-                <h4>第10条（規約の変更）</h4>
-                当運営は、本規約を随時変更できるものとします。変更後の内容は、本サービス上またはウェブサイト上で公表された時点で効力を生じます。<br>
-
-                <h4>第11条（準拠法および裁判管轄）</h4>
-                本規約は日本法を準拠法とし、本サービスに関する一切の紛争は、東京地方裁判所を第一審の専属的合意管轄裁判所とします。<br>
-
-                お問い合わせ先<br>
-                WowMe運営事務局<br>
-                Email：hello.wowme@gmail.com
-            </div>
-        </div>
-    </div>
-
-    <!-- 特定商取引法に基づく表記 -->
-    <div id="modal-scta" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="modal-close-btn" onclick="closeModalBtn('modal-scta')">&times;</span>
-            <h3>特定商取引法に基づく表記</h3>
-            <div class="modal-body">
-                <p>
-                    事業者名：山本 涼太（WowMe）<br>
-                    運営責任者名：山本 涼太<br>
-                    メールアドレス：hello.wowme@gmail.com <br>
-                    販売URL：<a href="https://hello-wowme.github.io/WowMe/" target="_blank"><u>https://hello-wowme.github.io/WowMe/</u></a>
-
-                </p>
-                <h4>販売価格</h4>
-                <p>各動画依頼ページに表示される金額（消費税込）となります。</p>
-
-                <h4>商品代金以外の必要料金</h4>
-                </p>通信料、振込手数料等はお客様負担となります。</p>
-
-                <h4>支払方法</h4>
-                <p>
-                    ・クレジットカード決済<br>
-                    ・Google Pay <br>
-                    ・Apple Pay <br>
-                </p>
-
-                <h4>支払時期</h4>
-                <p>注文確定時に決済が行われます。</p>
-
-                <h4>商品の引き渡し時期</h4>
-                <p>動画依頼に応じて、タレントが制作を完了後、順次配信いたします。
-                    納期は各タレントのスケジュールにより異なります。</p>
-
-                <h4>返品・キャンセルについて</h4>
-                <p>サービスの性質上、購入後の返金・キャンセルは原則受け付けておりません。
-                    ただし、当運営またはタレントの都合による制作中止の場合のみ、返金を行う場合があります。</p>
-
-                <h4>不適切なメッセージ依頼について</h4>
-                <p>ユーザーからの依頼内容が不適切であると当運営が判断した場合、返金なしで動画の提供を中止することがあります。</p>
-
-                <h4>免責事項</h4>
-                <p>本サービスの利用によって生じたいかなる損害についても、当運営は責任を負いかねます。
-                    本サービスは、タレントのスケジュールや技術的問題により一時停止する場合があります。</p>
-
-                <h4>お問い合わせ先</h4>
-                <p>WowMe運営事務局<br>
-                    hello.wowme@gmail.com <br>
-                    受付時間：平日10:00〜18:00（土日祝除く）</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- Navigation Logic ---
-        function showSection(sectionId) {
-            // 1. すべてのセクションを非表示にする
-            document.querySelectorAll('section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            // 対象のセクションを表示する
-            document.getElementById(sectionId).classList.add('active');
-            
-            // 2. ナビゲーションのハイライト更新処理
-            document.querySelectorAll('.nav-link').forEach(link => {
-                // 一旦すべてのリンクから active を外す
-                link.classList.remove('active');
-                
-                // リンクの data-section 属性が、現在の sectionId と一致したら active を付与
-                if (link.getAttribute('data-section') === sectionId) {
-                    link.classList.add('active');
-                }
-            });
-
-            window.scrollTo(0,0);
-        }
-
-        // --- Particle Animation Generator ---
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const colors = ['#FF85A1', '#80DEEA', '#FFC2D1', '#FFF'];
-            const shapes = ['fa-heart', 'fa-star', 'fa-circle'];
-
-            setInterval(() => {
-                const p = document.createElement('i');
-                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-                p.classList.add('fas', randomShape, 'particle');
-                
-                // Randomize position, color, size
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.color = colors[Math.floor(Math.random() * colors.length)];
-                p.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                p.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4-7s
-
-                container.appendChild(p);
-
-                // Remove after animation
-                setTimeout(() => {
-                    p.remove();
-                }, 7000);
-            }, 300); // Generate every 300ms
-        }
-        createParticles();
-
-        // --- About Page Interaction ---
-        function toggleLetter() {
-            const card = document.getElementById('storyCard');
-            card.classList.toggle('closed');
-        }
-
-        // --- Countdown Logic for Special Page ---
-        // Target: 2026-10-31
-        const targetDate = new Date('2026-10-31T00:00:00').getTime();
-
-        setInterval(() => {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            if (distance < 0) {
-                document.getElementById('countdown').innerHTML = "OPENED!";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('countdown').innerText = 
-                `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }, 1000);
-
-        // --- Mobile Menu Logic (Corrected) ---
-        function toggleMenu() {
-            const navMenu = document.getElementById('nav-menu');
-            const body = document.body;
-            
-            // クラスの付け外し（開く/閉じる）
-            navMenu.classList.toggle('active');
-            
-            // メニューが開いている時だけスクロールをロック
-            if (navMenu.classList.contains('active')) {
-                body.style.overflow = 'hidden';
-            } else {
-                body.style.overflow = 'auto';
-            }
-        }
-
-        // --- Navigation Logic (Corrected) ---
-        function showSection(sectionId) {
-            // 1. セクションの表示切り替え
-            document.querySelectorAll('section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-            
-            // 2. ナビゲーションのハイライト更新
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-section') === sectionId) {
-                    link.classList.add('active');
-                }
-            });
-
-            // 3. スマホメニューが開いていたら強制的に閉じる
-            const navMenu = document.getElementById('nav-menu');
-            if (navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                document.body.style.overflow = 'auto'; // スクロールロックも解除
-            }
-            
-            // 4. ページトップへ戻る
-            window.scrollTo(0,0);
-        }
-
-        // --- Special Page: Supporters List Generation ---
-        const supporters = [
-            // ▼ ここにクラファン支援者のデータを追加してください ▼
-            { name: "WowMe公式", id: "@wowme_surprise", url: "https://twitter.com/wowme_surprise" },
-            // { name: "いっぬ社長", id: "@inu__ceo", url: "https://twitter.com/inu__ceo" },
-        ];
-
-    function renderSupporters() {
-        const container = document.getElementById('supporters-list');
-        
-        supporters.forEach(user => {
-            // カード要素を作成
-            const card = document.createElement('a');
-            card.className = 'supporter-card';
-            card.href = user.url;
-            card.target = "_blank"; // 別タブで開く
-            card.rel = "noopener noreferrer"; // セキュリティ対策
-
-            // カードの中身（アイコン + 名前エリア）
-            card.innerHTML = `
-                <div class="supporter-icon">
-                    <i class="fa-brands fa-x-twitter"></i>
-                </div>
-                <div class="supporter-info">
-                    <div class="supporter-name">${user.name}</div>
-                    <div class="supporter-id">${user.id}</div>
-                </div>
-            `;
-
-            container.appendChild(card);
-        });
-    }
-
-    // 実行
-    renderSupporters();
-
-    // --- News Data & Rendering ---
-    const newsData = [
-        // ▼▼▼ ここにニュースを追加してください ▼▼▼
-        {
-            date: "2025.12.16",
-            category: "メデイア",
-            title: "【YouTube】ChatGPTに10年後のWowMeを予想してもらった結果！？",
-            image: "https://placehold.co/600x400/FF85A1/white?text=YouTube", // 画像URL
-            link: "https://youtu.be/e9VfrsyxxXU?si=HQhAcgxyJRBfJjDI", // リンク先（詳細ページなど）
-            text: "WowMeの未来をAIに予想してもらいました。10年後のWowMeはどうなっているのか？"
-        },
-        {
-            date: "2025.12.13",
-            category: "リリース",
-            title: "WowMe（ワオミー）公式サイトの公開を開始しました",
-            image: "https://placehold.co/600x400/ffcc33/white?text=Release", // 画像URL
-            link: "https://hello-wowme.github.io/WowMe/", // リンク先（詳細ページなど）
-            text: "かわいいデザインと直感的な操作性を追求した公式サイトが完成しました。"
-        },
-        {
-            date: "2025.12.11",
-            category: "キャンペーン",
-            title: "【プレゼント企画】クリスマス直前！WowMeアンケートキャンペーン開催中",
-            image: "https://placehold.co/600x400/80DEEA/white?text=Campaign",
-            link: "https://x.com/wowme_surprise/status/1999090124647440414",
-            text: "WowMeアンケート回答でAmazonギフト券1,000円分が5名様に当たるチャンス！"
-        },
-        {
-            date: "2025.10.29",
-            category: "メディア",
-            title: "Webメディア：「クラウドファンディング名鑑」にWowMeが掲載されました",
-            image: "https://placehold.co/600x400/FF85A1/white?text=Media", // 画像がない場合は空文字でOK（プレースホルダーが出ます）
-            link: "https://crowdfunding.meikan.org/project/campfire-896176/",
-            text: "WowMeがメディアとXで紹介されました。"
-        },
-    ];
-
-    function renderNews() {
-        const container = document.getElementById('news-list');
-        
-        // 日付の新しい順に並び替えたい場合はコメントアウトを外す
-        // newsData.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        newsData.forEach(item => {
-            // 画像がない場合のデフォルト画像
-            const imgUrl = item.image ? item.image : 'https://placehold.co/600x400/EEE/999?text=No+Image';
-
-            const card = document.createElement('a');
-            card.className = 'news-card';
-            card.href = item.link;
-            // 外部サイトの場合は別タブで開くなどの処理を入れてもOK
-            card.target = "_blank"; 
-
-            card.innerHTML = `
-                <img src="${imgUrl}" alt="${item.title}" class="news-image">
-                <div class="news-content">
-                    <div class="news-meta">
-                        <span class="news-date">${item.date}</span>
-                        <span class="news-category">${item.category}</span>
-                    </div>
-                    <h3 class="news-title">${item.title}</h3>
-                    <p class="news-excerpt">${item.text}</p>
-                </div>
-            `;
-
-            container.appendChild(card);
-        });
-    }
-    
-    // 実行
-    renderNews();
-
-    // --- Sales Simulation Logic ---
-    function calculateSales() {
-        // 入力値の取得（空の場合は0として扱う）
-        const price = parseFloat(document.getElementById('sim-price').value) || 0;
-        const duration = parseFloat(document.getElementById('sim-duration').value) || 1; // 0除算防止
-        const count = parseFloat(document.getElementById('sim-count').value) || 0;
-
-        // 計算
-        const totalSales = price * count;
-        const fee = totalSales * 0.2;
-        const reward = totalSales * 0.8;
-        
-        // 秒給 = (タレント報酬) ÷ (動画長さ × 本数)
-        // ※「1本あたりの単価 × 0.8 ÷ 動画の長さ」でも同じ結果になります
-        const totalSeconds = duration * count;
-        let wage = 0;
-        if (totalSeconds > 0) {
-            wage = reward / totalSeconds;
-        }
-
-        // 表示の更新（カンマ区切り）
-        document.getElementById('res-total').innerText = Math.floor(totalSales).toLocaleString() + '円';
-        document.getElementById('res-fee').innerText = Math.floor(fee).toLocaleString() + '円';
-        document.getElementById('res-reward').innerText = Math.floor(reward).toLocaleString() + '円';
-        document.getElementById('res-wage').innerText = Math.floor(wage).toLocaleString() + '円';
-    }
-
-    // --- Modal Logic ---
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'flex'; // まずdisplayを設定
-            // 少し遅らせてクラスを追加することでフェードインアニメーションさせる
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
-            document.body.style.overflow = 'hidden'; // 背景スクロール固定
-        }
-    }
-
-    // ×ボタンで閉じる場合
-    function closeModalBtn(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300); // アニメーション終了後に非表示
-            document.body.style.overflow = 'auto'; // スクロール解除
-        }
-    }
-
-    // モーダルウィンドウ
-    // 余白（背景）タップで閉じる場合
-    function closeModal(event) {
-        // クリックされた場所がオーバーレイ（背景）そのものの場合のみ閉じる
-        if (event.target.classList.contains('modal-overlay')) {
-            event.target.classList.remove('active');
-            setTimeout(() => {
-                event.target.style.display = 'none';
-            }, 300);
-            document.body.style.overflow = 'auto';
-        }
-    }
-
-    // --- Talent Data & Modal Logic ---
-    const talentsData = [
-        {
-            id: 1,
-            name: "いっぬ社長",
-            image: "./assets/images/talent/いっぬ社長.JPG",
-            xUrl: "https://x.com/inu__ceo",
-            label: "公式タレント",
-            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援"],
-            price: 3000,
-            snsOk: false,
-            link: "https://square.link/u/dEIuwh0p", // Square決済リンク
-        },
-        {
-            id: 2,
-            name: "桜風華",
-            image: "./assets/images/talent/桜風華.png",
-            xUrl: "https://x.com/fuuka_skr0108",
-            label: "公式タレント",
-            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "お見舞い","ネタボイス"],
-            price: 2000,
-            snsOk: true,
-            link: "https://square.link/u/E5ta0WAN", // 購入リンク
-        },
-        {
-            id: 3,
-            name: "音葉はるか",
-            image: "./assets/images/talent/音葉はるか.png",
-            xUrl: "https://x.com/otoha_haruka64",
-            label: "公式タレント",
-            types: ["名前呼び","誕生日", "記念日", "結婚式", "ご褒美", "お祝い", "応援", "演出","エフェクト"],
-            price: 1000,
-            snsOk: true,
-            link: "https://square.link/u/OtsgMH82", // 購入リンク
-        },
-        {
-            id: 4,
-            name: "星川ユミナ",
-            image: "./assets/images/talent/星川ユミナ.jpg",
-            xUrl: "https://x.com/yumina_star",
-            label: "公式タレント",
-            types: ["誕生日", "記念日", "ご褒美", "お祝い","結婚式","応援"],
-            price: 1000,
-            snsOk: true,
-            link: "https://square.link/u/ZfjzDqWt", // 購入リンク
-        },
-    ];
-
-    // 引数 containerId を受け取るように変更
-    // タレントリスト（カード）の生成
-    // ★修正：第2引数で data を受け取れるように変更（デフォルトは全件）
-    // --- Talent Data & Modal Logic ---
-    // （talentsData の定義はそのまま触らなくてOKです）
-
-    // ▼▼▼ ここから下を書き換え・上書きしてください ▼▼▼
-
-    // タレントリスト（カード）の生成
-    // タレントリスト（カード）の生成
-    function renderTalents(containerId, data = talentsData) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-
-        container.innerHTML = '';
-
-        if (data.length === 0) {
-            container.innerHTML = '<p style="width:100%; text-align:center; color:#999; padding:2rem;">該当するタレントが見つかりませんでした 🙇‍♂️</p>';
-            return;
-        }
-        
-        data.forEach(talent => {
-            const card = document.createElement('div');
-            card.className = 'talent-card-item';
-            card.onclick = () => openTalentModal(talent.id);
-
-            // ▼▼▼ 追加：SNSラベルのHTML生成 ▼▼▼
-            // snsOkが true なら「SNS公開OK」、false なら「SNS公開NG」
-            const snsLabel = talent.snsOk ? "SNS公開OK" : "SNS公開NG";
-            const snsClass = talent.snsOk ? "sns-ok" : "sns-ng";
-            const badgeHtml = `<span class="sns-status-badge ${snsClass}">${snsLabel}</span>`;
-            // ▲▲▲ ここまで ▲▲▲
-
-            card.innerHTML = `
-                ${badgeHtml} <img src="${talent.image}" alt="${talent.name}" class="talent-img">
-                <div class="talent-info">
-                    <div class="talent-name-card">${talent.name}</div>
-                    <div class="talent-price-mini">¥${talent.price.toLocaleString()}</div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // タレント検索機能（TALENTページ専用）
-    // 引数1: inputId (入力欄のID)
-    // 引数2: containerId (結果を表示するリストのID)
-    function filterTalents(inputId, containerId) {
-        // 指定された入力欄を取得
-        const inputElement = document.getElementById(inputId);
-        if (!inputElement) return;
-
-        const keyword = inputElement.value.toLowerCase();
-        
-        // 名前でデータを絞り込み（リアルタイム）
-        const filteredData = talentsData.filter(talent => 
-            talent.name.toLowerCase().includes(keyword)
-        );
-
-        // 指定されたリストだけを更新する
-        renderTalents(containerId, filteredData);
-    }
-    // --- 初期化実行 ---
-    // ページ読み込み時は、検索なし（全件）で両方のリストを表示
-    renderTalents('talent-list-top'); 
-    renderTalents('talent-list-page');
-
-    // ▲▲▲ 書き換えここまで ▲▲▲
-
-    // タレント詳細モーダルを開く
-    function openTalentModal(id) {
-        const talent = talentsData.find(t => t.id === id);
-        if (!talent) return;
-
-        const modalBody = document.getElementById('talent-modal-body');
-        
-        // タグのHTML生成
-        const tagsHtml = talent.types.map(tag => `<span class="surprise-tag">${tag}</span>`).join('');
-        
-        // ラベルのHTML生成
-        let labelHtml = '';
-        if (talent.label) {
-            labelHtml = `<div class="talent-modal-label"><i class="fas fa-check-circle"></i> ${talent.label}</div>`;
-        }
-
-        // ▼▼▼ 追加：XリンクのHTML生成 ▼▼▼
-        // xUrlがある場合のみアイコンを表示
-        let xLinkHtml = '';
-        if (talent.xUrl) {
-            xLinkHtml = `<a href="${talent.xUrl}" target="_blank" class="modal-x-link"><i class="fa-brands fa-x-twitter"></i></a>`;
-        }
-        // ▲▲▲ ここまで ▲▲▲
-
-        // モーダルの中身を生成
-        // 名前の横に ${xLinkHtml} を追加しています
-        modalBody.innerHTML = `
-            <div class="talent-modal-header">
-                <img src="${talent.image}" class="talent-modal-img">
-                <h3 class="talent-modal-name">
-                    ${talent.name}
-                    ${xLinkHtml} </h3>
-                ${labelHtml} 
-                <div class="surprise-tags">${tagsHtml}</div>
-            </div>
-            
-            <div class="talent-price-box">
-                <div class="price-label">動画メッセージ料金</div>
-                <div class="price-value">¥${talent.price.toLocaleString()}</div>
-            </div>
-
-            <a href="${talent.link}" class="btn-purchase" target="_blank">
-                <i class="fas fa-shopping-cart"></i> 購入する
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+        <small>&copy; <span id="year"></span> Ryota Yamamoto</small>
+
+        <nav class="sns-nav" aria-label="SNSリンク">
+        <ul>
+            <li>
+            <a href="https://www.tiktok.com/@pomeranian.job" target="_blank" rel="noopener">
+                TikTok
             </a>
-            <p style="font-size:0.8rem; color:#999; margin-top:1rem;">※外部決済サイトへ移動します</p>
-        `;
+            </li>
+            <li>
+            <a href="https://www.youtube.com/@tadanorita3" target="_blank" rel="noopener">
+                YouTube
+            </a>
+            </li>
+        </ul>
+        </nav>
+    </div>
+  </footer>
 
-        openModal('modal-talent-detail');
-    }
-
-    // --- Q&A Accordion Logic ---
-        document.addEventListener("DOMContentLoaded", function() {
-            const acc = document.getElementsByClassName("faq-question");
-
-            for (let i = 0; i < acc.length; i++) {
-                acc[i].addEventListener("click", function() {
-                    // クリックされたボタンの active クラスを切り替え
-                    this.classList.toggle("active");
-
-                    // 次の要素（回答部分）を取得
-                    const panel = this.nextElementSibling;
-
-                    // 開閉ロジック（高さを操作してアニメーションさせる）
-                    if (panel.style.maxHeight) {
-                        panel.style.maxHeight = null;
-                    } else {
-                        panel.style.maxHeight = panel.scrollHeight + "px";
-                    }
-                });
-            }
-        });
-    </script>
+  <script src="./resource/js/ main.js"></script>
 </body>
 </html>
