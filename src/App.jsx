@@ -1,5 +1,6 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-import { useState } from 'react'
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import LandingPage from './pages/LandingPage'
 import TalentListPage from './pages/TalentListPage'
 import TalentDetailPage from './pages/TalentDetailPage'
@@ -8,26 +9,52 @@ import VideoRevealPage from './pages/VideoRevealPage'
 import TalentDashboard from './pages/TalentDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import MyPage from './pages/MyPage'
+import AuthPage from './pages/AuthPage'
+import TalentProfileSetup from './pages/TalentProfileSetup'
 import Header from './components/Layout/Header'
 
-export default function App() {
-  const [currentUser] = useState({ name: '田中 花子', role: 'user' })
+// Google Client ID - 実際の値に置き換えてください
+// https://console.cloud.google.com/ で取得
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1234567890-placeholder.apps.googleusercontent.com'
+
+function ProtectedRoute({ children }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/auth" replace />
+  return children
+}
+
+function AppRoutes() {
+  const { user } = useAuth()
 
   return (
-    <Router>
-      <div className="min-h-screen bg-[#0a0014]">
-        <Header user={currentUser} />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/talents" element={<TalentListPage />} />
-          <Route path="/talent/:id" element={<TalentDetailPage />} />
-          <Route path="/request/:id" element={<RequestFlowPage />} />
-          <Route path="/reveal/:orderId" element={<VideoRevealPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/talent-dashboard" element={<TalentDashboard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
-      </div>
-    </Router>
+    <>
+      <Header user={user} />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={user ? <Navigate to={user.role === 'talent' ? '/talent-dashboard' : '/talents'} replace /> : <AuthPage />} />
+        <Route path="/talent-setup" element={<ProtectedRoute><TalentProfileSetup /></ProtectedRoute>} />
+        <Route path="/talents" element={<TalentListPage />} />
+        <Route path="/talent/:id" element={<TalentDetailPage />} />
+        <Route path="/request/:id" element={<ProtectedRoute><RequestFlowPage /></ProtectedRoute>} />
+        <Route path="/reveal/:orderId" element={<ProtectedRoute><VideoRevealPage /></ProtectedRoute>} />
+        <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+        <Route path="/talent-dashboard" element={<ProtectedRoute><TalentDashboard /></ProtectedRoute>} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-[#F5F7FA]">
+            <AppRoutes />
+          </div>
+        </Router>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   )
 }
