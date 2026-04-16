@@ -58,7 +58,7 @@ export default function Header({ user }) {
             { to: '/talents', label: 'タレント一覧' },
             ...(user?.role === 'talent' ? [{ to: '/talent-dashboard', label: 'ダッシュボード' }] : []),
             ...(user ? [{ to: '/mypage', label: 'マイページ' }] : []),
-            { to: '/admin', label: '管理者' },
+            ...(user?.isAdmin ? [{ to: '/admin', label: '管理者' }] : []),
           ].map(({ to, label }) => (
             <Link
               key={to}
@@ -130,8 +130,8 @@ export default function Header({ user }) {
                               <p className="font-semibold text-gray-900 text-sm truncate">{user.name}</p>
                               <p className="text-xs text-gray-400 truncate">{user.email}</p>
                               <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                                style={{ background: user.role === 'talent' ? 'linear-gradient(135deg, #0080FF, #3399FF)' : 'linear-gradient(135deg, #FE3B8C, #FF6BAE)' }}>
-                                {user.role === 'talent' ? 'タレント' : 'ファン'}
+                                style={{ background: user.isAdmin ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : user.role === 'talent' ? 'linear-gradient(135deg, #0080FF, #3399FF)' : 'linear-gradient(135deg, #FE3B8C, #FF6BAE)' }}>
+                                {user.isAdmin ? '👑 管理者' : user.role === 'talent' ? 'タレント' : 'ファン'}
                               </span>
                             </div>
                           </div>
@@ -199,7 +199,7 @@ export default function Header({ user }) {
                 { to: '/talents', label: 'タレント一覧' },
                 ...(user ? [{ to: '/mypage', label: 'マイページ' }] : []),
                 ...(user?.role === 'talent' ? [{ to: '/talent-dashboard', label: 'タレントダッシュボード' }] : []),
-                { to: '/admin', label: '管理者ダッシュボード' },
+                ...(user?.isAdmin ? [{ to: '/admin', label: '管理者ダッシュボード' }] : []),
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={() => setMenuOpen(false)}
                   className="px-4 py-3 rounded-xl text-gray-600 hover:text-[#FE3B8C] hover:bg-pink-50 transition-all">

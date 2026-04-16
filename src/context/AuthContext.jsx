@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
+const ADMIN_EMAIL = 'hello.wowme@gmail.com'
+
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
@@ -13,12 +15,14 @@ export function AuthProvider({ children }) {
   })
 
   const login = (googleProfile, role) => {
+    const isAdmin = googleProfile.email === ADMIN_EMAIL
     const userData = {
       id: googleProfile.sub || `demo_${Date.now()}`,
       name: googleProfile.name,
       email: googleProfile.email,
       picture: googleProfile.picture,
-      role, // 'user' | 'talent'
+      role: isAdmin ? 'admin' : role, // 'user' | 'talent' | 'admin'
+      isAdmin,
       isDemo: googleProfile.isDemo || false,
     }
     setUser(userData)

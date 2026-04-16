@@ -23,6 +23,13 @@ function ProtectedRoute({ children }) {
   return children
 }
 
+function AdminRoute({ children }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/auth" replace />
+  if (!user.isAdmin) return <Navigate to="/" replace />
+  return children
+}
+
 function AppRoutes() {
   const { user } = useAuth()
 
@@ -39,7 +46,7 @@ function AppRoutes() {
         <Route path="/reveal/:orderId" element={<ProtectedRoute><VideoRevealPage /></ProtectedRoute>} />
         <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         <Route path="/talent-dashboard" element={<ProtectedRoute><TalentDashboard /></ProtectedRoute>} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
       </Routes>
     </>
   )
