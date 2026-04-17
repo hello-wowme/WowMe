@@ -4,6 +4,10 @@
  */
 import { supabase, isSupabaseReady } from './supabase'
 
+// supabase が null のとき用のダミーレスポンス
+const noop = { data: null, error: null }
+const safe = (fn) => supabase ? fn() : Promise.resolve(noop)
+
 // ─── Users ────────────────────────────────────────────────────────────────
 
 export async function upsertUser(userData) {
