@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Share2, Download, Heart, Sparkles, Twitter, ArrowRight } from 'lucide-react'
+import { Play, Download, Sparkles, Twitter, ArrowRight } from 'lucide-react'
 import { mockOrders, talents } from '../data/mockData'
 
 const PARTICLE_COUNT = 80
@@ -192,27 +192,11 @@ export default function VideoRevealPage() {
             </motion.div>
 
             {/* Actions */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex gap-3 mb-6">
-              <motion.button onClick={() => { if (!liked) { setLiked(true); setLikeCount(c => c + 1) } }}
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold border-2 transition-all"
-                style={liked ? { background: '#fff0f6', borderColor: '#FE3B8C44', color: '#FE3B8C' } : { background: '#fff', borderColor: '#F0F0F5', color: '#9CA3AF' }}>
-                <motion.div animate={liked ? { scale: [1, 1.5, 1] } : {}}>
-                  <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
-                </motion.div>
-                {liked ? likeCount : '保存'}
-              </motion.button>
-
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mb-6">
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white border-2 border-gray-100 text-gray-500 hover:text-[#0080FF] hover:border-blue-100 font-semibold transition-all">
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white border-2 border-gray-100 text-gray-500 hover:text-[#0080FF] hover:border-blue-100 font-semibold transition-all">
                 <Download className="w-5 h-5" />
                 保存
-              </motion.button>
-
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white border-2 border-gray-100 text-gray-500 hover:text-[#FE3B8C] hover:border-pink-100 font-semibold transition-all">
-                <Share2 className="w-5 h-5" />
-                シェア
               </motion.button>
             </motion.div>
 
