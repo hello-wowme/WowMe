@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Check, Sparkles, Heart, Gift, CreditCard, Lock, Zap } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Check, Sparkles, Heart, Gift, Lock, Zap } from 'lucide-react'
 import { talents, occasions } from '../data/mockData'
+import StripePaymentForm from '../components/StripePaymentForm'
 
 const STEPS = [
   { id: 'occasion', label: 'シーンを選ぶ', icon: '🎯' },
@@ -27,10 +28,8 @@ export default function RequestFlowPage() {
   const [form, setForm] = useState({
     occasion: '', recipientName: '', message: '',
     isGift: false, instructions: '',
-    cardNumber: '4242 4242 4242 4242', cardExpiry: '12/26', cardCVC: '123',
   })
   const [charCount, setCharCount] = useState(0)
-  const [isProcessing, setIsProcessing] = useState(false)
   const [nameError, setNameError] = useState('')
   const isComposingRef = { current: false }
 
@@ -61,10 +60,7 @@ export default function RequestFlowPage() {
   const handleNext = () => { if (step < STEPS.length - 1) setStep(s => s + 1) }
   const handleBack = () => { if (step > 0) setStep(s => s - 1) }
 
-  const handleSubmit = async () => {
-    setIsProcessing(true)
-    await new Promise(r => setTimeout(r, 2000))
-    setIsProcessing(false)
+  const handlePaymentSuccess = () => {
     setStep(3)
   }
 
@@ -280,61 +276,17 @@ export default function RequestFlowPage() {
                   </div>
                 </div>
 
-                {/* Card Input */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Lock className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-gray-400">SSL暗号化で安全に決済</span>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1.5">カード番号</label>
-                    <div className="relative">
-                      <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
-                      <input type="text" value={form.cardNumber}
-                        onChange={e => setForm(f => ({ ...f, cardNumber: e.target.value }))}
-                        className="w-full bg-white border-2 border-gray-100 rounded-xl pl-12 pr-5 py-3.5 text-gray-800 focus:outline-none"
-                        onFocus={e => e.target.style.borderColor = '#FE3B8C'}
-                        onBlur={e => e.target.style.borderColor = '#F0F0F5'} />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">有効期限</label>
-                      <input type="text" value={form.cardExpiry} placeholder="MM/YY"
-                        onChange={e => setForm(f => ({ ...f, cardExpiry: e.target.value }))}
-                        className="w-full bg-white border-2 border-gray-100 rounded-xl px-5 py-3.5 text-gray-800 placeholder:text-gray-300 focus:outline-none"
-                        onFocus={e => e.target.style.borderColor = '#FE3B8C'}
-                        onBlur={e => e.target.style.borderColor = '#F0F0F5'} />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">セキュリティコード</label>
-                      <input type="text" value={form.cardCVC} placeholder="CVC"
-                        onChange={e => setForm(f => ({ ...f, cardCVC: e.target.value }))}
-                        className="w-full bg-white border-2 border-gray-100 rounded-xl px-5 py-3.5 text-gray-800 placeholder:text-gray-300 focus:outline-none"
-                        onFocus={e => e.target.style.borderColor = '#FE3B8C'}
-                        onBlur={e => e.target.style.borderColor = '#F0F0F5'} />
-                    </div>
-                  </div>
-                </div>
-
-                <motion.button onClick={handleSubmit} disabled={isProcessing}
-                  whileHover={!isProcessing ? { scale: 1.03 } : {}}
-                  whileTap={!isProcessing ? { scale: 0.97 } : {}}
-                  className="btn-primary w-full flex items-center justify-center gap-3 text-base py-5">
-                  {isProcessing ? (
-                    <>
-                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
-                        className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
-                      処理中...
-                    </>
-                  ) : (
-                    <><Lock className="w-5 h-5" />¥{talent.price.toLocaleString()} を支払う</>
-                  )}
-                </motion.button>
-
-                <p className="text-xs text-center text-gray-300">※ これはデモです。実際の決済は行われません</p>
+                {/* Stripe Payment Form */}
+                <StripePaymentForm
+                  amount={talent.price}
+                  metadata={{
+                    talentId: talent.id,
+                    talentName: talent.name,
+                    occasion: form.occasion,
+                    recipientName: form.recipientName || '',
+                  }}
+                  onSuccess={handlePaymentSuccess}
+                />
               </motion.div>
             )}
 
