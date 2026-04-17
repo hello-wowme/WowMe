@@ -127,21 +127,21 @@ export default function AdminDashboard() {
 
                 {/* Main Card */}
                 <motion.div drag="x" dragConstraints={{ left: -300, right: 300 }}
-                  style={{ x, rotate }} animate={controls} onDragEnd={handleDragEnd}
-                  className="absolute bg-white rounded-3xl w-full cursor-grab active:cursor-grabbing select-none shadow-xl border border-gray-100"
-                  style={{ height: '460px', zIndex: 10, x, rotate, boxShadow: '0 20px 60px rgba(0,0,0,0.12)' }}>
+                  style={{ height: '460px', zIndex: 10, x, rotate, boxShadow: '0 20px 60px rgba(0,0,0,0.12)' }}
+                  animate={controls} onDragEnd={handleDragEnd}
+                  className="absolute bg-white rounded-3xl w-full cursor-grab active:cursor-grabbing select-none shadow-xl border border-gray-100">
 
                   {/* Approve Indicator */}
-                  <motion.div style={{ opacity: approveOpacity }}
-                    className="absolute top-6 left-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-lg font-black border-2 rotate-[-15deg]"
-                    style={{ color: '#10B981', borderColor: '#10B981', background: '#F0FDF4' }}>
+                  <motion.div
+                    style={{ opacity: approveOpacity, color: '#10B981', borderColor: '#10B981', background: '#F0FDF4' }}
+                    className="absolute top-6 left-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-lg font-black border-2 rotate-[-15deg]">
                     <CheckCircle className="w-6 h-6" />APPROVE
                   </motion.div>
 
                   {/* Reject Indicator */}
-                  <motion.div style={{ opacity: rejectOpacity }}
-                    className="absolute top-6 right-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-lg font-black border-2 rotate-[15deg]"
-                    style={{ color: '#EF4444', borderColor: '#EF4444', background: '#FEF2F2' }}>
+                  <motion.div
+                    style={{ opacity: rejectOpacity, color: '#EF4444', borderColor: '#EF4444', background: '#FEF2F2' }}
+                    className="absolute top-6 right-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-lg font-black border-2 rotate-[15deg]">
                     REJECT<XCircle className="w-6 h-6" />
                   </motion.div>
 
