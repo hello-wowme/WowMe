@@ -29,6 +29,12 @@ export default function MyPage() {
     })
   }, [user?.id])
 
+  const OCCASION_EMOJI = {
+    birthday: '🎂', graduation: '🎓', cheering: '📣',
+    anniversary: '💍', gift: '🎁', just_for_me: '⭐',
+    wedding: '💒', other: '💫',
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-20 page-enter bg-[#F5F7FA]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -113,38 +119,47 @@ export default function MyPage() {
                 <div className="space-y-4">
                   {orders.map((order, i) => {
                     const st = STATUS_MAP[order.status] || STATUS_MAP.pending
+                    const emoji = OCCASION_EMOJI[order.occasion] ?? '💫'
                     return (
                       <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                        className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            {order.talentAvatar
-                              ? <img src={order.talentAvatar} className="w-10 h-10 rounded-xl object-cover" />
-                              : <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-                                  style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
-                                  {order.talentName?.[0]}
-                                </div>
-                            }
-                            <div>
-                              <p className="font-semibold text-gray-900 text-sm">{order.talentName}</p>
-                              <p className="text-xs text-gray-400">{order.occasion} · {order.createdAt?.slice(0,10)}</p>
-                            </div>
+                        className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                        {/* タレント情報ヘッダー */}
+                        <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-50">
+                          {order.talentAvatar
+                            ? <img src={order.talentAvatar} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                            : <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0"
+                                style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                                {order.talentName?.[0] ?? '?'}
+                              </div>
+                          }
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-gray-900">{order.talentName || '—'}</p>
+                            <p className="text-xs text-gray-400">{order.talentCategory}</p>
                           </div>
-                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0"
                             style={{ color: st.color, background: st.bg }}>
                             {st.icon}{st.label}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{order.message}</p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-bold text-gray-900">¥{order.price?.toLocaleString()}</p>
-                          {order.status === 'completed' && order.videoUrl && (
-                            <Link to={`/reveal/${order.id}`}>
-                              <motion.button whileHover={{ scale: 1.03 }} className="btn-primary px-4 py-2 text-xs">
-                                動画を見る
-                              </motion.button>
-                            </Link>
-                          )}
+                        {/* 注文詳細 */}
+                        <div className="px-5 py-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-base">{emoji}</span>
+                            <span className="text-xs font-medium text-gray-500">{order.occasion}</span>
+                            <span className="text-gray-200 mx-1">·</span>
+                            <span className="text-xs text-gray-400">{order.createdAt?.slice(0,10)}</span>
+                          </div>
+                          <p className="text-sm text-gray-600 line-clamp-2 mb-3">{order.message}</p>
+                          <div className="flex items-center justify-between">
+                            <p className="text-base font-black text-gray-900">¥{order.price?.toLocaleString()}</p>
+                            {order.status === 'completed' && order.videoUrl && (
+                              <Link to={`/reveal/${order.id}`}>
+                                <motion.button whileHover={{ scale: 1.03 }} className="btn-primary px-4 py-2 text-xs">
+                                  動画を見る
+                                </motion.button>
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     )

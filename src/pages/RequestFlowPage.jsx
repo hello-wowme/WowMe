@@ -69,14 +69,17 @@ export default function RequestFlowPage() {
 
   const handlePaymentSuccess = async () => {
     await createOrder({
-      userId:           user?.id,
-      talentProfileId:  talent.id,
-      occasion:         form.occasion,
-      recipientName:    form.recipientName,
-      message:          form.message,
-      instructions:     form.instructions,
-      isGift:           form.isGift,
-      price:            talent.price,
+      userId:          user?.id,
+      talentProfileId: talent.id,
+      talentName:      talent.name,
+      talentAvatar:    talent.avatar,
+      talentCategory:  talent.category,
+      occasion:        form.occasion,
+      recipientName:   form.recipientName,
+      message:         form.message,
+      instructions:    form.instructions,
+      isGift:          form.isGift,
+      price:           talent.price,
     }).catch(console.error)
     setStep(3)
   }

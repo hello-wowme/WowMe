@@ -111,10 +111,38 @@ export async function uploadVideo(orderId, file) {
   return { url: data?.signedUrl ?? null, error: null }
 }
 
-// ─── Orders ────────────────────────────────────────────────────────────────
+// ─── Orders (localStorage fallback) ───────────────────────────────────────
+
+const LS_ORDERS_KEY = 'wowme_orders'
+
+function lsLoadOrders() {
+  try { return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]') } catch { return [] }
+}
+function lsSaveOrders(list) {
+  localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(list))
+}
 
 export async function createOrder(orderData) {
-  if (!isSupabaseReady()) return { data: { id: `local_${Date.now()}`, ...orderData }, error: null }
+  if (!isSupabaseReady()) {
+    const order = {
+      id:             `local_${Date.now()}`,
+      userId:         orderData.userId,
+      talentProfileId: orderData.talentProfileId,
+      talentName:     orderData.talentName ?? '',
+      talentAvatar:   orderData.talentAvatar ?? '',
+      talentCategory: orderData.talentCategory ?? '',
+      occasion:       orderData.occasion,
+      recipientName:  orderData.recipientName ?? '',
+      message:        orderData.message,
+      isGift:         orderData.isGift ?? false,
+      price:          orderData.price,
+      status:         'pending',
+      createdAt:      new Date().toISOString(),
+    }
+    const existing = lsLoadOrders()
+    lsSaveOrders([order, ...existing])
+    return { data: order, error: null }
+  }
   return supabase.from('orders').insert({
     user_id:                  orderData.userId,
     talent_profile_id:        orderData.talentProfileId,
@@ -130,7 +158,10 @@ export async function createOrder(orderData) {
 }
 
 export async function fetchOrdersByUser(userId) {
-  if (!isSupabaseReady()) return { data: [], error: null }
+  if (!isSupabaseReady()) {
+    const all = lsLoadOrders()
+    return { data: all.filter(o => o.userId === userId), error: null }
+  }
   return supabase
     .from('orders')
     .select(`*, talent_profiles(display_name, avatar_url, category)`)
@@ -199,20 +230,24 @@ export function dbTalentToApp(row) {
 
 export function dbOrderToApp(row) {
   if (!row) return null
+  // localStorage 形式はすでにアプリ型なのでそのまま返す
+  if (row.id?.startsWith('local_')) return row
+  // Supabase 行の変換
   return {
-    id:             row.id,
-    userId:         row.user_id,
+    id:              row.id,
+    userId:          row.user_id,
     talentProfileId: row.talent_profile_id,
-    talentName:     row.talent_profiles?.display_name ?? '',
-    talentAvatar:   row.talent_profiles?.avatar_url ?? '',
-    occasion:       row.occasion,
-    recipientName:  row.recipient_name,
-    message:        row.message,
-    isGift:         row.is_gift,
-    price:          row.price,
-    status:         row.status,
-    videoUrl:       row.video_url,
-    createdAt:      row.created_at,
-    completedAt:    row.completed_at,
+    talentName:      row.talent_profiles?.display_name ?? '',
+    talentAvatar:    row.talent_profiles?.avatar_url ?? '',
+    talentCategory:  row.talent_profiles?.category ?? '',
+    occasion:        row.occasion,
+    recipientName:   row.recipient_name,
+    message:         row.message,
+    isGift:          row.is_gift,
+    price:           row.price,
+    status:          row.status,
+    videoUrl:        row.video_url,
+    createdAt:       row.created_at,
+    completedAt:     row.completed_at,
   }
 }
