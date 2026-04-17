@@ -1,16 +1,32 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Clock, Zap, Heart, Share2, Play, ChevronLeft, CheckCircle, ArrowRight, TrendingUp } from 'lucide-react'
 import { talents } from '../data/mockData'
 import LevelBadge from '../components/UI/LevelBadge'
 import { getLevelInfo, calcRevenueShare } from '../utils/talentLevel'
+import { useFavorites } from '../context/FavoritesContext'
+import { useTalents } from '../context/TalentsContext'
 
 export default function TalentDetailPage() {
   const { id } = useParams()
-  const talent = talents.find(t => t.id === id) || talents[0]
+  const { registeredTalents } = useTalents()
+  const allTalents = [...registeredTalents, ...talents]
+  const talent = allTalents.find(t => t.id === id) || talents[0]
   const level = talent.level || 1
   const levelInfo = getLevelInfo(level)
   const { talentAmount, platformAmount } = calcRevenueShare(talent.price, level)
+  const { toggleFavorite, isFavorite } = useFavorites()
+  const favorited = isFavorite(talent.id)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+
+  const handleFavorite = () => {
+    toggleFavorite(talent)
+    setToastMsg(favorited ? 'お気に入りから削除しました' : '❤️ お気に入りに追加しました')
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 2000)
+  }
 
   return (
     <div className="min-h-screen pt-16 page-enter bg-[#F5F7FA]">
@@ -55,9 +71,17 @@ export default function TalentDetailPage() {
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">
-                    <button className="p-2.5 bg-white rounded-xl text-gray-400 hover:text-[#FE3B8C] border border-gray-100 transition-colors shadow-sm">
-                      <Heart className="w-5 h-5" />
-                    </button>
+                    <motion.button
+                      onClick={handleFavorite}
+                      whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.85 }}
+                      className="p-2.5 rounded-xl border transition-all shadow-sm"
+                      style={favorited
+                        ? { background: '#fff0f6', borderColor: '#FE3B8C44', color: '#FE3B8C' }
+                        : { background: '#fff', borderColor: '#F0F0F5', color: '#9CA3AF' }}>
+                      <motion.div animate={favorited ? { scale: [1, 1.4, 1] } : {}} transition={{ duration: 0.3 }}>
+                        <Heart className={`w-5 h-5 ${favorited ? 'fill-current' : ''}`} />
+                      </motion.div>
+                    </motion.button>
                     <button className="p-2.5 bg-white rounded-xl text-gray-400 hover:text-[#0080FF] border border-gray-100 transition-colors shadow-sm">
                       <Share2 className="w-5 h-5" />
                     </button>
@@ -242,6 +266,17 @@ export default function TalentDetailPage() {
           </div>
         </div>
       </div>
+      {/* Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl text-sm font-semibold text-white shadow-xl"
+            style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+            {toastMsg}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

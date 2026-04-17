@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, ChevronRight, Sparkles, Heart, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchOrdersByUser, dbOrderToApp } from '../lib/db'
+import { useFavorites } from '../context/FavoritesContext'
+import LevelBadge from '../components/UI/LevelBadge'
 
 const STATUS_MAP = {
   pending:    { label: '審査待ち',  color: '#F59E0B', bg: '#FFFBEB', icon: <Clock className="w-3.5 h-3.5" /> },
@@ -15,6 +17,7 @@ const STATUS_MAP = {
 export default function MyPage() {
   const [tab, setTab] = useState('orders')
   const { user } = useAuth()
+  const { favorites, toggleFavorite } = useFavorites()
   const [orders, setOrders] = useState([])
   const [loadingOrders, setLoadingOrders] = useState(true)
 
@@ -73,7 +76,7 @@ export default function MyPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          {[{ id: 'orders', label: '注文履歴' }, { id: 'wishlist', label: 'お気に入り' }].map(t => (
+          {[{ id: 'orders', label: '注文履歴' }, { id: 'wishlist', label: `お気に入り (${favorites.length})` }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className="px-6 py-2.5 rounded-full text-sm font-medium transition-all"
               style={tab === t.id ? {
@@ -152,21 +155,63 @@ export default function MyPage() {
           )}
 
           {tab === 'wishlist' && (
-            <motion.div key="wishlist" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="text-center py-24">
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ repeat: Infinity, duration: 2.5 }}
-                className="text-6xl mb-5">💜</motion.div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">お気に入りがありません</h3>
-              <p className="text-gray-400 text-sm mb-8">気になるタレントをお気に入り登録しよう</p>
-              <Link to="/talents">
-                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  className="btn-primary inline-flex items-center gap-2">
-                  <Heart className="w-4 h-4" />
-                  タレントを探す
-                </motion.button>
-              </Link>
+            <motion.div key="wishlist" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              {favorites.length === 0 ? (
+                <div className="text-center py-24">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2.5 }}
+                    className="text-6xl mb-5">💜</motion.div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">お気に入りがありません</h3>
+                  <p className="text-gray-400 text-sm mb-8">気になるタレントをお気に入り登録しよう</p>
+                  <Link to="/talents">
+                    <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                      className="btn-primary inline-flex items-center gap-2">
+                      <Heart className="w-4 h-4" />
+                      タレントを探す
+                    </motion.button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {favorites.map((talent, i) => (
+                    <motion.div key={talent.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                      className="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+                      <Link to={`/talent/${talent.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                        {talent.avatar
+                          ? <img src={talent.avatar} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0" />
+                          : <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0"
+                              style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                              {talent.name?.[0]}
+                            </div>
+                        }
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <p className="font-bold text-gray-900">{talent.name}</p>
+                            {talent.level && <LevelBadge level={talent.level} size="sm" />}
+                          </div>
+                          <p className="text-xs text-gray-400">{talent.category}</p>
+                          <p className="text-sm font-semibold mt-1" style={{ color: '#FE3B8C' }}>
+                            ¥{talent.price?.toLocaleString()}〜
+                          </p>
+                        </div>
+                      </Link>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Link to={`/request/${talent.id}`}>
+                          <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                            className="btn-primary px-4 py-2 text-xs">
+                            リクエスト
+                          </motion.button>
+                        </Link>
+                        <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.85 }}
+                          onClick={() => toggleFavorite(talent)}
+                          className="p-2 rounded-xl border transition-all"
+                          style={{ background: '#fff0f6', borderColor: '#FE3B8C44', color: '#FE3B8C' }}>
+                          <Heart className="w-4 h-4 fill-current" />
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

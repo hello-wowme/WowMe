@@ -2,6 +2,7 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { TalentsProvider } from './context/TalentsContext'
+import { FavoritesProvider } from './context/FavoritesContext'
 import LandingPage from './pages/LandingPage'
 import TalentListPage from './pages/TalentListPage'
 import TalentDetailPage from './pages/TalentDetailPage'
@@ -58,11 +59,13 @@ export default function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <AuthProvider>
         <TalentsProvider>
+          <FavoritesProvider>
           <Router>
             <div className="min-h-screen bg-[#F5F7FA]">
               <AppRoutes />
             </div>
           </Router>
+          </FavoritesProvider>
         </TalentsProvider>
       </AuthProvider>
     </GoogleOAuthProvider>
