@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, Plus, X, Check, ChevronRight, Upload, Sparkles, Clock, DollarSign } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useTalents } from '../context/TalentsContext'
 
 const RESPONSE_OPTIONS = [
   { value: 24, label: '24時間以内' },
@@ -25,6 +26,7 @@ const STEPS = [
 
 export default function TalentProfileSetup() {
   const { user, updateProfile } = useAuth()
+  const { registerTalent } = useTalents()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [profile, setProfile] = useState({
@@ -74,19 +76,19 @@ export default function TalentProfileSetup() {
   }
 
   const handleComplete = () => {
-    updateProfile({
-      talentProfile: {
-        displayName: profile.displayName,
-        bio: profile.bio,
-        category: profile.category,
-        tags: profile.tags,
-        price: Number(profile.price),
-        responseTime: profile.responseTime,
-        avatar: profile.avatarPreview,
-        sampleVideos: profile.sampleVideos,
-        setupComplete: true,
-      }
-    })
+    const talentProfile = {
+      displayName: profile.displayName,
+      bio: profile.bio,
+      category: profile.category,
+      tags: profile.tags,
+      price: Number(profile.price),
+      responseTime: profile.responseTime,
+      avatar: profile.avatarPreview,
+      sampleVideos: profile.sampleVideos,
+      setupComplete: true,
+    }
+    updateProfile({ talentProfile })
+    registerTalent(user.id, talentProfile)
     setStep(3)
   }
 

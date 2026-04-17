@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react'
-import { talents, categories } from '../data/mockData'
+import { talents as mockTalents, categories } from '../data/mockData'
+import { useTalents } from '../context/TalentsContext'
 import TalentCard from '../components/UI/TalentCard'
 
 const SORT_OPTIONS = [
@@ -12,6 +13,13 @@ const SORT_OPTIONS = [
 ]
 
 export default function TalentListPage() {
+  const { registeredTalents } = useTalents()
+  // 登録タレントをモックの先頭に追加（重複排除）
+  const talents = [
+    ...registeredTalents,
+    ...mockTalents.filter(m => !registeredTalents.some(r => r.id === m.id)),
+  ]
+
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [sort, setSort] = useState('popular')
@@ -53,6 +61,7 @@ export default function TalentListPage() {
             タレントを<span className="gradient-text">探す</span>
           </h1>
           <p className="text-gray-400">{talents.length}人のタレントが参加中</p>
+
         </motion.div>
 
         {/* Search Bar */}
