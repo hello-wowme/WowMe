@@ -122,7 +122,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex items-center justify-center gap-8 sm:gap-16 mt-20"
+            className="flex items-center justify-center gap-8 sm:gap-16 mt-20 pb-24"
           >
             {[
               { value: '10,000+', label: '動画配信数' },
@@ -175,7 +175,7 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
           <span className="text-xs text-gray-400">スクロール</span>
           <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
