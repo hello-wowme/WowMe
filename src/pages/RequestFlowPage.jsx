@@ -357,15 +357,9 @@ export default function RequestFlowPage() {
                   ))}
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}
-                  className="flex flex-col sm:flex-row gap-3">
-                  <Link to="/reveal/ORD-001" className="flex-1">
-                    <motion.button whileHover={{ scale: 1.03 }} className="btn-primary w-full">
-                      動画を受け取る（デモ）
-                    </motion.button>
-                  </Link>
-                  <Link to="/mypage" className="flex-1">
-                    <motion.button whileHover={{ scale: 1.03 }} className="btn-ghost w-full">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}>
+                  <Link to="/mypage">
+                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="btn-primary w-full">
                       マイページへ
                     </motion.button>
                   </Link>
