@@ -32,13 +32,26 @@ export default function RequestFlowPage() {
   const [charCount, setCharCount] = useState(0)
   const [isProcessing, setIsProcessing] = useState(false)
   const [nameError, setNameError] = useState('')
+  const isComposingRef = { current: false }
 
   const handleRecipientNameChange = (e) => {
     const value = e.target.value
-    // ひらがな・長音符・スペースのみ許可
+    setForm(f => ({ ...f, recipientName: value }))
+    // IME変換中はバリデーションしない
+    if (isComposingRef.current) return
     const hiraganaOnly = /^[\u3040-\u309F\u30FC\s]*$/
     if (value === '' || hiraganaOnly.test(value)) {
-      setForm(f => ({ ...f, recipientName: value }))
+      setNameError('')
+    } else {
+      setNameError('ひらがなのみ入力できます')
+    }
+  }
+
+  const handleCompositionEnd = (e) => {
+    isComposingRef.current = false
+    const value = e.target.value
+    const hiraganaOnly = /^[\u3040-\u309F\u30FC\s]*$/
+    if (value === '' || hiraganaOnly.test(value)) {
       setNameError('')
     } else {
       setNameError('ひらがなのみ入力できます')
@@ -180,6 +193,8 @@ export default function RequestFlowPage() {
                     </label>
                     <input type="text" placeholder="例：さくら" value={form.recipientName}
                       onChange={handleRecipientNameChange}
+                      onCompositionStart={() => { isComposingRef.current = true }}
+                      onCompositionEnd={handleCompositionEnd}
                       className="w-full bg-white border-2 rounded-xl px-5 py-3.5 text-gray-800 placeholder:text-gray-300 focus:outline-none transition-all"
                       style={{ borderColor: nameError ? '#EF4444' : '#F0F0F5' }}
                       onFocus={e => e.target.style.borderColor = nameError ? '#EF4444' : '#FE3B8C'}
