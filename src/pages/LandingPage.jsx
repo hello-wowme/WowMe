@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import TermsModal from '../components/UI/TermsModal'
 import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Star, Play, ArrowRight, Heart, Sparkles, Gift, Zap, ChevronDown } from 'lucide-react'
@@ -9,6 +10,7 @@ const HERO_WORDS = ['感動', 'ワクワク', '特別', '奇跡', '動画']
 
 export default function LandingPage() {
   const [wordIndex, setWordIndex] = useState(0)
+  const [showTerms, setShowTerms] = useState(false)
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 150])
@@ -22,6 +24,7 @@ export default function LandingPage() {
   const featuredTalents = talents.filter(t => t.featured)
 
   return (
+    <>
     <div className="overflow-hidden bg-white">
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 overflow-hidden"
@@ -390,12 +393,14 @@ export default function LandingPage() {
           </div>
           <p className="text-gray-400 text-sm">© 2026 WowMe. All rights reserved.</p>
           <div className="flex gap-6 text-sm text-gray-400">
-            <a href="#" className="hover:text-gray-600 transition-colors">利用規約</a>
+            <button onClick={() => setShowTerms(true)} className="hover:text-gray-600 transition-colors">利用規約</button>
             <a href="#" className="hover:text-gray-600 transition-colors">プライバシー</a>
             <a href="#" className="hover:text-gray-600 transition-colors">お問い合わせ</a>
           </div>
         </div>
       </footer>
     </div>
+    {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
+    </>
   )
 }

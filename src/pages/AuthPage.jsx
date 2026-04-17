@@ -5,6 +5,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'
 import { Sparkles, Star, Music, Video, Users, ChevronRight, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import TermsModal from '../components/UI/TermsModal'
 
 const DEMO_USERS = {
   user: {
@@ -26,6 +27,7 @@ const DEMO_USERS = {
 export default function AuthPage() {
   const [role, setRole] = useState(null) // 'user' | 'talent'
   const [error, setError] = useState('')
+  const [showTerms, setShowTerms] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -54,6 +56,7 @@ export default function AuthPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
       style={{ background: 'linear-gradient(160deg, #fff0f6 0%, #f0f6ff 55%, #f5f7fa 100%)' }}>
 
@@ -243,9 +246,9 @@ export default function AuthPage() {
 
                 <p className="text-xs text-gray-300 text-center mt-6 leading-relaxed">
                   続けることで
-                  <a href="#" className="underline hover:text-gray-500">利用規約</a>
+                  <button onClick={() => setShowTerms(true)} className="underline hover:text-gray-500 transition-colors">利用規約</button>
                   と
-                  <a href="#" className="underline hover:text-gray-500">プライバシーポリシー</a>
+                  <button onClick={() => setShowTerms(true)} className="underline hover:text-gray-500 transition-colors">プライバシーポリシー</button>
                   に同意します
                 </p>
               </motion.div>
@@ -254,5 +257,7 @@ export default function AuthPage() {
         </div>
       </motion.div>
     </div>
+    {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
+    </>
   )
 }
