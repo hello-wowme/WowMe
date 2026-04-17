@@ -1,13 +1,17 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion'
-import { CheckCircle, XCircle, Users, ShoppingBag, DollarSign, AlertTriangle, Eye } from 'lucide-react'
+import { CheckCircle, XCircle, Users, ShoppingBag, DollarSign, AlertTriangle, Eye, Trash2 } from 'lucide-react'
 import { adminOrders } from '../data/mockData'
+import { useTalents } from '../context/TalentsContext'
+import LevelBadge from '../components/UI/LevelBadge'
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState(adminOrders)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [tab, setTab] = useState('swipe')
   const [showDetail, setShowDetail] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const { registeredTalents, removeTalent } = useTalents()
 
   const pendingOrders = orders.filter(o => o.status === 'pending_review')
   const currentOrder = pendingOrders[currentIndex]
@@ -72,8 +76,8 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-8">
-          {[{ id: 'swipe', label: '注文審査（スワイプ）' }, { id: 'list', label: '注文一覧' }].map(t => (
+        <div className="flex gap-2 mb-8 flex-wrap">
+          {[{ id: 'swipe', label: '注文審査（スワイプ）' }, { id: 'list', label: '注文一覧' }, { id: 'talents', label: `タレント管理 (${registeredTalents.length})` }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className="px-5 py-2.5 rounded-full text-sm font-medium transition-all"
               style={tab === t.id ? {
@@ -210,6 +214,45 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Talent Management */}
+        {tab === 'talents' && (
+          <div>
+            {registeredTalents.length === 0 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+                <div className="text-5xl mb-4">🎤</div>
+                <p className="text-gray-400">登録タレントはまだいません</p>
+              </motion.div>
+            ) : (
+              <div className="space-y-4">
+                {registeredTalents.map((talent, i) => (
+                  <motion.div key={talent.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                    className="bg-white rounded-2xl p-5 flex items-center gap-4 border border-gray-100 shadow-sm">
+                    {talent.avatar
+                      ? <img src={talent.avatar} alt={talent.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                      : <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
+                          style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>{talent.name?.[0]}</div>
+                    }
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <p className="font-bold text-gray-900">{talent.name}</p>
+                        <LevelBadge level={talent.level || 1} size="sm" />
+                      </div>
+                      <p className="text-xs text-gray-400">{talent.category} · ¥{talent.price?.toLocaleString()}</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                      onClick={() => setDeleteTarget(talent)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-red-500 bg-red-50 border border-red-100 hover:bg-red-100 transition-all flex-shrink-0">
+                      <Trash2 className="w-3.5 h-3.5" />
+                      削除
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* List View */}
         {tab === 'list' && (
           <div className="space-y-4">
@@ -240,6 +283,36 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirm Modal */}
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={e => { if (e.target === e.currentTarget) setDeleteTarget(null) }}>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100">
+              <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-7 h-7 text-red-500" />
+              </div>
+              <h3 className="font-bold text-gray-900 text-xl text-center mb-2">タレントを削除</h3>
+              <p className="text-gray-500 text-sm text-center mb-6">
+                <span className="font-bold text-gray-800">「{deleteTarget.name}」</span> をタレント一覧から削除しますか？<br />
+                この操作は取り消せません。
+              </p>
+              <div className="flex gap-3">
+                <button onClick={() => setDeleteTarget(null)} className="btn-ghost flex-1 py-3 text-sm">キャンセル</button>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => { removeTalent(deleteTarget.userId); setDeleteTarget(null) }}
+                  className="flex-1 py-3 rounded-full text-sm font-semibold text-white transition-all"
+                  style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}>
+                  削除する
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Detail Modal */}
       <AnimatePresence>

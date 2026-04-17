@@ -20,6 +20,14 @@ function saveTalents(list) {
 export function TalentsProvider({ children }) {
   const [registeredTalents, setRegisteredTalents] = useState(loadTalents)
 
+  const removeTalent = useCallback((userId) => {
+    setRegisteredTalents(prev => {
+      const next = prev.filter(t => t.userId !== userId)
+      saveTalents(next)
+      return next
+    })
+  }, [])
+
   const registerTalent = useCallback((userId, profile) => {
     setRegisteredTalents(prev => {
       // 既存ユーザーなら上書き、新規なら追加
@@ -56,7 +64,7 @@ export function TalentsProvider({ children }) {
   }, [])
 
   return (
-    <TalentsContext.Provider value={{ registeredTalents, registerTalent }}>
+    <TalentsContext.Provider value={{ registeredTalents, registerTalent, removeTalent }}>
       {children}
     </TalentsContext.Provider>
   )
