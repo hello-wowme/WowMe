@@ -189,7 +189,10 @@ export async function fetchOrdersByTalent(talentProfileId) {
 }
 
 export async function fetchAllOrders() {
-  if (!isSupabaseReady()) return { data: [], error: null }
+  if (!isSupabaseReady()) {
+    const all = lsLoadOrders()
+    return { data: all, error: null }
+  }
   return supabase
     .from('orders')
     .select(`*, talent_profiles(display_name), users(name)`)
@@ -197,7 +200,18 @@ export async function fetchAllOrders() {
 }
 
 export async function updateOrderStatus(orderId, status, videoUrl = null) {
-  if (!isSupabaseReady()) return { error: null }
+  if (!isSupabaseReady()) {
+    const all = lsLoadOrders()
+    const updated = all.map(o => {
+      if (o.id !== orderId) return o
+      const next = { ...o, status }
+      if (videoUrl) next.videoUrl = videoUrl
+      if (status === 'completed') next.completedAt = new Date().toISOString()
+      return next
+    })
+    lsSaveOrders(updated)
+    return { error: null }
+  }
   const payload = { status }
   if (videoUrl) payload.video_url = videoUrl
   if (status === 'completed') payload.completed_at = new Date().toISOString()

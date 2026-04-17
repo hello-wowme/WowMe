@@ -1,30 +1,53 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion'
-import { CheckCircle, XCircle, Users, ShoppingBag, DollarSign, AlertTriangle, Eye, Trash2 } from 'lucide-react'
-import { adminOrders } from '../data/mockData'
+import { CheckCircle, XCircle, Users, ShoppingBag, DollarSign, AlertTriangle, Eye, Trash2, RefreshCw } from 'lucide-react'
 import { useTalents } from '../context/TalentsContext'
 import LevelBadge from '../components/UI/LevelBadge'
-import { fetchAllOrders, updateOrderStatus, dbOrderToApp } from '../lib/db'
+import { fetchAllOrders, updateOrderStatus } from '../lib/db'
+
+// DB行またはlocalStorage行 → 管理画面用オブジェクトに変換
+function toAdminOrder(row) {
+  // localStorage形式（local_プレフィックス）
+  if (row.id?.startsWith('local_')) {
+    return {
+      id:         row.id,
+      talentName: row.talentName ?? '—',
+      talentAvatar: row.talentAvatar ?? '',
+      userName:   row.recipientName || '—',
+      occasion:   row.occasion ?? '—',
+      price:      row.price ?? 0,
+      status:     row.status === 'pending' ? 'pending_review' : row.status,
+      createdAt:  row.createdAt?.slice(0, 10) ?? '',
+      message:    row.message ?? '',
+    }
+  }
+  // Supabase行
+  return {
+    id:         row.id,
+    talentName: row.talent_profiles?.display_name ?? '—',
+    talentAvatar: '',
+    userName:   row.users?.name ?? '—',
+    occasion:   row.occasion ?? '—',
+    price:      row.price ?? 0,
+    status:     row.status === 'pending' ? 'pending_review' : row.status,
+    createdAt:  row.created_at?.slice(0, 10) ?? '',
+    message:    row.message ?? '',
+  }
+}
 
 export default function AdminDashboard() {
-  const [orders, setOrders] = useState(adminOrders)
+  const [orders, setOrders] = useState([])
+  const [loadingOrders, setLoadingOrders] = useState(true)
 
-  useEffect(() => {
+  const loadOrders = () => {
+    setLoadingOrders(true)
     fetchAllOrders().then(({ data, error }) => {
-      if (!error && data?.length) {
-        setOrders(data.map(row => ({
-          id:         row.id,
-          talentName: row.talent_profiles?.display_name ?? '—',
-          userName:   row.users?.name ?? '—',
-          occasion:   row.occasion,
-          price:      row.price,
-          status:     row.status === 'pending' ? 'pending_review' : row.status,
-          createdAt:  row.created_at?.slice(0,10),
-          message:    row.message,
-        })))
-      }
+      if (!error && data) setOrders(data.map(toAdminOrder))
+      setLoadingOrders(false)
     })
-  }, [])
+  }
+
+  useEffect(() => { loadOrders() }, [])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [tab, setTab] = useState('swipe')
   const [showDetail, setShowDetail] = useState(null)
@@ -53,11 +76,12 @@ export default function AdminDashboard() {
     }
   }
 
-  const decide = (action) => {
+  const decide = async (action) => {
     if (!currentOrder) return
     const newStatus = action === 'approve' ? 'processing' : 'rejected'
-    setOrders(ords => ords.map(o => o.id === currentOrder.id ? { ...o, status: action === 'approve' ? 'approved' : 'rejected' } : o))
-    updateOrderStatus(currentOrder.id, newStatus).catch(console.error)
+    const uiStatus  = action === 'approve' ? 'processing' : 'rejected'
+    setOrders(ords => ords.map(o => o.id === currentOrder.id ? { ...o, status: uiStatus } : o))
+    await updateOrderStatus(currentOrder.id, newStatus).catch(console.error)
     controls.set({ x: 0, opacity: 1 })
     setCurrentIndex(i => i + 1)
     x.set(0)
@@ -74,9 +98,17 @@ export default function AdminDashboard() {
     <div className="min-h-screen pt-24 pb-20 page-enter bg-[#F5F7FA]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <p className="text-gray-400 text-sm mb-1">管理者パネル</p>
-          <h1 className="text-3xl font-black text-gray-900">ダッシュボード</h1>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-10">
+          <div>
+            <p className="text-gray-400 text-sm mb-1">管理者パネル</p>
+            <h1 className="text-3xl font-black text-gray-900">ダッシュボード</h1>
+          </div>
+          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            onClick={loadOrders}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:border-pink-200 hover:text-[#FE3B8C] transition-all shadow-sm">
+            <RefreshCw className={`w-4 h-4 ${loadingOrders ? 'animate-spin' : ''}`} />
+            更新
+          </motion.button>
         </motion.div>
 
         {/* Stats */}
@@ -147,18 +179,30 @@ export default function AdminDashboard() {
 
                   {/* Card Content */}
                   <div className="p-7 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-6">
-                      <span className="text-xs font-mono text-gray-300">{currentOrder.id}</span>
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="text-xs font-mono text-gray-300">{currentOrder.id?.slice(0,18)}…</span>
                       <span className="text-xs text-gray-300">{currentOrder.createdAt}</span>
                     </div>
 
                     <div className="flex-1">
-                      <p className="text-xs text-gray-400 mb-1">タレント</p>
-                      <p className="text-2xl font-black text-gray-900 mb-4">{currentOrder.talentName}</p>
+                      {/* タレント情報 */}
+                      <div className="flex items-center gap-3 mb-4">
+                        {currentOrder.talentAvatar
+                          ? <img src={currentOrder.talentAvatar} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                          : <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                              style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                              {currentOrder.talentName?.[0] ?? '?'}
+                            </div>
+                        }
+                        <div>
+                          <p className="text-xs text-gray-400">タレント</p>
+                          <p className="text-xl font-black text-gray-900">{currentOrder.talentName}</p>
+                        </div>
+                      </div>
 
                       <div className="grid grid-cols-2 gap-3 mb-5">
                         <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                          <p className="text-xs text-gray-400 mb-1">ユーザー</p>
+                          <p className="text-xs text-gray-400 mb-1">依頼者</p>
                           <p className="text-sm font-semibold text-gray-800">{currentOrder.userName}</p>
                         </div>
                         <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
@@ -187,9 +231,13 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-16">
-                <div className="text-6xl mb-4">✅</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">すべて審査完了！</h3>
-                <p className="text-gray-400">新しいリクエストが届いたらここに表示されます</p>
+                <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="text-6xl mb-4">✅</motion.div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  {loadingOrders ? '読み込み中...' : '審査待ちはありません'}
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  {loadingOrders ? '' : '新しいリクエストが届いたらここに表示されます'}
+                </p>
               </motion.div>
             )}
 
@@ -294,7 +342,7 @@ export default function AdminDashboard() {
                   <p className="font-semibold text-gray-800 text-sm">{order.talentName} ← {order.userName}</p>
                   <p className="text-xs text-gray-400">{order.occasion} · {order.createdAt}</p>
                 </div>
-                <p className="text-base font-bold text-gray-900 flex-shrink-0">¥{order.price.toLocaleString()}</p>
+                <p className="text-base font-bold text-gray-900 flex-shrink-0">¥{(order.price ?? 0).toLocaleString()}</p>
                 <button onClick={() => setShowDetail(order)} className="p-2 bg-gray-50 rounded-xl text-gray-400 hover:text-gray-700 border border-gray-100 transition-colors">
                   <Eye className="w-4 h-4" />
                 </button>
