@@ -349,7 +349,7 @@ export default function RequestFlowPage() {
                     <p className="font-semibold text-gray-900">次のステップ</p>
                   </div>
                   {[
-                    `${talent.responseTime}以内に動画が届きます`,
+                    `${talent.responseTime}に動画が届きます`,
                     'マイページから受け取り状況を確認できます',
                     '完成したらメールでお知らせします',
                   ].map(item => (
