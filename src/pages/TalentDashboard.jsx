@@ -1,18 +1,28 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { DollarSign, Video, Star, Clock, CheckCircle, Upload, X, Sparkles, Settings, ChevronRight } from 'lucide-react'
+import { DollarSign, Video, Star, Clock, CheckCircle, Upload, X, Sparkles, Settings, ChevronRight, Bell, BellOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useTalents } from '../context/TalentsContext'
 
 export default function TalentDashboard() {
-  const { user } = useAuth()
+  const { user, updateProfile } = useAuth()
+  const { registerTalent } = useTalents()
   const [activeTab, setActiveTab] = useState('requests')
   const [uploadModal, setUploadModal] = useState(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploading, setUploading] = useState(false)
 
   const talentProfile = user?.talentProfile || null
+  const isAvailable = talentProfile?.available !== false // デフォルトは受付中
   const orders = [] // 将来的にAPIから取得
+
+  const handleToggleAvailable = () => {
+    const newAvailable = !isAvailable
+    const updated = { ...talentProfile, available: newAvailable }
+    updateProfile({ talentProfile: updated })
+    if (user?.id) registerTalent(user.id, updated)
+  }
 
   const stats = [
     { label: '今月の収益', value: '¥0', icon: <DollarSign className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #10B981, #34D399)', shadow: 'rgba(16,185,129,0.25)', trend: '—' },
@@ -56,8 +66,20 @@ export default function TalentDashboard() {
             <div className="flex items-center gap-2 mt-1">
               {talentProfile?.setupComplete ? (
                 <>
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-sm text-green-600 font-medium">受付中</span>
+                  <motion.button
+                    onClick={handleToggleAvailable}
+                    whileTap={{ scale: 0.96 }}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border-2 transition-all"
+                    style={{
+                      borderColor: isAvailable ? '#10B981' : '#D1D5DB',
+                      background: isAvailable ? '#F0FDF4' : '#F9FAFB',
+                      color: isAvailable ? '#059669' : '#6B7280',
+                    }}>
+                    {isAvailable
+                      ? <><div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />受付中</>
+                      : <><div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />受付終了</>
+                    }
+                  </motion.button>
                   <span className="text-gray-300 mx-1">|</span>
                   <span className="text-sm text-gray-400">¥{Number(talentProfile.price).toLocaleString()} / リクエスト</span>
                 </>
@@ -74,6 +96,41 @@ export default function TalentDashboard() {
             </motion.button>
           </Link>
         </motion.div>
+
+        {/* Availability Toggle Card */}
+        {talentProfile?.setupComplete && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-between bg-white rounded-2xl px-5 py-4 mb-6 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: isAvailable ? '#F0FDF4' : '#F9FAFB' }}>
+                {isAvailable
+                  ? <Bell className="w-5 h-5 text-green-500" />
+                  : <BellOff className="w-5 h-5 text-gray-400" />
+                }
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800">
+                  {isAvailable ? 'リクエスト受付中' : 'リクエスト受付終了'}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {isAvailable ? 'オフにするとファンからのリクエストが停止します' : 'オンにするとリクエストを再開します'}
+                </p>
+              </div>
+            </div>
+            <motion.button
+              onClick={handleToggleAvailable}
+              whileTap={{ scale: 0.95 }}
+              className="relative w-12 h-6 rounded-full transition-colors flex-shrink-0"
+              style={{ background: isAvailable ? '#10B981' : '#D1D5DB' }}>
+              <motion.div
+                animate={{ x: isAvailable ? 24 : 2 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow"
+              />
+            </motion.button>
+          </motion.div>
+        )}
 
         {/* Profile Incomplete Banner */}
         {!talentProfile?.setupComplete && (
