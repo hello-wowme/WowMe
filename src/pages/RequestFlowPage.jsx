@@ -31,6 +31,19 @@ export default function RequestFlowPage() {
   })
   const [charCount, setCharCount] = useState(0)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [nameError, setNameError] = useState('')
+
+  const handleRecipientNameChange = (e) => {
+    const value = e.target.value
+    // ひらがな・長音符・スペースのみ許可
+    const hiraganaOnly = /^[\u3040-\u309F\u30FC\s]*$/
+    if (value === '' || hiraganaOnly.test(value)) {
+      setForm(f => ({ ...f, recipientName: value }))
+      setNameError('')
+    } else {
+      setNameError('ひらがなのみ入力できます')
+    }
+  }
 
   const handleNext = () => { if (step < STEPS.length - 1) setStep(s => s + 1) }
   const handleBack = () => { if (step > 0) setStep(s => s - 1) }
@@ -166,11 +179,17 @@ export default function RequestFlowPage() {
                       受取人の名前 <span style={{ color: '#FE3B8C' }}>*</span>
                     </label>
                     <input type="text" placeholder="例：さくら" value={form.recipientName}
-                      onChange={e => setForm(f => ({ ...f, recipientName: e.target.value }))}
-                      className="w-full bg-white border-2 border-gray-100 rounded-xl px-5 py-3.5 text-gray-800 placeholder:text-gray-300 focus:outline-none transition-all"
-                      style={{ ':focus': { borderColor: '#FE3B8C' } }}
-                      onFocus={e => e.target.style.borderColor = '#FE3B8C'}
-                      onBlur={e => e.target.style.borderColor = '#F0F0F5'} />
+                      onChange={handleRecipientNameChange}
+                      className="w-full bg-white border-2 rounded-xl px-5 py-3.5 text-gray-800 placeholder:text-gray-300 focus:outline-none transition-all"
+                      style={{ borderColor: nameError ? '#EF4444' : '#F0F0F5' }}
+                      onFocus={e => e.target.style.borderColor = nameError ? '#EF4444' : '#FE3B8C'}
+                      onBlur={e => e.target.style.borderColor = nameError ? '#EF4444' : '#F0F0F5'} />
+                    {nameError && (
+                      <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                        <span>⚠️</span> {nameError}
+                      </p>
+                    )}
+                    <p className="text-xs text-gray-300 mt-1">ひらがなのみ入力できます（例：さくら）</p>
                   </motion.div>
                 )}
 
