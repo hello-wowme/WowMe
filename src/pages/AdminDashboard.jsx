@@ -5,33 +5,44 @@ import { useTalents } from '../context/TalentsContext'
 import LevelBadge from '../components/UI/LevelBadge'
 import { fetchAllOrders, updateOrderStatus } from '../lib/db'
 
+const OCCASION_LABEL = {
+  birthday:    '🎂 誕生日',
+  graduation:  '🎓 卒業・入学',
+  cheering:    '📣 応援',
+  anniversary: '💍 記念日',
+  gift:        '🎁 プレゼント',
+  just_for_me: '⭐ 自分用',
+  wedding:     '💒 結婚',
+  other:       '💫 その他',
+}
+
 // DB行またはlocalStorage行 → 管理画面用オブジェクトに変換
 function toAdminOrder(row) {
   // localStorage形式（local_プレフィックス）
   if (row.id?.startsWith('local_')) {
     return {
-      id:         row.id,
-      talentName: row.talentName ?? '—',
+      id:           row.id,
+      talentName:   row.talentName ?? '—',
       talentAvatar: row.talentAvatar ?? '',
-      userName:   row.recipientName || '—',
-      occasion:   row.occasion ?? '—',
-      price:      row.price ?? 0,
-      status:     row.status === 'pending' ? 'pending_review' : row.status,
-      createdAt:  row.createdAt?.slice(0, 10) ?? '',
-      message:    row.message ?? '',
+      userName:     row.recipientName || '—',
+      occasion:     OCCASION_LABEL[row.occasion] ?? row.occasion ?? '—',
+      price:        row.price ?? 0,
+      status:       row.status === 'pending' ? 'pending_review' : row.status,
+      createdAt:    row.createdAt?.slice(0, 10) ?? '',
+      message:      row.message ?? '',
     }
   }
   // Supabase行
   return {
-    id:         row.id,
-    talentName: row.talent_profiles?.display_name ?? '—',
+    id:           row.id,
+    talentName:   row.talent_profiles?.display_name ?? '—',
     talentAvatar: '',
-    userName:   row.users?.name ?? '—',
-    occasion:   row.occasion ?? '—',
-    price:      row.price ?? 0,
-    status:     row.status === 'pending' ? 'pending_review' : row.status,
-    createdAt:  row.created_at?.slice(0, 10) ?? '',
-    message:    row.message ?? '',
+    userName:     row.users?.name ?? '—',
+    occasion:     OCCASION_LABEL[row.occasion] ?? row.occasion ?? '—',
+    price:        row.price ?? 0,
+    status:       row.status === 'pending' ? 'pending_review' : row.status,
+    createdAt:    row.created_at?.slice(0, 10) ?? '',
+    message:      row.message ?? '',
   }
 }
 
