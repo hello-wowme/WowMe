@@ -25,6 +25,8 @@ export const talents = [
     available: true,
     featured: true,
     responseTimeHours: 24,
+    level: 5,
+    totalOrders: 1243,
   },
   {
     id: '2',
@@ -51,6 +53,8 @@ export const talents = [
     available: true,
     featured: true,
     responseTimeHours: 48,
+    level: 4,
+    totalOrders: 892,
   },
   {
     id: '3',
@@ -77,6 +81,8 @@ export const talents = [
     available: true,
     featured: true,
     responseTimeHours: 24,
+    level: 5,
+    totalOrders: 2105,
   },
   {
     id: '4',
@@ -102,6 +108,8 @@ export const talents = [
     available: true,
     featured: false,
     responseTimeHours: 72,
+    level: 3,
+    totalOrders: 456,
   },
   {
     id: '5',
@@ -127,6 +135,8 @@ export const talents = [
     available: false,
     featured: false,
     responseTimeHours: 24,
+    level: 4,
+    totalOrders: 734,
   },
   {
     id: '6',
@@ -151,6 +161,8 @@ export const talents = [
     available: true,
     featured: false,
     responseTimeHours: 48,
+    level: 3,
+    totalOrders: 312,
   },
 ]
 

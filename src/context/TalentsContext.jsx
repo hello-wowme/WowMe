@@ -38,10 +38,13 @@ export function TalentsProvider({ children }) {
         avatar: profile.avatar || '',
         tags: profile.tags || [],
         sampleVideos: profile.sampleVideos || [],
-        available: true,
+        available: profile.available !== false,
         featured: false,
-        rating: 0,
-        reviewCount: 0,
+        rating: profile.rating || 0,
+        reviewCount: profile.reviewCount || 0,
+        totalOrders: profile.totalOrders || 0,
+        level: profile.level || 1,
+        completionRate: profile.completionRate || 100,
         isRegistered: true,
       }
       const next = exists >= 0

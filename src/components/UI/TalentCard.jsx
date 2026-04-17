@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Star, Clock, Zap } from 'lucide-react'
+import LevelBadge from './LevelBadge'
 
 export default function TalentCard({ talent, index = 0 }) {
   return (
@@ -67,7 +68,10 @@ export default function TalentCard({ talent, index = 0 }) {
             </div>
           </div>
 
-          <p className="text-xs font-semibold mb-3" style={{ color: '#FE3B8C' }}>{talent.category}</p>
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <p className="text-xs font-semibold" style={{ color: '#FE3B8C' }}>{talent.category}</p>
+            {talent.level && <LevelBadge level={talent.level} size="sm" />}
+          </div>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 mb-4">

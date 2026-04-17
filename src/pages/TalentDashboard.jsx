@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { DollarSign, Video, Star, Clock, CheckCircle, Upload, X, Sparkles, Settings, ChevronRight, Bell, BellOff } from 'lucide-react'
+import { DollarSign, Video, Star, Clock, CheckCircle, Upload, X, Sparkles, Settings, ChevronRight, Bell, BellOff, TrendingUp, Award } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTalents } from '../context/TalentsContext'
+import LevelBadge from '../components/UI/LevelBadge'
+import { getLevelInfo, getLevelProgress, calcLevel } from '../utils/talentLevel'
 
 export default function TalentDashboard() {
   const { user, updateProfile } = useAuth()
@@ -14,8 +16,15 @@ export default function TalentDashboard() {
   const [uploading, setUploading] = useState(false)
 
   const talentProfile = user?.talentProfile || null
-  const isAvailable = talentProfile?.available !== false // デフォルトは受付中
+  const isAvailable = talentProfile?.available !== false
   const orders = [] // 将来的にAPIから取得
+
+  // レベル計算
+  const totalOrders = talentProfile?.totalOrders || 0
+  const rating = talentProfile?.rating || 0
+  const level = talentProfile?.level || calcLevel(totalOrders, rating)
+  const levelInfo = getLevelInfo(level)
+  const levelProgress = getLevelProgress(level, totalOrders, rating)
 
   const handleToggleAvailable = () => {
     const newAvailable = !isAvailable
@@ -149,6 +158,77 @@ export default function TalentDashboard() {
                 設定する <ChevronRight className="w-4 h-4" />
               </motion.button>
             </Link>
+          </motion.div>
+        )}
+
+        {/* Level Panel */}
+        {talentProfile?.setupComplete && (
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
+            className="rounded-3xl p-6 mb-6 border"
+            style={{ background: levelInfo.bgColor, borderColor: levelInfo.borderColor, boxShadow: `0 4px 24px ${levelInfo.glowColor}` }}>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: levelInfo.color }}>
+                  現在のランク
+                </p>
+                <LevelBadge level={level} size="lg" />
+                <p className="text-xs mt-2" style={{ color: levelInfo.textColor }}>{levelInfo.description}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-400 mb-1">あなたの報酬率</p>
+                <p className="text-3xl font-black" style={{ color: levelInfo.color }}>
+                  {Math.round(levelInfo.talentShare * 100)}%
+                </p>
+                <p className="text-xs text-gray-400">運営 {Math.round(levelInfo.platformShare * 100)}%</p>
+              </div>
+            </div>
+
+            {/* 次レベルへの進捗 */}
+            {levelProgress ? (
+              <div className="mt-2">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="font-medium" style={{ color: levelInfo.textColor }}>
+                    次のレベル：Lv{levelProgress.nextLevel} {levelProgress.nextLevelInfo.label} {levelProgress.nextLevelInfo.emoji}
+                  </span>
+                  <span style={{ color: levelInfo.color }}>
+                    {Math.round(levelProgress.orderProgress * 100)}%
+                  </span>
+                </div>
+                {/* プログレスバー */}
+                <div className="h-2 bg-white/60 rounded-full overflow-hidden mb-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${levelProgress.orderProgress * 100}%` }}
+                    transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+                    className="h-full rounded-full"
+                    style={{ background: levelInfo.gradient }}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-3 text-xs">
+                  <span className={`flex items-center gap-1 ${totalOrders >= levelProgress.ordersNeeded ? 'text-green-600' : 'text-gray-500'}`}>
+                    {totalOrders >= levelProgress.ordersNeeded ? '✅' : '📦'}
+                    注文 {totalOrders}/{levelProgress.ordersNeeded}件
+                    {levelProgress.orderRemaining > 0 && <span className="text-gray-400">（あと{levelProgress.orderRemaining}件）</span>}
+                  </span>
+                  {levelProgress.ratingNeeded && (
+                    <span className={`flex items-center gap-1 ${levelProgress.ratingOk ? 'text-green-600' : 'text-gray-500'}`}>
+                      {levelProgress.ratingOk ? '✅' : '⭐'}
+                      評価 {rating || '—'}/{levelProgress.ratingNeeded}以上
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <motion.div
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ repeat: Infinity, duration: 2.5 }}
+                className="flex items-center gap-2 mt-2">
+                <Award className="w-5 h-5" style={{ color: levelInfo.color }} />
+                <p className="text-sm font-bold" style={{ color: levelInfo.textColor }}>
+                  最高ランク達成！これ以上のレベルはありません 🎉
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         )}
 

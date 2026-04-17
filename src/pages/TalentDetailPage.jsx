@@ -1,11 +1,16 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Star, Clock, Zap, Heart, Share2, Play, ChevronLeft, CheckCircle, ArrowRight } from 'lucide-react'
+import { Star, Clock, Zap, Heart, Share2, Play, ChevronLeft, CheckCircle, ArrowRight, TrendingUp } from 'lucide-react'
 import { talents } from '../data/mockData'
+import LevelBadge from '../components/UI/LevelBadge'
+import { getLevelInfo, calcRevenueShare } from '../utils/talentLevel'
 
 export default function TalentDetailPage() {
   const { id } = useParams()
   const talent = talents.find(t => t.id === id) || talents[0]
+  const level = talent.level || 1
+  const levelInfo = getLevelInfo(level)
+  const { talentAmount, platformAmount } = calcRevenueShare(talent.price, level)
 
   return (
     <div className="min-h-screen pt-16 page-enter bg-[#F5F7FA]">
@@ -41,10 +46,13 @@ export default function TalentDetailPage() {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black text-gray-900">{talent.name}</h1>
                     <p className="text-gray-400 text-sm">{talent.handle}</p>
-                    <span className="inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-semibold text-white"
-                      style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
-                      {talent.category}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap mt-1.5">
+                      <span className="inline-block px-3 py-0.5 rounded-full text-xs font-semibold text-white"
+                        style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+                        {talent.category}
+                      </span>
+                      <LevelBadge level={level} size="sm" />
+                    </div>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <button className="p-2.5 bg-white rounded-xl text-gray-400 hover:text-[#FE3B8C] border border-gray-100 transition-colors shadow-sm">
@@ -149,11 +157,42 @@ export default function TalentDetailPage() {
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="sticky top-28">
               <div className="bg-white rounded-3xl p-7 space-y-6 border border-gray-100 shadow-lg">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">リクエスト料金</p>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-gray-400 text-sm">リクエスト料金</p>
+                    <LevelBadge level={level} size="sm" />
+                  </div>
                   <p className="text-4xl font-black text-gray-900">
                     ¥{talent.price.toLocaleString()}
                     <span className="text-lg text-gray-400 font-normal ml-1">〜</span>
                   </p>
+                  {/* 料金内訳 */}
+                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                    className="mt-3 rounded-2xl p-3 space-y-1.5 text-xs"
+                    style={{ background: levelInfo.bgColor, border: `1.5px solid ${levelInfo.borderColor}` }}>
+                    <p className="font-semibold mb-2" style={{ color: levelInfo.textColor }}>
+                      <TrendingUp className="w-3.5 h-3.5 inline mr-1" />
+                      料金の内訳
+                    </p>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">タレントへ（{Math.round(levelInfo.talentShare * 100)}%）</span>
+                      <span className="font-bold text-gray-800">¥{talentAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">運営へ（{Math.round(levelInfo.platformShare * 100)}%）</span>
+                      <span className="text-gray-500">¥{platformAmount.toLocaleString()}</span>
+                    </div>
+                    {/* 比率バー */}
+                    <div className="flex h-1.5 rounded-full overflow-hidden mt-2 gap-0.5">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${levelInfo.talentShare * 100}%` }}
+                        transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+                        className="rounded-l-full"
+                        style={{ background: levelInfo.gradient }}
+                      />
+                      <div className="flex-1 bg-gray-200 rounded-r-full" />
+                    </div>
+                  </motion.div>
                 </div>
 
                 <div className="space-y-3">
