@@ -206,6 +206,10 @@ export default function VideoRevealPage() {
               <p className="text-sm font-semibold text-gray-800 mb-1">SNSでシェアしよう ✨</p>
               <p className="text-xs text-gray-400 mb-4">あなたの感動を友達にも伝えよう</p>
               <motion.button whileHover={{ scale: 1.05 }}
+                onClick={() => {
+                  const text = `${talent.name}さんからパーソナライズ動画メッセージが届きました🎁✨\n推しへのリクエストは👇\nhttps://wowme-surprise.vercel.app/`
+                  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+                }}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
                 style={{ background: '#1da1f2' }}>
                 <Twitter className="w-4 h-4" />X でシェア
