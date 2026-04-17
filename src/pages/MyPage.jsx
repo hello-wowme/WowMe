@@ -55,11 +55,18 @@ export default function MyPage() {
             <h1 className="text-2xl font-black text-gray-900">{user?.name || 'ゲスト'}</h1>
             <p className="text-gray-400 text-sm">{user?.email}</p>
             <div className="flex items-center gap-3 mt-2">
-              <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full"
-                style={{ color: '#F59E0B', background: '#FFFBEB' }}>
-                <Star className="w-3.5 h-3.5 fill-current" />
-                ファンLv.1
-              </span>
+              {user?.email === 'hello.wowme@gmail.com' ? (
+                <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full"
+                  style={{ color: '#7C3AED', background: '#F5F3FF' }}>
+                  👑 管理者
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full"
+                  style={{ color: '#F59E0B', background: '#FFFBEB' }}>
+                  <Star className="w-3.5 h-3.5 fill-current" />
+                  ファンLv.1
+                </span>
+              )}
               <span className="text-xs text-gray-400">{orders.length}件のリクエスト</span>
             </div>
           </div>
