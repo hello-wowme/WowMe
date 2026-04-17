@@ -101,6 +101,16 @@ export async function uploadAvatar(userId, file) {
   return { url: data.publicUrl, error: null }
 }
 
+export async function uploadCover(userId, file) {
+  if (!isSupabaseReady()) return { url: null, error: null }
+  const ext  = file.name.split('.').pop()
+  const path = `${userId}/cover.${ext}`
+  const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+  if (error) return { url: null, error }
+  const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+  return { url: data.publicUrl, error: null }
+}
+
 export async function uploadVideo(orderId, file) {
   if (!isSupabaseReady()) return { url: null, error: null }
   const ext  = file.name.split('.').pop()

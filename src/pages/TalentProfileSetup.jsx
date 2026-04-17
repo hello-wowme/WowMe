@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Camera, Plus, X, Check, ChevronRight, Upload, Sparkles, Clock, DollarSign } from 'lucide-react'
+import { Camera, ImagePlus, Plus, X, Check, ChevronRight, Upload, Sparkles, Clock } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTalents } from '../context/TalentsContext'
-import { uploadAvatar } from '../lib/db'
+import { uploadAvatar, uploadCover } from '../lib/db'
 
 const RESPONSE_OPTIONS = [
   { value: 24, label: '24時間以内' },
@@ -39,6 +39,7 @@ export default function TalentProfileSetup() {
     price: '',
     responseTime: 24,
     avatarPreview: user?.picture || '',
+    coverPreview: '',
     sampleVideos: [],
   })
 
@@ -57,9 +58,15 @@ export default function TalentProfileSetup() {
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    // プレビュー用にローカルURLをすぐ表示
     updateField('avatarPreview', URL.createObjectURL(file))
-    updateField('avatarFile', file) // アップロード用に保持
+    updateField('avatarFile', file)
+  }
+
+  const handleCoverUpload = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    updateField('coverPreview', URL.createObjectURL(file))
+    updateField('coverFile', file)
   }
 
   const handleSampleVideoUpload = (e) => {
@@ -71,18 +78,22 @@ export default function TalentProfileSetup() {
   }
 
   const canProceed = () => {
-    if (step === 0) return profile.displayName && profile.category
+    if (step === 0) return profile.displayName && profile.category && profile.avatarPreview && profile.coverPreview
     if (step === 1) return profile.price && Number(profile.price) > 0
     return true
   }
 
   const handleComplete = async () => {
     let avatarUrl = profile.avatarPreview
+    let coverUrl  = profile.coverPreview
 
-    // Supabase Storage にアバターをアップロード
     if (profile.avatarFile) {
       const { url, error } = await uploadAvatar(user.id, profile.avatarFile)
       if (!error && url) avatarUrl = url
+    }
+    if (profile.coverFile) {
+      const { url, error } = await uploadCover(user.id, profile.coverFile)
+      if (!error && url) coverUrl = url
     }
 
     const talentProfile = {
@@ -93,6 +104,7 @@ export default function TalentProfileSetup() {
       price:         Number(profile.price),
       responseTime:  profile.responseTime,
       avatar:        avatarUrl,
+      cover:         coverUrl,
       sampleVideos:  profile.sampleVideos,
       setupComplete: true,
       level:         1,
@@ -155,25 +167,56 @@ export default function TalentProfileSetup() {
               >
                 <h2 className="font-bold text-gray-900 text-lg">基本情報</h2>
 
+                {/* Cover Image Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    ヘッダー画像 <span className="text-[#FE3B8C]">*</span>
+                  </label>
+                  <label className="relative block w-full h-32 rounded-2xl overflow-hidden cursor-pointer group"
+                    style={{ border: profile.coverPreview ? 'none' : '2px dashed #E5E7EB', background: profile.coverPreview ? 'transparent' : '#FAFAFA' }}>
+                    {profile.coverPreview
+                      ? <img src={profile.coverPreview} alt="" className="w-full h-full object-cover" />
+                      : <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                          <ImagePlus className="w-8 h-8 text-gray-300" />
+                          <p className="text-sm text-gray-400">クリックして画像を追加</p>
+                          <p className="text-xs text-gray-300">JPG, PNG（推奨: 1200×400px）</p>
+                        </div>
+                    }
+                    {profile.coverPreview && (
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <p className="text-white text-sm font-medium">変更する</p>
+                      </div>
+                    )}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+                  </label>
+                </div>
+
                 {/* Avatar Upload */}
-                <div className="flex items-center gap-5">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center"
-                      style={{ border: '2px dashed #E5E7EB' }}>
-                      {profile.avatarPreview
-                        ? <img src={profile.avatarPreview} alt="" className="w-full h-full object-cover" />
-                        : <Camera className="w-8 h-8 text-gray-300" />
-                      }
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    プロフィール画像 <span className="text-[#FE3B8C]">*</span>
+                  </label>
+                  <div className="flex items-center gap-5">
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center"
+                        style={{ border: '2px dashed #E5E7EB' }}>
+                        {profile.avatarPreview
+                          ? <img src={profile.avatarPreview} alt="" className="w-full h-full object-cover" />
+                          : <Camera className="w-8 h-8 text-gray-300" />
+                        }
+                      </div>
+                      <label className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-white shadow-md"
+                        style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+                        <Plus className="w-4 h-4" />
+                        <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+                      </label>
                     </div>
-                    <label className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-white shadow-md"
-                      style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
-                      <Plus className="w-4 h-4" />
-                      <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-                    </label>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-700 text-sm">プロフィール画像</p>
-                    <p className="text-xs text-gray-400 mt-0.5">JPG, PNG（推奨: 400×400px）</p>
+                    <div>
+                      <p className="text-xs text-gray-400">JPG, PNG（推奨: 400×400px）</p>
+                      {!profile.avatarPreview && (
+                        <p className="text-xs mt-1" style={{ color: '#FE3B8C' }}>※ 必須項目です</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
