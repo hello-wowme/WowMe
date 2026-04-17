@@ -308,24 +308,59 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {deleteTarget && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={e => { if (e.target === e.currentTarget) setDeleteTarget(null) }}>
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.85, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
               className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100">
-              <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
-                <Trash2 className="w-7 h-7 text-red-500" />
+
+              {/* アイコン */}
+              <motion.div
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 18 }}
+                className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
+                <Trash2 className="w-8 h-8 text-red-500" />
+              </motion.div>
+
+              <h3 className="font-black text-gray-900 text-xl text-center mb-2">本当に削除しますか？</h3>
+
+              {/* タレント情報プレビュー */}
+              <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 my-5 border border-gray-100">
+                {deleteTarget.avatar
+                  ? <img src={deleteTarget.avatar} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                  : <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0"
+                      style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+                      {deleteTarget.name?.[0]}
+                    </div>
+                }
+                <div className="min-w-0">
+                  <p className="font-bold text-gray-900 truncate">{deleteTarget.name}</p>
+                  <p className="text-xs text-gray-400">{deleteTarget.category} · ¥{deleteTarget.price?.toLocaleString()}</p>
+                </div>
               </div>
-              <h3 className="font-bold text-gray-900 text-xl text-center mb-2">タレントを削除</h3>
+
               <p className="text-gray-500 text-sm text-center mb-6">
-                <span className="font-bold text-gray-800">「{deleteTarget.name}」</span> をタレント一覧から削除しますか？<br />
-                この操作は取り消せません。
+                このタレントをプラットフォームから完全に削除します。<br />
+                <span className="font-semibold text-red-500">この操作は取り消せません。</span>
               </p>
+
               <div className="flex gap-3">
-                <button onClick={() => setDeleteTarget(null)} className="btn-ghost flex-1 py-3 text-sm">キャンセル</button>
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => { removeTalent(deleteTarget.userId); setDeleteTarget(null) }}
-                  className="flex-1 py-3 rounded-full text-sm font-semibold text-white transition-all"
-                  style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}>
+                <motion.button
+                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => setDeleteTarget(null)}
+                  className="flex-1 py-3 rounded-full text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all">
+                  キャンセル
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                  onClick={async () => {
+                    await removeTalent(deleteTarget.userId)
+                    setDeleteTarget(null)
+                  }}
+                  className="flex-1 py-3 rounded-full text-sm font-semibold text-white shadow-md transition-all"
+                  style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)', boxShadow: '0 4px 16px rgba(239,68,68,0.35)' }}>
                   削除する
                 </motion.button>
               </div>
