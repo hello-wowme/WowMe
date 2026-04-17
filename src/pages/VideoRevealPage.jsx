@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Share2, Download, Heart, Sparkles, Twitter, Instagram, ArrowRight } from 'lucide-react'
+import { Play, Share2, Download, Heart, Sparkles, Twitter, ArrowRight } from 'lucide-react'
 import { mockOrders, talents } from '../data/mockData'
 
 const PARTICLE_COUNT = 60
@@ -198,18 +198,11 @@ export default function VideoRevealPage() {
               className="bg-white rounded-2xl p-5 mb-6 border border-gray-100 shadow-sm">
               <p className="text-sm font-semibold text-gray-800 mb-1">SNSでシェアしよう ✨</p>
               <p className="text-xs text-gray-400 mb-4">あなたの感動を友達にも伝えよう</p>
-              <div className="flex gap-3">
-                <motion.button whileHover={{ scale: 1.05 }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
-                  style={{ background: '#1da1f2' }}>
-                  <Twitter className="w-4 h-4" />X でシェア
-                </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
-                  style={{ background: 'linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' }}>
-                  <Instagram className="w-4 h-4" />Instagram
-                </motion.button>
-              </div>
+              <motion.button whileHover={{ scale: 1.05 }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
+                style={{ background: '#1da1f2' }}>
+                <Twitter className="w-4 h-4" />X でシェア
+              </motion.button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="text-center">
