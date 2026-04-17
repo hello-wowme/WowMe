@@ -69,14 +69,17 @@ export default function RequestFlowPage() {
 
   const handlePaymentSuccess = async () => {
     await createOrder({
-      userId:           user?.id,
-      talentProfileId:  talent.id,
-      occasion:         form.occasion,
-      recipientName:    form.recipientName,
-      message:          form.message,
-      instructions:     form.instructions,
-      isGift:           form.isGift,
-      price:            talent.price,
+      userId:          user?.id,
+      talentProfileId: talent.id,
+      talentName:      talent.name,
+      talentAvatar:    talent.avatar,
+      talentCategory:  talent.category,
+      occasion:        form.occasion,
+      recipientName:   form.recipientName,
+      message:         form.message,
+      instructions:    form.instructions,
+      isGift:          form.isGift,
+      price:           talent.price,
     }).catch(console.error)
     setStep(3)
   }
@@ -346,7 +349,7 @@ export default function RequestFlowPage() {
                     <p className="font-semibold text-gray-900">次のステップ</p>
                   </div>
                   {[
-                    `${talent.responseTime}以内に動画が届きます`,
+                    `${talent.responseTime}に動画が届きます`,
                     'マイページから受け取り状況を確認できます',
                     '完成したらメールでお知らせします',
                   ].map(item => (
