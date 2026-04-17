@@ -4,21 +4,44 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Play, Share2, Download, Heart, Sparkles, Twitter, ArrowRight } from 'lucide-react'
 import { mockOrders, talents } from '../data/mockData'
 
-const PARTICLE_COUNT = 60
+const PARTICLE_COUNT = 80
+const COLORS = ['#FE3B8C', '#0080FF', '#fbbf24', '#34d399', '#a78bfa', '#f97316', '#ec4899', '#06b6d4']
 
-function Particle({ delay }) {
-  const x = Math.random() * 100
-  const color = ['#FE3B8C', '#0080FF', '#fbbf24', '#34d399', '#a78bfa'][Math.floor(Math.random() * 5)]
-  const size = Math.random() * 10 + 4
+function Cracker({ id }) {
+  const startX = 20 + Math.random() * 60   // 画面中央寄り 20〜80%
+  const angle = -60 + Math.random() * 120  // 左右に広がる放射角度（-60〜+60度）
+  const speed = 0.6 + Math.random() * 0.8  // 飛距離のばらつき
+  const vx = Math.sin((angle * Math.PI) / 180) * 55 * speed
+  const vy = -(70 + Math.random() * 60) * speed  // 上方向（負）
+  const color = COLORS[Math.floor(Math.random() * COLORS.length)]
+  const size = Math.random() * 10 + 5
+  const isRect = Math.random() > 0.45
+  const delay = Math.random() * 0.4
+
   return (
     <motion.div
-      initial={{ x: `${x}vw`, y: '-5vh', opacity: 1, rotate: 0 }}
-      animate={{ y: '110vh', opacity: [1, 1, 0], rotate: Math.random() * 720 - 360 }}
-      transition={{ duration: Math.random() * 3 + 2, delay, ease: 'linear' }}
+      initial={{ left: `${startX}vw`, top: '100vh', opacity: 1, rotate: 0, scaleY: 1 }}
+      animate={{
+        x: [`0vw`, `${vx}vw`],
+        y: [`0vh`, `${vy}vh`, `${vy * 0.2}vh`],   // 放物線：上昇 → 落下
+        opacity: [1, 1, 1, 0],
+        rotate: Math.random() * 900 - 450,
+        scaleY: [1, isRect ? 0.3 : 1, 1],
+      }}
+      transition={{
+        duration: 1.4 + Math.random() * 0.8,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+        opacity: { times: [0, 0.5, 0.75, 1] },
+      }}
       style={{
-        position: 'fixed', width: size, height: size * (Math.random() > 0.5 ? 0.4 : 1),
-        background: color, borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-        pointerEvents: 'none', zIndex: 100,
+        position: 'fixed',
+        width: isRect ? size * 0.45 : size,
+        height: isRect ? size * 1.8 : size,
+        background: color,
+        borderRadius: isRect ? '2px' : '50%',
+        pointerEvents: 'none',
+        zIndex: 200,
       }}
     />
   )
@@ -47,9 +70,9 @@ export default function VideoRevealPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center page-enter overflow-hidden"
       style={{ background: stage === 'watching' ? '#F5F7FA' : 'linear-gradient(160deg, #fff0f6, #f0f6ff)' }}>
-      {/* Confetti */}
+      {/* Crackers */}
       <AnimatePresence>
-        {particles.map(i => <Particle key={i} delay={i * 0.02} />)}
+        {particles.map(i => <Cracker key={i} id={i} />)}
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
