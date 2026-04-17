@@ -1,12 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion'
 import { CheckCircle, XCircle, Users, ShoppingBag, DollarSign, AlertTriangle, Eye, Trash2 } from 'lucide-react'
 import { adminOrders } from '../data/mockData'
 import { useTalents } from '../context/TalentsContext'
 import LevelBadge from '../components/UI/LevelBadge'
+import { fetchAllOrders, updateOrderStatus, dbOrderToApp } from '../lib/db'
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState(adminOrders)
+
+  useEffect(() => {
+    fetchAllOrders().then(({ data, error }) => {
+      if (!error && data?.length) {
+        setOrders(data.map(row => ({
+          id:         row.id,
+          talentName: row.talent_profiles?.display_name ?? '—',
+          userName:   row.users?.name ?? '—',
+          occasion:   row.occasion,
+          price:      row.price,
+          status:     row.status === 'pending' ? 'pending_review' : row.status,
+          createdAt:  row.created_at?.slice(0,10),
+          message:    row.message,
+        })))
+      }
+    })
+  }, [])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [tab, setTab] = useState('swipe')
   const [showDetail, setShowDetail] = useState(null)
@@ -37,7 +55,9 @@ export default function AdminDashboard() {
 
   const decide = (action) => {
     if (!currentOrder) return
+    const newStatus = action === 'approve' ? 'processing' : 'rejected'
     setOrders(ords => ords.map(o => o.id === currentOrder.id ? { ...o, status: action === 'approve' ? 'approved' : 'rejected' } : o))
+    updateOrderStatus(currentOrder.id, newStatus).catch(console.error)
     controls.set({ x: 0, opacity: 1 })
     setCurrentIndex(i => i + 1)
     x.set(0)

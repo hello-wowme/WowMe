@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, Plus, X, Check, ChevronRight, Upload, Sparkles, Clock, DollarSign } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTalents } from '../context/TalentsContext'
+import { uploadAvatar } from '../lib/db'
 
 const RESPONSE_OPTIONS = [
   { value: 24, label: '24時間以内' },
@@ -53,12 +54,12 @@ export default function TalentProfileSetup() {
 
   const removeTag = (tag) => updateField('tags', profile.tags.filter(t => t !== tag))
 
-  const handleAvatarUpload = (e) => {
+  const handleAvatarUpload = async (e) => {
     const file = e.target.files[0]
-    if (file) {
-      const url = URL.createObjectURL(file)
-      updateField('avatarPreview', url)
-    }
+    if (!file) return
+    // プレビュー用にローカルURLをすぐ表示
+    updateField('avatarPreview', URL.createObjectURL(file))
+    updateField('avatarFile', file) // アップロード用に保持
   }
 
   const handleSampleVideoUpload = (e) => {
@@ -75,20 +76,31 @@ export default function TalentProfileSetup() {
     return true
   }
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    let avatarUrl = profile.avatarPreview
+
+    // Supabase Storage にアバターをアップロード
+    if (profile.avatarFile) {
+      const { url, error } = await uploadAvatar(user.id, profile.avatarFile)
+      if (!error && url) avatarUrl = url
+    }
+
     const talentProfile = {
-      displayName: profile.displayName,
-      bio: profile.bio,
-      category: profile.category,
-      tags: profile.tags,
-      price: Number(profile.price),
-      responseTime: profile.responseTime,
-      avatar: profile.avatarPreview,
-      sampleVideos: profile.sampleVideos,
+      displayName:   profile.displayName,
+      bio:           profile.bio,
+      category:      profile.category,
+      tags:          profile.tags,
+      price:         Number(profile.price),
+      responseTime:  profile.responseTime,
+      avatar:        avatarUrl,
+      sampleVideos:  profile.sampleVideos,
       setupComplete: true,
+      level:         1,
+      totalOrders:   0,
+      rating:        0,
     }
     updateProfile({ talentProfile })
-    registerTalent(user.id, talentProfile)
+    await registerTalent(user.id, talentProfile)
     setStep(3)
   }
 

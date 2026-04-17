@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DollarSign, Video, Star, Clock, CheckCircle, Upload, X, Sparkles, Settings, ChevronRight, Bell, BellOff, TrendingUp, Award } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTalents } from '../context/TalentsContext'
+import { fetchOrdersByTalent, fetchTalentProfileByUserId, dbOrderToApp } from '../lib/db'
 import LevelBadge from '../components/UI/LevelBadge'
 import { getLevelInfo, getLevelProgress, calcLevel } from '../utils/talentLevel'
 
@@ -17,7 +18,20 @@ export default function TalentDashboard() {
 
   const talentProfile = user?.talentProfile || null
   const isAvailable = talentProfile?.available !== false
-  const orders = [] // 将来的にAPIから取得
+  const [orders, setOrders] = useState([])
+  const [dbProfile, setDbProfile] = useState(null)
+
+  useEffect(() => {
+    if (!user?.id) return
+    fetchTalentProfileByUserId(user.id).then(({ data }) => {
+      if (data) {
+        setDbProfile(data)
+        fetchOrdersByTalent(data.id).then(({ data: ords }) => {
+          if (ords) setOrders(ords.map(dbOrderToApp))
+        })
+      }
+    })
+  }, [user?.id])
 
   // レベル計算
   const totalOrders = talentProfile?.totalOrders || 0
@@ -33,11 +47,18 @@ export default function TalentDashboard() {
     if (user?.id) registerTalent(user.id, updated)
   }
 
+  const thisMonth = new Date().toISOString().slice(0, 7)
+  const monthOrders = orders.filter(o => o.createdAt?.startsWith(thisMonth))
+  const monthRevenue = monthOrders.filter(o => o.status === 'completed').reduce((s, o) => s + (o.price || 0), 0)
+  const pendingCount = orders.filter(o => o.status === 'pending').length
+  const completedCount = orders.filter(o => o.status === 'completed').length
+  const avgRating = dbProfile?.rating ? Number(dbProfile.rating).toFixed(2) : '—'
+
   const stats = [
-    { label: '今月の収益', value: '¥0', icon: <DollarSign className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #10B981, #34D399)', shadow: 'rgba(16,185,129,0.25)', trend: '—' },
-    { label: '新着リクエスト', value: 0, icon: <Clock className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #F59E0B, #FCD34D)', shadow: 'rgba(245,158,11,0.25)', trend: '—' },
-    { label: '完了動画', value: 0, icon: <Video className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #FE3B8C, #FF6BAE)', shadow: 'rgba(254,59,140,0.25)', trend: '—' },
-    { label: '平均評価', value: '—', icon: <Star className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #0080FF, #3399FF)', shadow: 'rgba(0,128,255,0.25)', trend: '—' },
+    { label: '今月の収益', value: `¥${monthRevenue.toLocaleString()}`, icon: <DollarSign className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #10B981, #34D399)', shadow: 'rgba(16,185,129,0.25)', trend: '—' },
+    { label: '新着リクエスト', value: pendingCount, icon: <Clock className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #F59E0B, #FCD34D)', shadow: 'rgba(245,158,11,0.25)', trend: '—' },
+    { label: '完了動画', value: completedCount, icon: <Video className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #FE3B8C, #FF6BAE)', shadow: 'rgba(254,59,140,0.25)', trend: '—' },
+    { label: '平均評価', value: avgRating, icon: <Star className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #0080FF, #3399FF)', shadow: 'rgba(0,128,255,0.25)', trend: '—' },
   ]
 
   const handleUpload = async () => {

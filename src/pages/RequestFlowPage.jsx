@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Check, Sparkles, Heart, Gift, Lock, Zap } from 'lucide-react'
 import { talents, occasions } from '../data/mockData'
 import StripePaymentForm from '../components/StripePaymentForm'
+import { createOrder } from '../lib/db'
+import { useAuth } from '../context/AuthContext'
+import { useTalents } from '../context/TalentsContext'
 
 const STEPS = [
   { id: 'occasion', label: 'シーンを選ぶ', icon: '🎯' },
@@ -22,7 +25,11 @@ const SUGGESTIONS = {
 
 export default function RequestFlowPage() {
   const { id } = useParams()
-  const talent = talents.find(t => t.id === id) || talents[0]
+  const { user } = useAuth()
+  const { registeredTalents } = useTalents()
+  // モックデータと登録タレント両方から検索
+  const allTalents = [...registeredTalents, ...talents]
+  const talent = allTalents.find(t => t.id === id) || talents[0]
 
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
@@ -60,7 +67,17 @@ export default function RequestFlowPage() {
   const handleNext = () => { if (step < STEPS.length - 1) setStep(s => s + 1) }
   const handleBack = () => { if (step > 0) setStep(s => s - 1) }
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async () => {
+    await createOrder({
+      userId:           user?.id,
+      talentProfileId:  talent.id,
+      occasion:         form.occasion,
+      recipientName:    form.recipientName,
+      message:          form.message,
+      instructions:     form.instructions,
+      isGift:           form.isGift,
+      price:            talent.price,
+    }).catch(console.error)
     setStep(3)
   }
 

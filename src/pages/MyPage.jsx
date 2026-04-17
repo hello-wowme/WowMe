@@ -1,14 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, ChevronRight, Sparkles, Heart } from 'lucide-react'
+import { Star, ChevronRight, Sparkles, Heart, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { fetchOrdersByUser, dbOrderToApp } from '../lib/db'
+
+const STATUS_MAP = {
+  pending:    { label: '審査待ち',  color: '#F59E0B', bg: '#FFFBEB', icon: <Clock className="w-3.5 h-3.5" /> },
+  processing: { label: '制作中',    color: '#0080FF', bg: '#EFF6FF', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+  completed:  { label: '完了',      color: '#10B981', bg: '#F0FDF4', icon: <CheckCircle className="w-3.5 h-3.5" /> },
+  rejected:   { label: '却下',      color: '#EF4444', bg: '#FEF2F2', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+}
 
 export default function MyPage() {
   const [tab, setTab] = useState('orders')
   const { user } = useAuth()
+  const [orders, setOrders] = useState([])
+  const [loadingOrders, setLoadingOrders] = useState(true)
 
-  const orders = [] // 実際の注文データ（将来的にAPIから取得）
+  useEffect(() => {
+    if (!user?.id) { setLoadingOrders(false); return }
+    fetchOrdersByUser(user.id).then(({ data, error }) => {
+      if (!error && data) setOrders(data.map(dbOrderToApp))
+      setLoadingOrders(false)
+    })
+  }, [user?.id])
 
   return (
     <div className="min-h-screen pt-24 pb-20 page-enter bg-[#F5F7FA]">
@@ -92,7 +108,44 @@ export default function MyPage() {
                 </motion.div>
               ) : (
                 <div className="space-y-4">
-                  {/* 将来的に注文リストをここに表示 */}
+                  {orders.map((order, i) => {
+                    const st = STATUS_MAP[order.status] || STATUS_MAP.pending
+                    return (
+                      <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                        className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            {order.talentAvatar
+                              ? <img src={order.talentAvatar} className="w-10 h-10 rounded-xl object-cover" />
+                              : <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
+                                  style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                                  {order.talentName?.[0]}
+                                </div>
+                            }
+                            <div>
+                              <p className="font-semibold text-gray-900 text-sm">{order.talentName}</p>
+                              <p className="text-xs text-gray-400">{order.occasion} · {order.createdAt?.slice(0,10)}</p>
+                            </div>
+                          </div>
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                            style={{ color: st.color, background: st.bg }}>
+                            {st.icon}{st.label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{order.message}</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-bold text-gray-900">¥{order.price?.toLocaleString()}</p>
+                          {order.status === 'completed' && order.videoUrl && (
+                            <Link to={`/reveal/${order.id}`}>
+                              <motion.button whileHover={{ scale: 1.03 }} className="btn-primary px-4 py-2 text-xs">
+                                動画を見る
+                              </motion.button>
+                            </Link>
+                          )}
+                        </div>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               )}
             </motion.div>

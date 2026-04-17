@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState } from 'react'
+import { upsertUser } from '../lib/db'
 
 const ADMIN_EMAIL = 'hello.wowme@gmail.com'
 
@@ -14,19 +15,21 @@ export function AuthProvider({ children }) {
     }
   })
 
-  const login = (googleProfile, role) => {
+  const login = async (googleProfile, role) => {
     const isAdmin = googleProfile.email === ADMIN_EMAIL
     const userData = {
       id: googleProfile.sub || `demo_${Date.now()}`,
       name: googleProfile.name,
       email: googleProfile.email,
       picture: googleProfile.picture,
-      role: isAdmin ? 'admin' : role, // 'user' | 'talent' | 'admin'
+      role: isAdmin ? 'admin' : role,
       isAdmin,
       isDemo: googleProfile.isDemo || false,
     }
     setUser(userData)
     localStorage.setItem('wowme_user', JSON.stringify(userData))
+    // Supabase にユーザー情報を保存（非同期・失敗しても続行）
+    upsertUser(userData).catch(console.error)
     return userData
   }
 
