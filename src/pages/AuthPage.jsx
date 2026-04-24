@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode'
 import { Sparkles, Star, Music, Video, Users, ChevronRight, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import TermsModal from '../components/UI/TermsModal'
+import PrivacyModal from '../components/UI/PrivacyModal'
 
 const DEMO_USERS = {
   user: {
@@ -28,6 +29,7 @@ export default function AuthPage() {
   const [role, setRole] = useState(null) // 'user' | 'talent'
   const [error, setError] = useState('')
   const [showTerms, setShowTerms] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -248,7 +250,7 @@ export default function AuthPage() {
                   続けることで
                   <button onClick={() => setShowTerms(true)} className="underline hover:text-gray-500 transition-colors">利用規約</button>
                   と
-                  <button onClick={() => setShowTerms(true)} className="underline hover:text-gray-500 transition-colors">プライバシーポリシー</button>
+                  <button onClick={() => setShowPrivacy(true)} className="underline hover:text-gray-500 transition-colors">プライバシーポリシー</button>
                   に同意します
                 </p>
               </motion.div>
@@ -258,6 +260,7 @@ export default function AuthPage() {
       </motion.div>
     </div>
     {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
+    {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
     </>
   )
 }
