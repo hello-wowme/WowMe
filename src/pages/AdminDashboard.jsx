@@ -99,10 +99,10 @@ export default function AdminDashboard() {
   }
 
   const stats = [
-    { label: '審査待ち', value: pendingOrders.length, icon: <AlertTriangle className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #F59E0B, #FCD34D)', shadow: 'rgba(245,158,11,0.25)' },
-    { label: '総注文数', value: orders.length, icon: <ShoppingBag className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #FE3B8C, #FF6BAE)', shadow: 'rgba(254,59,140,0.25)' },
-    { label: '登録ユーザー', value: '1,234', icon: <Users className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #0080FF, #3399FF)', shadow: 'rgba(0,128,255,0.25)' },
-    { label: '月次売上', value: '¥284,000', icon: <DollarSign className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #10B981, #34D399)', shadow: 'rgba(16,185,129,0.25)' },
+    { label: '審査待ち',   value: pendingOrders.length, icon: <AlertTriangle className="w-5 h-5" />, gradient: 'linear-gradient(135deg, #F59E0B, #FCD34D)', shadow: 'rgba(245,158,11,0.25)',   onClick: () => setTab('swipe') },
+    { label: '総注文数',   value: orders.length,         icon: <ShoppingBag className="w-5 h-5" />,  gradient: 'linear-gradient(135deg, #FE3B8C, #FF6BAE)', shadow: 'rgba(254,59,140,0.25)', onClick: () => setTab('list')  },
+    { label: '登録ユーザー', value: '1,234',             icon: <Users className="w-5 h-5" />,        gradient: 'linear-gradient(135deg, #0080FF, #3399FF)', shadow: 'rgba(0,128,255,0.25)',  onClick: null },
+    { label: '月次売上',   value: '¥284,000',            icon: <DollarSign className="w-5 h-5" />,   gradient: 'linear-gradient(135deg, #10B981, #34D399)', shadow: 'rgba(16,185,129,0.25)', onClick: null },
   ]
 
   return (
@@ -124,16 +124,27 @@ export default function AdminDashboard() {
 
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map(({ label, value, icon, gradient, shadow }, i) => (
-            <motion.div key={label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 + i * 0.05 }}
+          {stats.map(({ label, value, icon, gradient, shadow, onClick }, i) => (
+            <motion.div key={label}
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
               whileHover={{ y: -3 }}
-              className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+              onClick={onClick ?? undefined}
+              className={`bg-white rounded-2xl p-5 border border-gray-100 shadow-sm relative overflow-hidden ${onClick ? 'cursor-pointer hover:border-pink-200 hover:shadow-md transition-all' : ''}`}>
+              {onClick && (
+                <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center"
+                  style={{ background: gradient, opacity: 0.15 }}>
+                </div>
+              )}
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3"
                 style={{ background: gradient, boxShadow: `0 4px 16px ${shadow}` }}>
                 {icon}
               </div>
               <p className="text-2xl font-black text-gray-900">{value}</p>
-              <p className="text-xs text-gray-400 mt-1">{label}</p>
+              <div className="flex items-center justify-between mt-1">
+                <p className="text-xs text-gray-400">{label}</p>
+                {onClick && <p className="text-xs font-medium" style={{ color: '#FE3B8C' }}>詳細 →</p>}
+              </div>
             </motion.div>
           ))}
         </motion.div>
