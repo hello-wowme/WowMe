@@ -355,10 +355,15 @@ export default function AdminDashboard() {
                     <span className="px-2 py-0.5 rounded-full text-xs font-semibold"
                       style={order.status === 'pending_review'
                         ? { background: '#FFFBEB', color: '#F59E0B' }
-                        : order.status === 'approved'
-                          ? { background: '#F0FDF4', color: '#10B981' }
-                          : { background: '#FEF2F2', color: '#EF4444' }}>
-                      {order.status === 'pending_review' ? '審査待ち' : order.status === 'approved' ? '承認済み' : '却下'}
+                        : order.status === 'processing' || order.status === 'approved'
+                          ? { background: '#EFF6FF', color: '#0080FF' }
+                          : order.status === 'completed'
+                            ? { background: '#F0FDF4', color: '#10B981' }
+                            : { background: '#FEF2F2', color: '#EF4444' }}>
+                      {order.status === 'pending_review' ? '審査待ち'
+                        : order.status === 'processing' || order.status === 'approved' ? '承認済み（制作中）'
+                        : order.status === 'completed' ? '完了'
+                        : '却下'}
                     </span>
                   </div>
                   <p className="font-semibold text-gray-800 text-sm">{order.talentName} ← {order.userName}</p>
