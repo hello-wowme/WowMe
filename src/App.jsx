@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { TalentsProvider } from './context/TalentsContext'
 import { FavoritesProvider } from './context/FavoritesContext'
+import { NotificationsProvider } from './context/NotificationsContext'
 import LandingPage from './pages/LandingPage'
 import TalentListPage from './pages/TalentListPage'
 import TalentDetailPage from './pages/TalentDetailPage'
@@ -60,11 +61,13 @@ export default function App() {
       <AuthProvider>
         <TalentsProvider>
           <FavoritesProvider>
+          <NotificationsProvider>
           <Router>
             <div className="min-h-screen bg-[#F5F7FA]">
               <AppRoutes />
             </div>
           </Router>
+          </NotificationsProvider>
           </FavoritesProvider>
         </TalentsProvider>
       </AuthProvider>

@@ -1,17 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Menu, X, Bell, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { Star, Menu, X, Bell, LogOut, Settings, ChevronDown, CheckCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useNotifications } from '../../context/NotificationsContext'
 
 export default function Header({ user }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [bellOpen, setBellOpen] = useState(false)
+  const bellRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
   const { logout } = useAuth()
+  const { notifications, unreadCount, markAllRead, markRead, isRead } = useNotifications()
   const isHome = location.pathname === '/'
+
+  // ベル以外クリックで閉じる
+  useEffect(() => {
+    if (!bellOpen) return
+    const handler = (e) => { if (bellRef.current && !bellRef.current.contains(e.target)) setBellOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [bellOpen])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -77,10 +89,101 @@ export default function Header({ user }) {
           {user ? (
             <>
               {/* Bell */}
-              <button className="relative p-2 rounded-full text-gray-400 hover:text-[#FE3B8C] hover:bg-pink-50 transition-all">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-[#FE3B8C] rounded-full" />
-              </button>
+              <div className="relative" ref={bellRef}>
+                <motion.button
+                  whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                  onClick={() => { setBellOpen(v => !v); if (!bellOpen) markAllRead() }}
+                  className="relative p-2 rounded-full text-gray-400 hover:text-[#FE3B8C] hover:bg-pink-50 transition-all">
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center rounded-full text-white text-[10px] font-bold"
+                      style={{ background: 'linear-gradient(135deg, #FE3B8C, #FF6BAE)' }}>
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </motion.span>
+                  )}
+                </motion.button>
+
+                {/* 通知パネル */}
+                <AnimatePresence>
+                  {bellOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-30">
+
+                      {/* ヘッダー */}
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
+                        <div className="flex items-center gap-2">
+                          <Bell className="w-4 h-4" style={{ color: '#FE3B8C' }} />
+                          <p className="font-bold text-gray-900 text-sm">通知</p>
+                          {unreadCount > 0 && (
+                            <span className="px-1.5 py-0.5 rounded-full text-xs font-bold text-white"
+                              style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+                              {unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        {notifications.length > 0 && (
+                          <button onClick={markAllRead}
+                            className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#FE3B8C] transition-colors">
+                            <CheckCheck className="w-3.5 h-3.5" />
+                            すべて既読
+                          </button>
+                        )}
+                      </div>
+
+                      {/* 通知リスト */}
+                      <div className="max-h-96 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="text-center py-10">
+                            <div className="text-4xl mb-2">🔔</div>
+                            <p className="text-gray-400 text-sm">通知はありません</p>
+                          </div>
+                        ) : (
+                          notifications.map((n, i) => (
+                            <motion.div
+                              key={n.id}
+                              initial={{ opacity: 0, x: 10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.04 }}
+                              onClick={() => {
+                                markRead(n.id)
+                                if (n.link) { navigate(n.link); setBellOpen(false) }
+                              }}
+                              className={`flex items-start gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0 transition-colors ${n.link ? 'cursor-pointer hover:bg-pink-50/50' : ''} ${!isRead(n.id) ? 'bg-pink-50/30' : ''}`}>
+                              {/* 未読ドット */}
+                              <div className="flex-shrink-0 mt-0.5 relative">
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
+                                  style={{ background: !isRead(n.id) ? 'linear-gradient(135deg, #fff0f6, #f0f6ff)' : '#F5F7FA' }}>
+                                  {n.emoji}
+                                </div>
+                                {!isRead(n.id) && (
+                                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white"
+                                    style={{ background: '#FE3B8C' }} />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm leading-snug mb-0.5 ${!isRead(n.id) ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
+                                  {n.title}
+                                </p>
+                                <p className="text-xs text-gray-400 leading-relaxed">{n.body}</p>
+                                <p className="text-xs text-gray-300 mt-1">{n.time?.slice(0, 10)}</p>
+                              </div>
+                              {n.link && (
+                                <span className="text-xs font-medium flex-shrink-0 mt-1" style={{ color: '#FE3B8C' }}>→</span>
+                              )}
+                            </motion.div>
+                          ))
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* User Profile Dropdown */}
               <div className="relative">
