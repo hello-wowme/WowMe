@@ -71,6 +71,10 @@ export default function TalentCard({ talent, index = 0 }) {
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             <p className="text-xs font-semibold" style={{ color: '#FE3B8C' }}>{talent.category}</p>
             {talent.level && <LevelBadge level={talent.level} size="sm" />}
+            {talent.snsPermission === 'ng'
+              ? <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-600 border border-orange-200">🔒 SNS公開NG</span>
+              : <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-200">✅ SNS公開OK</span>
+            }
           </div>
 
           {/* Tags */}

@@ -32,6 +32,7 @@ create table if not exists public.talent_profiles (
   review_count   integer default 0,
   available      boolean default true,
   setup_complete boolean default false,
+  sns_permission text default 'ok',   -- 'ok' or 'ng'
   created_at     timestamptz default now(),
   updated_at     timestamptz default now()
 );

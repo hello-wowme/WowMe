@@ -38,6 +38,7 @@ export default function RequestFlowPage() {
   })
   const [charCount, setCharCount] = useState(0)
   const [nameError, setNameError] = useState('')
+  const [snsAgreed, setSnsAgreed] = useState(false)
   const isComposingRef = { current: false }
 
   const handleRecipientNameChange = (e) => {
@@ -80,6 +81,7 @@ export default function RequestFlowPage() {
       instructions:    form.instructions,
       isGift:          form.isGift,
       price:           talent.price,
+      snsPermission:   talent.snsPermission ?? 'ok',
     }).catch(console.error)
     setStep(3)
   }
@@ -296,6 +298,51 @@ export default function RequestFlowPage() {
                   </div>
                 </div>
 
+                {/* SNS Permission Notice */}
+                {talent.snsPermission === 'ng' ? (
+                  <div className="rounded-2xl border-2 p-5 space-y-3"
+                    style={{ borderColor: snsAgreed ? '#f97316' : '#fed7aa', background: '#fff7ed' }}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl flex-shrink-0">🔒</span>
+                      <div>
+                        <p className="font-bold text-orange-700 text-sm mb-1">SNS公開NGのタレントです</p>
+                        <p className="text-xs text-orange-600 leading-relaxed">
+                          このタレントの動画はSNSへのシェアが禁止されています。受け取った動画はご自身のみ保存・閲覧できます。シェアボタンは表示されません。
+                        </p>
+                      </div>
+                    </div>
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <div className="relative flex-shrink-0 mt-0.5">
+                        <input
+                          type="checkbox"
+                          checked={snsAgreed}
+                          onChange={e => setSnsAgreed(e.target.checked)}
+                          className="sr-only"
+                        />
+                        <div className="w-5 h-5 rounded border-2 flex items-center justify-center transition-all"
+                          style={{
+                            borderColor: snsAgreed ? '#ea580c' : '#fb923c',
+                            background: snsAgreed ? '#ea580c' : '#fff',
+                          }}>
+                          {snsAgreed && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                        </div>
+                      </div>
+                      <span className="text-xs font-semibold text-orange-700 leading-relaxed">
+                        SNS公開NGであることを理解し、受け取った動画をSNSにシェアしないことに同意します <span className="text-red-500">*必須</span>
+                      </span>
+                    </label>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-green-200 p-4 flex items-start gap-3"
+                    style={{ background: '#f0fdf4' }}>
+                    <span className="text-lg flex-shrink-0">✅</span>
+                    <div>
+                      <p className="font-bold text-green-700 text-sm mb-0.5">SNS公開OK</p>
+                      <p className="text-xs text-green-600">このタレントの動画はSNSへのシェアが許可されています。届いた動画をXなどでシェアしてタレントを応援しましょう！</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Stripe Payment Form */}
                 <StripePaymentForm
                   amount={talent.price}
@@ -306,6 +353,7 @@ export default function RequestFlowPage() {
                     recipientName: form.recipientName || '',
                   }}
                   onSuccess={handlePaymentSuccess}
+                  disabled={talent.snsPermission === 'ng' && !snsAgreed}
                 />
               </motion.div>
             )}

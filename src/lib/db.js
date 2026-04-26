@@ -68,6 +68,7 @@ export async function upsertTalentProfile(userId, profile) {
     review_count:   profile.reviewCount ?? 0,
     available:      profile.available !== false,
     setup_complete: profile.setupComplete ?? false,
+    sns_permission: profile.snsPermission ?? 'ok',
     updated_at:     new Date().toISOString(),
   }
 
@@ -267,6 +268,7 @@ export function dbTalentToApp(row) {
     rating:        Number(row.rating),
     reviewCount:   row.review_count,
     setupComplete: row.setup_complete,
+    snsPermission: row.sns_permission ?? 'ok',
     featured:      false,
     completionRate: 100,
     isRegistered:  true,
@@ -300,6 +302,7 @@ export async function fetchTalentProfileForLogin(userId) {
     rating:       Number(data.rating),
     reviewCount:  data.review_count,
     available:    data.available,
+    snsPermission: data.sns_permission ?? 'ok',
     setupComplete: true,
   }
 }

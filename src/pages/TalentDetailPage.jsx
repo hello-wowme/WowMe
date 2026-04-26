@@ -84,6 +84,10 @@ export default function TalentDetailPage() {
                         {talent.category}
                       </span>
                       <LevelBadge level={level} size="sm" />
+                      {talent.snsPermission === 'ng'
+                        ? <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-600 border border-orange-200">🔒 SNS公開NG</span>
+                        : <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-200">✅ SNS公開OK</span>
+                      }
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">

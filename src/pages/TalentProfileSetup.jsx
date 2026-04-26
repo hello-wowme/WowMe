@@ -39,6 +39,7 @@ export default function TalentProfileSetup() {
     tagInput:      '',
     price:         existing.price        ? String(existing.price) : '',
     responseTime:  existing.responseTime || 24,
+    snsPermission: existing.snsPermission || 'ok',
     avatarPreview: existing.avatar       || user?.picture || '',
     coverPreview:  existing.cover        || '',
     sampleVideos:  [],
@@ -104,6 +105,7 @@ export default function TalentProfileSetup() {
       tags:          profile.tags,
       price:         Number(profile.price),
       responseTime:  profile.responseTime,
+      snsPermission: profile.snsPermission,
       avatar:        avatarUrl,
       cover:         coverUrl,
       sampleVideos:  profile.sampleVideos,
@@ -376,6 +378,32 @@ export default function TalentProfileSetup() {
                         </span>
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                {/* SNS Permission */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">SNS公開設定</label>
+                  <p className="text-xs text-gray-400 mb-3">ファンが動画をSNSにシェアすることを許可するか設定します</p>
+                  <select
+                    value={profile.snsPermission}
+                    onChange={e => updateField('snsPermission', e.target.value)}
+                    className="w-full border-2 rounded-xl px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none transition-all appearance-none bg-white"
+                    style={{ borderColor: '#F0F0F5' }}
+                    onFocus={e => e.target.style.borderColor = '#FE3B8C'}
+                    onBlur={e => e.target.style.borderColor = '#F0F0F5'}
+                  >
+                    <option value="ok">✅ SNS公開OK（ファンはSNSシェア可）</option>
+                    <option value="ng">🔒 SNS公開NG（シェア禁止・本人保存のみ）</option>
+                  </select>
+                  <div className="mt-2 px-4 py-3 rounded-xl text-xs"
+                    style={{
+                      background: profile.snsPermission === 'ok' ? '#f0fdf4' : '#fff7ed',
+                      color: profile.snsPermission === 'ok' ? '#16a34a' : '#ea580c',
+                    }}>
+                    {profile.snsPermission === 'ok'
+                      ? '✨ ファンは動画をXなどにシェアできます。拡散によって認知度アップが期待できます。'
+                      : '🔒 ファンは動画をシェアできません。受け取ったファン本人のみ保存・閲覧できます。'}
                   </div>
                 </div>
               </motion.div>

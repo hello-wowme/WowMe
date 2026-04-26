@@ -122,7 +122,7 @@ function CheckoutForm({ amount, onSuccess, onError }) {
   )
 }
 
-export default function StripePaymentForm({ amount, metadata, onSuccess, onError }) {
+export default function StripePaymentForm({ amount, metadata, onSuccess, onError, disabled = false }) {
   const [clientSecret, setClientSecret] = useState(null)
   const [loading, setLoading] = useState(false)
   const [initError, setInitError] = useState('')
@@ -159,9 +159,9 @@ export default function StripePaymentForm({ amount, metadata, onSuccess, onError
           {initError && (
             <p className="text-sm text-red-500 mb-3">⚠️ {initError}</p>
           )}
-          <motion.button onClick={initPayment} disabled={loading}
+          <motion.button onClick={initPayment} disabled={loading || disabled}
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-            className="btn-primary px-6 py-3 flex items-center gap-2 mx-auto disabled:opacity-50">
+            className="btn-primary px-6 py-3 flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
             {loading ? (
               <>
                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}

@@ -345,21 +345,30 @@ export default function VideoRevealPage() {
                   )}
                 </motion.div>
 
-                {/* Share */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
-                  className="bg-white rounded-2xl p-5 mb-6 border border-gray-100 shadow-sm">
-                  <p className="text-sm font-semibold text-gray-800 mb-1">SNSでシェアしよう ✨</p>
-                  <p className="text-xs text-gray-400 mb-4">あなたの感動を友達にも伝えよう</p>
-                  <motion.button whileHover={{ scale: 1.05 }}
-                    onClick={() => {
-                      const text = `${talentName}さんからパーソナライズ動画メッセージが届きました🎁✨\n推しへのリクエストは👇\nhttps://wowme-surprise.vercel.app/`
-                      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
-                    }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
-                    style={{ background: '#1da1f2' }}>
-                    <Twitter className="w-4 h-4" />X でシェア
-                  </motion.button>
-                </motion.div>
+                {/* Share or SNS-NG notice */}
+                {order.snsPermission === 'ng' ? (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
+                    className="rounded-2xl p-5 mb-6 border border-orange-200"
+                    style={{ background: '#fff7ed' }}>
+                    <p className="text-sm font-bold text-orange-700 mb-1">🔒 SNS公開NG</p>
+                    <p className="text-xs text-orange-600">このタレントの動画はSNSシェアが禁止されています。<br />保存して、あなただけの特別な宝物にしてください。</p>
+                  </motion.div>
+                ) : (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
+                    className="bg-white rounded-2xl p-5 mb-6 border border-gray-100 shadow-sm">
+                    <p className="text-sm font-semibold text-gray-800 mb-1">SNSでシェアしよう ✨</p>
+                    <p className="text-xs text-gray-400 mb-4">あなたの感動を友達にも伝えよう</p>
+                    <motion.button whileHover={{ scale: 1.05 }}
+                      onClick={() => {
+                        const text = `${talentName}さんからパーソナライズ動画メッセージが届きました🎁✨\n推しへのリクエストは👇\nhttps://wowme-surprise.vercel.app/`
+                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white shadow-sm"
+                      style={{ background: '#1da1f2' }}>
+                      <Twitter className="w-4 h-4" />X でシェア
+                    </motion.button>
+                  </motion.div>
+                )}
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="text-center">
                   <p className="text-gray-400 text-sm mb-4">もっと特別な体験を</p>
