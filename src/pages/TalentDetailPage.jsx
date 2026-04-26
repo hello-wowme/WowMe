@@ -1,12 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Clock, Zap, Heart, Share2, Play, ChevronLeft, CheckCircle, ArrowRight, TrendingUp } from 'lucide-react'
+import { Star, Clock, Zap, Heart, Share2, Play, ChevronLeft, CheckCircle, ArrowRight, TrendingUp, X, MessageSquare } from 'lucide-react'
 import { talents } from '../data/mockData'
 import LevelBadge from '../components/UI/LevelBadge'
 import { getLevelInfo, calcRevenueShare } from '../utils/talentLevel'
 import { useFavorites } from '../context/FavoritesContext'
 import { useTalents } from '../context/TalentsContext'
+
+function loadReviewsForTalent(talentId) {
+  try {
+    const all = JSON.parse(localStorage.getItem('wowme_reviews') || '{}')
+    return Object.values(all)
+      .filter(r => r.talentProfileId === talentId && r.comment)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 20)
+  } catch { return [] }
+}
 
 export default function TalentDetailPage() {
   const { id } = useParams()
@@ -20,6 +30,12 @@ export default function TalentDetailPage() {
   const favorited = isFavorite(talent.id)
   const [showToast, setShowToast] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
+  const [showReviews, setShowReviews] = useState(false)
+  const [lsReviews, setLsReviews] = useState([])
+
+  useEffect(() => {
+    setLsReviews(loadReviewsForTalent(talent.id))
+  }, [talent.id])
 
   const handleFavorite = () => {
     toggleFavorite(talent)
@@ -147,32 +163,79 @@ export default function TalentDetailPage() {
                 <h2 className="font-bold text-gray-900">レビュー</h2>
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                  <span className="font-bold text-gray-900 text-lg">{talent.rating}</span>
-                  <span className="text-gray-400 text-sm">({talent.reviewCount})</span>
+                  <span className="font-bold text-gray-900 text-lg">{talent.rating || '—'}</span>
+                  <span className="text-gray-400 text-sm">({talent.reviewCount || lsReviews.length})</span>
                 </div>
               </div>
-              <div className="space-y-4">
-                {talent.reviews.map((review, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
-                    className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                    <div className="flex items-start gap-3 mb-3">
-                      <img src={review.avatar} alt={review.user} className="w-10 h-10 rounded-full object-cover" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium text-gray-800 text-sm">{review.user}</p>
-                          <p className="text-xs text-gray-300">{review.date}</p>
-                        </div>
-                        <div className="flex gap-0.5 mt-1">
-                          {[...Array(review.rating)].map((_, j) => (
-                            <Star key={j} className="w-3 h-3 text-amber-400 fill-amber-400" />
+
+              {lsReviews.length > 0 ? (
+                /* クリックでモーダルを開くプレビューカード */
+                <motion.button
+                  whileHover={{ scale: 1.01, y: -2 }} whileTap={{ scale: 0.99 }}
+                  onClick={() => setShowReviews(true)}
+                  className="w-full text-left bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-amber-200 hover:shadow-md transition-all">
+                  {/* 最新1件プレビュー */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                      style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                      {lsReviews[0].talentName?.[0] ?? 'U'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, j) => (
+                            <Star key={j} className={`w-3.5 h-3.5 ${j < lsReviews[0].stars ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
                           ))}
                         </div>
+                        <span className="text-xs text-gray-300">{lsReviews[0].createdAt?.slice(0, 10)}</span>
                       </div>
+                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{lsReviews[0].comment}</p>
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed">{review.text}</p>
-                  </motion.div>
-                ))}
-              </div>
+                  </div>
+                  {/* もっと見る */}
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      コメント付きレビュー {lsReviews.length}件
+                    </span>
+                    <span className="text-xs font-semibold" style={{ color: '#F59E0B' }}>すべて見る →</span>
+                  </div>
+                </motion.button>
+              ) : talent.reviews?.length > 0 ? (
+                /* モックレビューをクリック可能に */
+                <motion.button
+                  whileHover={{ scale: 1.01, y: -2 }} whileTap={{ scale: 0.99 }}
+                  onClick={() => setShowReviews(true)}
+                  className="w-full text-left bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-amber-200 hover:shadow-md transition-all">
+                  <div className="flex items-start gap-3 mb-3">
+                    <img src={talent.reviews[0].avatar} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-sm font-medium text-gray-800">{talent.reviews[0].user}</p>
+                        <span className="text-xs text-gray-300">{talent.reviews[0].date}</span>
+                      </div>
+                      <div className="flex gap-0.5 mb-2">
+                        {[...Array(5)].map((_, j) => (
+                          <Star key={j} className={`w-3.5 h-3.5 ${j < talent.reviews[0].rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
+                        ))}
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{talent.reviews[0].text}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      レビュー {talent.reviews.length}件
+                    </span>
+                    <span className="text-xs font-semibold" style={{ color: '#F59E0B' }}>すべて見る →</span>
+                  </div>
+                </motion.button>
+              ) : (
+                <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                  <div className="text-4xl mb-3">⭐</div>
+                  <p className="text-gray-400 text-sm">まだレビューはありません</p>
+                </div>
+              )}
             </motion.div>
           </div>
 
@@ -266,6 +329,101 @@ export default function TalentDetailPage() {
           </div>
         </div>
       </div>
+      {/* ─── レビューモーダル ─── */}
+      <AnimatePresence>
+        {showReviews && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={e => { if (e.target === e.currentTarget) setShowReviews(false) }}>
+            <motion.div
+              initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 60 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
+              style={{ maxHeight: '85vh' }}>
+
+              {/* ヘッダー */}
+              <div className="sticky top-0 bg-white px-6 pt-5 pb-4 border-b border-gray-50 flex items-center justify-between z-10">
+                <div>
+                  <h3 className="font-black text-gray-900 text-lg">レビュー</h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, j) => {
+                        const avg = lsReviews.length > 0
+                          ? lsReviews.reduce((s, r) => s + r.stars, 0) / lsReviews.length
+                          : (talent.rating || 0)
+                        return <Star key={j} className={`w-4 h-4 ${j < Math.round(avg) ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
+                      })}
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700">
+                      {lsReviews.length > 0
+                        ? (lsReviews.reduce((s, r) => s + r.stars, 0) / lsReviews.length).toFixed(1)
+                        : talent.rating}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      ({lsReviews.length > 0 ? lsReviews.length : talent.reviewCount}件)
+                    </span>
+                  </div>
+                </div>
+                <button onClick={() => setShowReviews(false)}
+                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* レビューリスト */}
+              <div className="overflow-y-auto px-6 py-4 space-y-4" style={{ maxHeight: 'calc(85vh - 80px)' }}>
+                {lsReviews.length > 0 ? (
+                  lsReviews.map((review, i) => (
+                    <motion.div key={i}
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, j) => (
+                            <Star key={j} className={`w-3.5 h-3.5 ${j < review.stars ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-300">{review.createdAt?.slice(0, 10)}</span>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed">{review.comment}</p>
+                    </motion.div>
+                  ))
+                ) : (
+                  /* モックレビューを表示 */
+                  talent.reviews?.map((review, i) => (
+                    <motion.div key={i}
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                      <div className="flex items-start gap-3">
+                        <img src={review.avatar} alt={review.user} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-sm font-semibold text-gray-800">{review.user}</p>
+                            <span className="text-xs text-gray-300">{review.date}</span>
+                          </div>
+                          <div className="flex gap-0.5 mb-2">
+                            {[...Array(5)].map((_, j) => (
+                              <Star key={j} className={`w-3 h-3 ${j < review.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
+                            ))}
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed">{review.text}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+                )}
+
+                {/* 下部余白 */}
+                <div className="h-2" />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Toast */}
       <AnimatePresence>
         {showToast && (
