@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 130" role="img" aria-label="WowMe">
+  <defs>
+    <style>
+      .logo-text {
+        font-family: 'Nunito', 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+        font-weight: 800;
+        font-size: 76px;
+      }
+    </style>
+  </defs>
+
+  <!-- 吹き出し本体（円） -->
+  <circle cx="62" cy="54" r="48" fill="#FE3B8C"/>
+
+  <!-- 吹き出しのしっぽ（左下） -->
+  <path d="M 28,88 C 14,108 10,120 18,117 C 28,114 46,104 54,94 Z" fill="#FE3B8C"/>
+
+  <!-- ビックリマーク（上バー） -->
+  <rect x="55" y="18" width="14" height="32" rx="7" fill="white"/>
+
+  <!-- ビックリマーク（ドット） -->
+  <circle cx="62" cy="67" r="8" fill="white"/>
+
+  <!-- WowMe テキスト -->
+  <text class="logo-text" y="90" x="124">
+    <tspan fill="#FE3B8C">Wow</tspan><tspan fill="#0080FF">Me</tspan>
+  </text>
+</svg>

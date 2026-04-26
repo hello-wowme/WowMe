@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Menu, X, Bell, LogOut, Settings, ChevronDown, CheckCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationsContext'
-import wowmeLogo from './WowMe_Logo.png'
+import wowmeLogo from './WowMe_Logo.svg'
 
 export default function Header({ user }) {
   const [scrolled, setScrolled] = useState(false)
