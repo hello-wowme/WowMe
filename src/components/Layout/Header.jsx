@@ -51,7 +51,11 @@ export default function Header({ user }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center group">
+        <Link
+          to="/"
+          className="flex items-center group"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
