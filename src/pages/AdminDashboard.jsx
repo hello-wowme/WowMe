@@ -154,7 +154,7 @@ function SwipeCard({ order, onDecide, isActive, stackIndex }) {
     >
       {isActive && (
         <>
-          <motion.div style={{ opacity: approveOpacity }}
+          <motion.div
             className="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full text-base font-black border-2 rotate-[-14deg] z-10"
             style={{ opacity: approveOpacity, color: '#10B981', borderColor: '#10B981', background: '#F0FDF4' }}>
             <CheckCircle className="w-5 h-5" />承認
@@ -363,7 +363,7 @@ export default function AdminDashboard() {
                   animate={reqControls} onDragEnd={handleReqDragEnd}
                   className="absolute bg-white rounded-3xl w-full cursor-grab active:cursor-grabbing select-none border border-gray-100">
 
-                  <motion.div style={{ opacity: reqApprove }}
+                  <motion.div
                     className="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full text-base font-black border-2 z-10"
                     style={{ opacity: reqApprove, color: '#10B981', borderColor: '#10B981', background: '#F0FDF4', rotate: '-14deg' }}>
                     <CheckCircle className="w-5 h-5" />承認
