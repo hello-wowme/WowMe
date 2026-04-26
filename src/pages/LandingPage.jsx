@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import TermsModal from '../components/UI/TermsModal'
 import PrivacyModal from '../components/UI/PrivacyModal'
+import wowmeLogo from '../components/Layout/WowMe_Logo.svg'
 import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Star, Play, ArrowRight, Heart, Sparkles, Gift, Zap, ChevronDown } from 'lucide-react'
@@ -386,12 +387,8 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-white py-12 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
-            </div>
-            <span className="font-black text-gray-900">Wow<span className="gradient-text">Me</span></span>
+          <div className="flex items-center">
+            <img src={wowmeLogo} alt="WowMe" className="h-7 w-auto object-contain" />
           </div>
           <p className="text-gray-400 text-sm">© 2026 WowMe. All rights reserved.</p>
           <div className="flex gap-6 text-sm text-gray-400">

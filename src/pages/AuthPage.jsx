@@ -7,6 +7,7 @@ import { Sparkles, Star, Music, Video, Users, ChevronRight, Zap } from 'lucide-r
 import { useAuth } from '../context/AuthContext'
 import TermsModal from '../components/UI/TermsModal'
 import PrivacyModal from '../components/UI/PrivacyModal'
+import wowmeLogo from '../components/Layout/WowMe_Logo.svg'
 
 const DEMO_USERS = {
   user: {
@@ -78,13 +79,7 @@ export default function AuthPage() {
             whileHover={{ scale: 1.05 }}
             className="inline-flex items-center gap-3 mb-6"
           >
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
-              <Star className="w-6 h-6 text-white fill-white" />
-            </div>
-            <span className="text-3xl font-black text-gray-900">
-              Wow<span className="gradient-text">Me</span>
-            </span>
+            <img src={wowmeLogo} alt="WowMe" className="h-10 w-auto object-contain" />
           </motion.div>
           <p className="text-gray-400 text-base">推しとファンの距離をゼロにする</p>
         </div>
