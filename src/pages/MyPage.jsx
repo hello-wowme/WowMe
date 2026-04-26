@@ -4,8 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Star, ChevronRight, Sparkles, Heart, Clock, CheckCircle, AlertCircle,
   DollarSign, Video, Bell, BellOff, Settings, TrendingUp, Award,
-  Upload, X, Package, LayoutDashboard,
+  Upload, X, Package, LayoutDashboard, PenLine,
 } from 'lucide-react'
+
+// ─── レビュー localStorage ────────────────────────────────────────────
+const LS_REVIEWS_KEY = 'wowme_reviews'
+function loadReviews() {
+  try { return JSON.parse(localStorage.getItem(LS_REVIEWS_KEY) || '{}') } catch { return {} }
+}
+function saveReview(orderId, review) {
+  const all = loadReviews()
+  all[orderId] = review
+  localStorage.setItem(LS_REVIEWS_KEY, JSON.stringify(all))
+}
 import { useAuth } from '../context/AuthContext'
 import { fetchOrdersByUser, fetchOrdersByTalentUserId, dbOrderToApp, updateOrderStatus, uploadVideo } from '../lib/db'
 import { useFavorites } from '../context/FavoritesContext'
@@ -47,10 +58,20 @@ export default function MyPage() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploading, setUploading] = useState(false)
   const [uploadFile, setUploadFile] = useState(null)
+
+  // レビュー関連
+  const [reviews, setReviews] = useState({})
+  const [reviewModal, setReviewModal] = useState(null) // order object | null
+  const [reviewStars, setReviewStars] = useState(0)
+  const [reviewHover, setReviewHover] = useState(0)
+  const [reviewComment, setReviewComment] = useState('')
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
   const [uploadUrl, setUploadUrl] = useState('')
   const [uploadInputMode, setUploadInputMode] = useState('file') // 'file' | 'url'
 
   const isAvailable = talentProfile?.available !== false
+
+  useEffect(() => { setReviews(loadReviews()) }, [])
 
   useEffect(() => {
     if (!user?.id) { setLoadingOrders(false); return }
@@ -153,6 +174,28 @@ export default function MyPage() {
       setUploadUrl('')
       setUploadInputMode('file')
     }, 1200)
+  }
+
+  const handleReviewSubmit = () => {
+    if (!reviewModal || reviewStars === 0) return
+    const review = {
+      orderId:   reviewModal.id,
+      talentProfileId: reviewModal.talentProfileId,
+      talentName: reviewModal.talentName,
+      stars:     reviewStars,
+      comment:   reviewComment.trim(),
+      createdAt: new Date().toISOString(),
+    }
+    saveReview(reviewModal.id, review)
+    setReviews(prev => ({ ...prev, [reviewModal.id]: review }))
+    setReviewSubmitted(true)
+    setTimeout(() => {
+      setReviewModal(null)
+      setReviewStars(0)
+      setReviewHover(0)
+      setReviewComment('')
+      setReviewSubmitted(false)
+    }, 1600)
   }
 
   const handleUploadFileChange = (e) => {
@@ -497,14 +540,32 @@ export default function MyPage() {
                             <span className="text-xs text-gray-400">{order.createdAt?.slice(0, 10)}</span>
                           </div>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">{order.message}</p>
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
                             <p className="text-base font-black text-gray-900">¥{order.price?.toLocaleString()}</p>
-                            {order.status === 'completed' && order.videoUrl && (
-                              <Link to={`/reveal/${order.id}`}>
-                                <motion.button whileHover={{ scale: 1.03 }} className="btn-primary px-4 py-2 text-xs">
-                                  動画を見る
-                                </motion.button>
-                              </Link>
+                            {order.status === 'completed' && (
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {order.videoUrl && (
+                                  <Link to={`/reveal/${order.id}`}>
+                                    <motion.button whileHover={{ scale: 1.03 }} className="btn-primary px-4 py-2 text-xs">
+                                      動画を見る
+                                    </motion.button>
+                                  </Link>
+                                )}
+                                {reviews[order.id] ? (
+                                  <span className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                    style={{ background: '#FFFBEB', color: '#F59E0B' }}>
+                                    {'★'.repeat(reviews[order.id].stars)} レビュー済み
+                                  </span>
+                                ) : (
+                                  <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                                    onClick={() => { setReviewModal(order); setReviewStars(0); setReviewComment('') }}
+                                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border-2 transition-all"
+                                    style={{ borderColor: '#F59E0B', color: '#F59E0B', background: '#FFFBEB' }}>
+                                    <PenLine className="w-3.5 h-3.5" />
+                                    レビューを書く
+                                  </motion.button>
+                                )}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -672,6 +733,129 @@ export default function MyPage() {
                   )}
                 </div>
               )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── レビューモーダル ─── */}
+      <AnimatePresence>
+        {reviewModal && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={e => { if (e.target === e.currentTarget && !reviewSubmitted) setReviewModal(null) }}>
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100">
+
+              <AnimatePresence mode="wait">
+                {reviewSubmitted ? (
+                  /* 送信完了 */
+                  <motion.div key="done" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-4">
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 200 }}>
+                      <CheckCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#10B981' }} />
+                    </motion.div>
+                    <p className="text-xl font-black text-gray-900 mb-1">レビューを送信しました！</p>
+                    <p className="text-gray-400 text-sm">ありがとうございます ✨</p>
+                  </motion.div>
+                ) : (
+                  /* レビュー入力フォーム */
+                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    {/* ヘッダー */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <PenLine className="w-5 h-5" style={{ color: '#F59E0B' }} />
+                        <h3 className="text-xl font-bold text-gray-900">レビューを書く</h3>
+                      </div>
+                      <button onClick={() => setReviewModal(null)}
+                        className="p-1.5 rounded-xl text-gray-300 hover:text-gray-500 hover:bg-gray-100 transition-all">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* タレント情報 */}
+                    <div className="flex items-center gap-3 mb-6 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+                      {reviewModal.talentAvatar
+                        ? <img src={reviewModal.talentAvatar} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+                        : <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0"
+                            style={{ background: 'linear-gradient(135deg,#FE3B8C,#0080FF)' }}>
+                            {reviewModal.talentName?.[0] ?? '?'}
+                          </div>
+                      }
+                      <div>
+                        <p className="font-semibold text-gray-900 text-sm">{reviewModal.talentName}</p>
+                        <p className="text-xs text-gray-400">{reviewModal.occasion} · {reviewModal.createdAt?.slice(0, 10)}</p>
+                      </div>
+                    </div>
+
+                    {/* 星評価（必須） */}
+                    <div className="mb-6">
+                      <p className="text-sm font-semibold text-gray-700 mb-3">
+                        評価 <span className="text-red-400 text-xs ml-1">必須</span>
+                      </p>
+                      <div className="flex justify-center gap-3">
+                        {[1, 2, 3, 4, 5].map(n => (
+                          <motion.button key={n}
+                            whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                            onMouseEnter={() => setReviewHover(n)}
+                            onMouseLeave={() => setReviewHover(0)}
+                            onClick={() => setReviewStars(n)}
+                            className="text-4xl transition-all select-none">
+                            <motion.span
+                              animate={{ scale: (reviewHover || reviewStars) >= n ? 1.1 : 1 }}
+                              style={{ color: (reviewHover || reviewStars) >= n ? '#F59E0B' : '#E5E7EB', filter: (reviewHover || reviewStars) >= n ? 'drop-shadow(0 2px 6px rgba(245,158,11,0.5))' : 'none' }}>
+                              ★
+                            </motion.span>
+                          </motion.button>
+                        ))}
+                      </div>
+                      {reviewStars > 0 && (
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                          className="text-center text-sm font-semibold mt-2"
+                          style={{ color: '#F59E0B' }}>
+                          {['', '😞 残念でした', '😐 もう少し', '😊 良かったです', '😄 とても良かった', '🤩 最高でした！'][reviewStars]}
+                        </motion.p>
+                      )}
+                    </div>
+
+                    {/* コメント（任意） */}
+                    <div className="mb-6">
+                      <p className="text-sm font-semibold text-gray-700 mb-2">
+                        コメント <span className="text-gray-400 text-xs ml-1">任意</span>
+                      </p>
+                      <textarea
+                        value={reviewComment}
+                        onChange={e => setReviewComment(e.target.value)}
+                        placeholder="動画の感想を書いてみましょう..."
+                        maxLength={200}
+                        rows={4}
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm resize-none outline-none transition-colors leading-relaxed"
+                        style={{ borderColor: reviewComment ? '#F59E0B' : undefined }}
+                        onFocus={e => e.target.style.borderColor = '#F59E0B'}
+                        onBlur={e => e.target.style.borderColor = reviewComment ? '#F59E0B' : '#E5E7EB'}
+                      />
+                      <p className="text-right text-xs text-gray-300 mt-1">{reviewComment.length}/200</p>
+                    </div>
+
+                    {/* 送信ボタン */}
+                    <div className="flex gap-3">
+                      <button onClick={() => setReviewModal(null)}
+                        className="flex-1 py-3 rounded-2xl text-sm font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 transition-all">
+                        キャンセル
+                      </button>
+                      <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                        onClick={handleReviewSubmit}
+                        disabled={reviewStars === 0}
+                        className="flex-1 py-3 rounded-2xl text-sm font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{ background: reviewStars > 0 ? 'linear-gradient(135deg,#F59E0B,#FBBF24)' : '#E5E7EB', boxShadow: reviewStars > 0 ? '0 4px 16px rgba(245,158,11,0.35)' : 'none' }}>
+                        送信する ★
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </motion.div>
         )}
