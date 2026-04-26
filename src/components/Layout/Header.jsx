@@ -73,7 +73,10 @@ export default function Header({ user }) {
         <nav className="hidden md:flex items-center gap-8">
           {[
             { to: '/talents', label: 'タレント一覧' },
-            ...(user?.role === 'talent' ? [{ to: '/talent-dashboard', label: 'ダッシュボード' }] : []),
+            ...(user?.role === 'talent' ? [
+              { to: '/talent-dashboard', label: 'ダッシュボード' },
+              { to: '/send-video', label: '動画を送る' },
+            ] : []),
             ...(user ? [{ to: '/mypage', label: 'マイページ' }] : []),
             ...(user?.isAdmin ? [{ to: '/admin', label: '管理者' }] : []),
           ].map(({ to, label }) => (
@@ -306,7 +309,10 @@ export default function Header({ user }) {
               {[
                 { to: '/talents', label: 'タレント一覧' },
                 ...(user ? [{ to: '/mypage', label: 'マイページ' }] : []),
-                ...(user?.role === 'talent' ? [{ to: '/talent-dashboard', label: 'タレントダッシュボード' }] : []),
+                ...(user?.role === 'talent' ? [
+                  { to: '/talent-dashboard', label: 'タレントダッシュボード' },
+                  { to: '/send-video', label: '動画を送る' },
+                ] : []),
                 ...(user?.isAdmin ? [{ to: '/admin', label: '管理者ダッシュボード' }] : []),
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={() => setMenuOpen(false)}

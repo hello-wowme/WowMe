@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import MyPage from './pages/MyPage'
 import AuthPage from './pages/AuthPage'
 import TalentProfileSetup from './pages/TalentProfileSetup'
+import SendVideoPage from './pages/SendVideoPage'
 import Header from './components/Layout/Header'
 
 // Google Client ID - 実際の値に置き換えてください
@@ -49,6 +50,8 @@ function AppRoutes() {
         <Route path="/reveal/:orderId" element={<ProtectedRoute><VideoRevealPage /></ProtectedRoute>} />
         <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         <Route path="/talent-dashboard" element={<ProtectedRoute><TalentDashboard /></ProtectedRoute>} />
+        <Route path="/send-video" element={<ProtectedRoute><SendVideoPage /></ProtectedRoute>} />
+        <Route path="/send-video/:orderId" element={<ProtectedRoute><SendVideoPage /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
       </Routes>
     </>

@@ -407,13 +407,14 @@ export default function MyPage() {
                                       </motion.button>
                                     )}
                                     {order.status === 'processing' && (
-                                      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                                        onClick={() => setUploadModal(order.id)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"
-                                        style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
-                                        <Upload className="w-3.5 h-3.5" />
-                                        動画をアップ
-                                      </motion.button>
+                                      <Link to={`/send-video/${order.id}`}>
+                                        <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"
+                                          style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}>
+                                          <Upload className="w-3.5 h-3.5" />
+                                          動画を送る
+                                        </motion.button>
+                                      </Link>
                                     )}
                                     {order.status === 'completed' && order.videoUrl && (
                                       <Link to={`/reveal/${order.id}`}>
