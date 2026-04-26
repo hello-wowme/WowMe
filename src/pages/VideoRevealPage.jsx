@@ -140,8 +140,12 @@ export default function VideoRevealPage() {
   const talentCategory = talent?.category || order?.talentCategory || ''
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center page-enter overflow-hidden"
-      style={{ background: stage === 'watching' ? '#F5F7FA' : 'linear-gradient(160deg, #fff0f6, #f0f6ff)' }}>
+    <div className="min-h-screen flex flex-col items-center page-enter overflow-hidden"
+      style={{
+        background: stage === 'watching' ? '#F5F7FA' : 'linear-gradient(160deg, #fff0f6, #f0f6ff)',
+        paddingTop: stage === 'watching' ? '80px' : '0',
+        justifyContent: stage === 'watching' ? 'flex-start' : 'center',
+      }}>
 
       {/* Crackers */}
       <AnimatePresence>
