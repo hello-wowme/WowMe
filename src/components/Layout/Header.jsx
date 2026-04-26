@@ -60,7 +60,7 @@ export default function Header({ user }) {
             <img
               src={wowmeLogo}
               alt="WowMe"
-              className="h-7 sm:h-9 w-auto object-contain"
+              className="h-8 w-auto object-contain"
             />
           </motion.div>
         </Link>
