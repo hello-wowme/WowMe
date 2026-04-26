@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { fetchOrdersByUser, fetchOrdersByTalent, fetchTalentProfileByUserId, dbOrderToApp } from '../lib/db'
+import { fetchOrdersByUser, fetchOrdersByTalentUserId, dbOrderToApp } from '../lib/db'
 import { useAuth } from './AuthContext'
 
 const NotificationsContext = createContext(null)
@@ -26,34 +26,32 @@ export function NotificationsProvider({ children }) {
 
     if (isTalent) {
       // タレント向け：審査待ち・制作中のリクエスト
-      const { data: profile } = await fetchTalentProfileByUserId(user.id)
-      if (profile) {
-        const { data: orders } = await fetchOrdersByTalent(profile.id)
-        if (orders) {
-          orders.map(dbOrderToApp).forEach(o => {
-            if (o.status === 'pending') {
-              items.push({
-                id: `req_${o.id}`,
-                type: 'request',
-                emoji: '📩',
-                title: '新しいリクエストが届きました',
-                body: `「${o.occasion}」のリクエストです`,
-                time: o.createdAt,
-              })
-            } else if (o.status === 'processing') {
-              items.push({
-                id: `proc_${o.id}`,
-                type: 'processing',
-                emoji: '🎬',
-                title: '制作中のリクエストがあります',
-                body: `期限内に動画を完成させましょう`,
-                time: o.createdAt,
-              })
-            }
-          })
-        }
+      const { data: orders } = await fetchOrdersByTalentUserId(user.id)
+      if (orders) {
+        orders.map(dbOrderToApp).forEach(o => {
+          if (o.status === 'pending') {
+            items.push({
+              id: `req_${o.id}`,
+              type: 'request',
+              emoji: '📩',
+              title: '新しいリクエストが届きました',
+              body: `「${o.occasion}」のリクエストです`,
+              time: o.createdAt,
+            })
+          } else if (o.status === 'processing') {
+            items.push({
+              id: `proc_${o.id}`,
+              type: 'processing',
+              emoji: '🎬',
+              title: '制作中のリクエストがあります',
+              body: `期限内に動画を完成させましょう`,
+              time: o.createdAt,
+            })
+          }
+        })
       }
     } else {
+
       // ファン向け：動画完了・審査待ち
       const { data: orders } = await fetchOrdersByUser(user.id)
       if (orders) {

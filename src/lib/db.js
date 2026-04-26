@@ -180,11 +180,35 @@ export async function fetchOrdersByUser(userId) {
 }
 
 export async function fetchOrdersByTalent(talentProfileId) {
-  if (!isSupabaseReady()) return { data: [], error: null }
+  if (!isSupabaseReady()) {
+    const all = lsLoadOrders()
+    return { data: all.filter(o => o.talentProfileId === talentProfileId), error: null }
+  }
   return supabase
     .from('orders')
     .select(`*, users(name, picture)`)
     .eq('talent_profile_id', talentProfileId)
+    .order('created_at', { ascending: false })
+}
+
+// localStorage モード用: userId でタレント注文を取得
+export async function fetchOrdersByTalentUserId(userId) {
+  const talentProfileId = `user_${userId}`
+  if (!isSupabaseReady()) {
+    const all = lsLoadOrders()
+    return { data: all.filter(o => o.talentProfileId === talentProfileId), error: null }
+  }
+  // Supabase: talent_profiles.user_id 経由で取得
+  const { data: profile } = await supabase
+    .from('talent_profiles')
+    .select('id')
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (!profile) return { data: [], error: null }
+  return supabase
+    .from('orders')
+    .select(`*, users(name, picture)`)
+    .eq('talent_profile_id', profile.id)
     .order('created_at', { ascending: false })
 }
 

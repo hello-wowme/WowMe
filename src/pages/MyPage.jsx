@@ -7,7 +7,7 @@ import {
   Upload, X, Package, LayoutDashboard,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchOrdersByUser, fetchOrdersByTalent, fetchTalentProfileByUserId, dbOrderToApp, updateOrderStatus } from '../lib/db'
+import { fetchOrdersByUser, fetchOrdersByTalentUserId, dbOrderToApp, updateOrderStatus, uploadVideo } from '../lib/db'
 import { useFavorites } from '../context/FavoritesContext'
 import { useTalents } from '../context/TalentsContext'
 import LevelBadge from '../components/UI/LevelBadge'
@@ -45,6 +45,9 @@ export default function MyPage() {
   const [uploadModal, setUploadModal] = useState(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploading, setUploading] = useState(false)
+  const [uploadFile, setUploadFile] = useState(null)
+  const [uploadUrl, setUploadUrl] = useState('')
+  const [uploadInputMode, setUploadInputMode] = useState('file') // 'file' | 'url'
 
   const isAvailable = talentProfile?.available !== false
 
@@ -55,13 +58,8 @@ export default function MyPage() {
       setLoadingOrders(false)
     })
     if (isTalent) {
-      fetchTalentProfileByUserId(user.id).then(({ data }) => {
-        if (data) {
-          setDbProfile(data)
-          fetchOrdersByTalent(data.id).then(({ data: ords }) => {
-            if (ords) setTalentOrders(ords.map(dbOrderToApp))
-          })
-        }
+      fetchOrdersByTalentUserId(user.id).then(({ data: ords }) => {
+        if (ords) setTalentOrders(ords.map(dbOrderToApp))
       })
     }
   }, [user?.id])
@@ -112,15 +110,53 @@ export default function MyPage() {
   }
 
   const handleUpload = async () => {
-    setUploading(true)
-    setUploadProgress(0)
-    for (let i = 0; i <= 100; i += 5) {
-      await new Promise(r => setTimeout(r, 60))
-      setUploadProgress(i)
+    const orderId = uploadModal
+    let videoUrl = ''
+
+    if (uploadInputMode === 'url') {
+      if (!uploadUrl.trim()) return
+      videoUrl = uploadUrl.trim()
+      // URL モードはアニメのみ
+      setUploading(true)
+      setUploadProgress(0)
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise(r => setTimeout(r, 80))
+        setUploadProgress(i)
+      }
+    } else {
+      if (!uploadFile) return
+      setUploading(true)
+      setUploadProgress(0)
+
+      // Supabase Storage があればアップロード、なければ ObjectURL を使用
+      const { url, error } = await uploadVideo(orderId, uploadFile)
+      if (error || !url) {
+        // localStorage モード: objectURL（同セッション内のみ有効）
+        videoUrl = URL.createObjectURL(uploadFile)
+      } else {
+        videoUrl = url
+      }
+      setUploadProgress(100)
     }
+
+    // 注文ステータスを completed + videoUrl に更新
+    await updateOrderStatus(orderId, 'completed', videoUrl)
+    setTalentOrders(prev => prev.map(o =>
+      o.id === orderId ? { ...o, status: 'completed', videoUrl } : o
+    ))
     setUploading(false)
-    setUploadModal(null)
-    setUploadProgress(0)
+    setTimeout(() => {
+      setUploadModal(null)
+      setUploadProgress(0)
+      setUploadFile(null)
+      setUploadUrl('')
+      setUploadInputMode('file')
+    }, 1200)
+  }
+
+  const handleUploadFileChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) setUploadFile(file)
   }
 
   const tabs = [
@@ -552,15 +588,60 @@ export default function MyPage() {
               </div>
               {!uploading && uploadProgress === 0 ? (
                 <>
-                  <div onClick={handleUpload}
-                    className="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center mb-6 hover:border-[#FE3B8C] hover:bg-pink-50 transition-colors cursor-pointer">
-                    <Upload className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500 text-sm">クリックして動画を選択</p>
-                    <p className="text-gray-300 text-xs mt-1">MP4, MOV 最大500MB</p>
+                  {/* モード切替 */}
+                  <div className="flex gap-2 mb-5">
+                    {[{ id: 'file', label: '📁 ファイル' }, { id: 'url', label: '🔗 URL入力' }].map(m => (
+                      <button key={m.id} onClick={() => setUploadInputMode(m.id)}
+                        className="flex-1 py-2 rounded-xl text-xs font-semibold transition-all"
+                        style={uploadInputMode === m.id
+                          ? { background: 'linear-gradient(135deg,#FE3B8C,#0080FF)', color: '#fff' }
+                          : { background: '#F5F7FA', color: '#6B7280' }}>
+                        {m.label}
+                      </button>
+                    ))}
                   </div>
+
+                  {uploadInputMode === 'file' ? (
+                    <label className="block border-2 border-dashed rounded-2xl p-8 text-center mb-6 cursor-pointer transition-colors"
+                      style={{ borderColor: uploadFile ? '#10B981' : '#E5E7EB', background: uploadFile ? '#F0FDF4' : '#FAFAFA' }}
+                      onMouseEnter={e => { if (!uploadFile) e.currentTarget.style.borderColor = '#FE3B8C' }}
+                      onMouseLeave={e => { if (!uploadFile) e.currentTarget.style.borderColor = '#E5E7EB' }}>
+                      <input type="file" accept="video/*" className="hidden" onChange={handleUploadFileChange} />
+                      {uploadFile ? (
+                        <>
+                          <div className="text-3xl mb-2">🎬</div>
+                          <p className="text-green-600 font-semibold text-sm">{uploadFile.name}</p>
+                          <p className="text-gray-400 text-xs mt-1">{(uploadFile.size / 1024 / 1024).toFixed(1)} MB</p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                          <p className="text-gray-500 text-sm">クリックして動画を選択</p>
+                          <p className="text-gray-300 text-xs mt-1">MP4, MOV 最大500MB</p>
+                        </>
+                      )}
+                    </label>
+                  ) : (
+                    <div className="mb-6">
+                      <input
+                        type="url"
+                        placeholder="https://example.com/video.mp4"
+                        value={uploadUrl}
+                        onChange={e => setUploadUrl(e.target.value)}
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#FE3B8C] transition-colors"
+                      />
+                      <p className="text-xs text-gray-400 mt-2">動画ファイルの直リンクURLを入力してください</p>
+                    </div>
+                  )}
+
                   <div className="flex gap-3">
-                    <button onClick={() => setUploadModal(null)} className="btn-ghost flex-1 py-3 text-sm">キャンセル</button>
-                    <button onClick={handleUpload} className="btn-primary flex-1 py-3 text-sm">アップロード</button>
+                    <button onClick={() => { setUploadModal(null); setUploadFile(null); setUploadUrl('') }}
+                      className="btn-ghost flex-1 py-3 text-sm">キャンセル</button>
+                    <button onClick={handleUpload}
+                      disabled={uploadInputMode === 'file' ? !uploadFile : !uploadUrl.trim()}
+                      className="btn-primary flex-1 py-3 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+                      送信する
+                    </button>
                   </div>
                 </>
               ) : (
