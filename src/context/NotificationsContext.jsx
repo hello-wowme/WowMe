@@ -47,6 +47,15 @@ export function NotificationsProvider({ children }) {
               body: `期限内に動画を完成させましょう`,
               time: o.createdAt,
             })
+          } else if (o.status === 'video_review') {
+            items.push({
+              id: `vrev_${o.id}`,
+              type: 'video_review',
+              emoji: '🔍',
+              title: '動画が審査中です',
+              body: `管理者が確認しています。しばらくお待ちください`,
+              time: o.createdAt,
+            })
           }
         })
       }

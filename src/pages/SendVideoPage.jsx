@@ -115,8 +115,8 @@ export default function SendVideoPage() {
       }
     }
 
-    // 注文ステータスを completed に更新
-    await updateOrderStatus(selectedOrder.id, 'completed', finalUrl)
+    // 注文ステータスを video_review（管理者審査待ち）に更新
+    await updateOrderStatus(selectedOrder.id, 'video_review', finalUrl)
 
     // ローカルステートも更新
     setOrders(prev => prev.filter(o => o.id !== selectedOrder.id))
@@ -184,9 +184,7 @@ export default function SendVideoPage() {
               </motion.div>
               <h2 className="text-2xl font-black text-gray-900 mb-2">送信完了！🎉</h2>
               <p className="text-gray-400 text-sm mb-8">
-                {selectedOrder?.recipientName
-                  ? `${selectedOrder.recipientName}さんへ動画が届きました`
-                  : 'ファンへ動画が届きました'}
+                動画が管理者に送られました。<br />審査が完了するとファンへ届きます。
               </p>
               <div className="flex justify-center gap-3">
                 <button onClick={reset}

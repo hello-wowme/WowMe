@@ -14,10 +14,11 @@ import LevelBadge from '../components/UI/LevelBadge'
 import { getLevelInfo, getLevelProgress, calcLevel } from '../utils/talentLevel'
 
 const STATUS_MAP = {
-  pending:    { label: '審査待ち',  color: '#F59E0B', bg: '#FFFBEB', icon: <Clock className="w-3.5 h-3.5" /> },
-  processing: { label: '制作中',    color: '#0080FF', bg: '#EFF6FF', icon: <AlertCircle className="w-3.5 h-3.5" /> },
-  completed:  { label: '完了',      color: '#10B981', bg: '#F0FDF4', icon: <CheckCircle className="w-3.5 h-3.5" /> },
-  rejected:   { label: '却下',      color: '#EF4444', bg: '#FEF2F2', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+  pending:      { label: '審査待ち',      color: '#F59E0B', bg: '#FFFBEB', icon: <Clock className="w-3.5 h-3.5" /> },
+  processing:   { label: '制作中',        color: '#0080FF', bg: '#EFF6FF', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+  video_review: { label: '動画審査中',    color: '#8B5CF6', bg: '#F5F3FF', icon: <Clock className="w-3.5 h-3.5" /> },
+  completed:    { label: '完了',          color: '#10B981', bg: '#F0FDF4', icon: <CheckCircle className="w-3.5 h-3.5" /> },
+  rejected:     { label: '却下',          color: '#EF4444', bg: '#FEF2F2', icon: <AlertCircle className="w-3.5 h-3.5" /> },
 }
 
 const OCCASION_EMOJI = {
@@ -69,7 +70,7 @@ export default function MyPage() {
   const monthRevenue = talentOrders.filter(o => o.status === 'completed' && o.createdAt?.startsWith(thisMonth))
     .reduce((s, o) => s + (o.price || 0), 0)
   const pendingOrders    = talentOrders.filter(o => o.status === 'pending')
-  const processingOrders = talentOrders.filter(o => o.status === 'processing')
+  const processingOrders = talentOrders.filter(o => o.status === 'processing' || o.status === 'video_review')
   const completedOrders  = talentOrders.filter(o => o.status === 'completed')
   const completionRate   = talentOrders.length > 0
     ? Math.round((completedOrders.length / talentOrders.length) * 100) : 0
@@ -415,6 +416,12 @@ export default function MyPage() {
                                           動画を送る
                                         </motion.button>
                                       </Link>
+                                    )}
+                                    {order.status === 'video_review' && (
+                                      <span className="px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                        style={{ background: '#F5F3FF', color: '#8B5CF6' }}>
+                                        🔍 審査中
+                                      </span>
                                     )}
                                     {order.status === 'completed' && order.videoUrl && (
                                       <Link to={`/reveal/${order.id}`}>
