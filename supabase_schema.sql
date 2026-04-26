@@ -25,6 +25,7 @@ create table if not exists public.talent_profiles (
   price          integer not null default 0,
   response_time  integer default 24,      -- 時間
   avatar_url     text default '',
+  cover_url      text default '',
   level          integer default 1,
   total_orders   integer default 0,
   rating         numeric(3,2) default 0,

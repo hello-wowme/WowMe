@@ -30,17 +30,18 @@ export default function TalentProfileSetup() {
   const { registerTalent } = useTalents()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
+  const existing = user?.talentProfile || {}
   const [profile, setProfile] = useState({
-    displayName: user?.name || '',
-    bio: '',
-    category: '',
-    tags: [],
-    tagInput: '',
-    price: '',
-    responseTime: 24,
-    avatarPreview: user?.picture || '',
-    coverPreview: '',
-    sampleVideos: [],
+    displayName:   existing.displayName  || user?.name   || '',
+    bio:           existing.bio          || '',
+    category:      existing.category     || '',
+    tags:          existing.tags         || [],
+    tagInput:      '',
+    price:         existing.price        ? String(existing.price) : '',
+    responseTime:  existing.responseTime || 24,
+    avatarPreview: existing.avatar       || user?.picture || '',
+    coverPreview:  existing.cover        || '',
+    sampleVideos:  [],
   })
 
   const updateField = (field, value) => setProfile(p => ({ ...p, [field]: value }))
@@ -78,8 +79,8 @@ export default function TalentProfileSetup() {
   }
 
   const canProceed = () => {
-    if (step === 0) return profile.displayName && profile.category && profile.avatarPreview && profile.coverPreview
-    if (step === 1) return profile.price && Number(profile.price) > 0
+    if (step === 0) return !!(profile.displayName && profile.category && profile.avatarPreview && profile.coverPreview)
+    if (step === 1) return !!(profile.price && Number(profile.price) > 0)
     return true
   }
 

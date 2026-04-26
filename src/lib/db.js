@@ -61,6 +61,7 @@ export async function upsertTalentProfile(userId, profile) {
     price:          Number(profile.price) || 0,
     response_time:  profile.responseTime ?? 24,
     avatar_url:     profile.avatar ?? '',
+    cover_url:      profile.cover ?? '',
     level:          profile.level ?? 1,
     total_orders:   profile.totalOrders ?? 0,
     rating:         profile.rating ?? 0,
@@ -258,6 +259,7 @@ export function dbTalentToApp(row) {
                  : row.response_time <= 72 ? '72時間以内'
                  : '1週間以内',
     avatar:        row.avatar_url,
+    cover:         row.cover_url || row.avatar_url || '',
     tags:          row.tags ?? [],
     available:     row.available,
     level:         row.level,
@@ -270,9 +272,35 @@ export function dbTalentToApp(row) {
     isRegistered:  true,
     // TalentDetailPage 互換
     handle:        '',
-    cover:         row.avatar_url || '',
     sampleVideos:  [],
     reviews:       [],
+  }
+}
+
+// ─── ログイン時: Supabase からユーザーのタレントプロフィールをアプリ形式で取得 ─────
+export async function fetchTalentProfileForLogin(userId) {
+  if (!isSupabaseReady()) return null
+  const { data } = await supabase
+    .from('talent_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (!data || !data.setup_complete) return null
+  return {
+    displayName:  data.display_name,
+    bio:          data.bio,
+    category:     data.category,
+    tags:         data.tags ?? [],
+    price:        data.price,
+    responseTime: data.response_time,
+    avatar:       data.avatar_url,
+    cover:        data.cover_url || data.avatar_url || '',
+    level:        data.level,
+    totalOrders:  data.total_orders,
+    rating:       Number(data.rating),
+    reviewCount:  data.review_count,
+    available:    data.available,
+    setupComplete: true,
   }
 }
 
