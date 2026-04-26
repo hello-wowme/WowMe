@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Menu, X, Bell, LogOut, Settings, ChevronDown, CheckCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationsContext'
+import WowMeLogo from '../UI/WowMeLogo'
 
 export default function Header({ user }) {
   const [scrolled, setScrolled] = useState(false)
@@ -50,18 +51,22 @@ export default function Header({ user }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center group">
           <motion.div
-            whileHover={{ rotate: 20, scale: 1.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400 }}
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #FE3B8C, #0080FF)' }}
           >
-            <Star className="w-4 h-4 text-white fill-white" />
+            {/* レスポンシブ：モバイルで小さく、デスクトップで大きく */}
+            <WowMeLogo
+              height={28}
+              className="block sm:hidden"
+            />
+            <WowMeLogo
+              height={36}
+              className="hidden sm:block"
+            />
           </motion.div>
-          <span className="text-xl font-black tracking-tight text-gray-900">
-            Wow<span className="gradient-text">Me</span>
-          </span>
         </Link>
 
         {/* Desktop Nav */}
