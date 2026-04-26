@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Menu, X, Bell, LogOut, Settings, ChevronDown, CheckCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationsContext'
-import WowMeLogo from '../UI/WowMeLogo'
+import wowmeLogo from './WowMe_Logo.png'
 
 export default function Header({ user }) {
   const [scrolled, setScrolled] = useState(false)
@@ -57,14 +57,10 @@ export default function Header({ user }) {
             whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400 }}
           >
-            {/* レスポンシブ：モバイルで小さく、デスクトップで大きく */}
-            <WowMeLogo
-              height={28}
-              className="block sm:hidden"
-            />
-            <WowMeLogo
-              height={36}
-              className="hidden sm:block"
+            <img
+              src={wowmeLogo}
+              alt="WowMe"
+              className="h-7 sm:h-9 w-auto object-contain"
             />
           </motion.div>
         </Link>
