@@ -37,9 +37,11 @@ export default function TalentProfileSetup() {
     category:      existing.category     || '',
     tags:          existing.tags         || [],
     tagInput:      '',
-    price:         existing.price        ? String(existing.price) : '',
-    responseTime:  existing.responseTime || 24,
-    snsPermission: existing.snsPermission || 'ok',
+    price:              existing.price        ? String(existing.price) : '',
+    responseTime:       existing.responseTime || 24,
+    snsPermission:      existing.snsPermission || 'ok',
+    orderLimitEnabled:  existing.orderLimitEnabled ?? false,
+    orderLimit:         existing.orderLimit ? String(existing.orderLimit) : '10',
     avatarPreview: existing.avatar       || user?.picture || '',
     coverPreview:  existing.cover        || '',
     sampleVideos:  [],
@@ -103,9 +105,11 @@ export default function TalentProfileSetup() {
       bio:           profile.bio,
       category:      profile.category,
       tags:          profile.tags,
-      price:         Number(profile.price),
-      responseTime:  profile.responseTime,
-      snsPermission: profile.snsPermission,
+      price:             Number(profile.price),
+      responseTime:      profile.responseTime,
+      snsPermission:     profile.snsPermission,
+      orderLimitEnabled: profile.orderLimitEnabled,
+      orderLimit:        profile.orderLimitEnabled ? Number(profile.orderLimit) || 10 : null,
       avatar:        avatarUrl,
       cover:         coverUrl,
       sampleVideos:  profile.sampleVideos,
@@ -405,6 +409,68 @@ export default function TalentProfileSetup() {
                       ? '✨ ファンは動画をXなどにシェアできます。拡散によって認知度アップが期待できます。'
                       : '🔒 ファンは動画をシェアできません。受け取ったファン本人のみ保存・閲覧できます。'}
                   </div>
+                </div>
+
+                {/* Order Limit */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600">受付個数制限</label>
+                      <p className="text-xs text-gray-400 mt-0.5">同時に受け付けるリクエスト数を制限します</p>
+                    </div>
+                    {/* Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => updateField('orderLimitEnabled', !profile.orderLimitEnabled)}
+                      className="relative flex-shrink-0 w-12 h-6 rounded-full transition-all duration-300 focus:outline-none"
+                      style={{ background: profile.orderLimitEnabled ? '#FE3B8C' : '#E5E7EB' }}
+                    >
+                      <span
+                        className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300"
+                        style={{ transform: profile.orderLimitEnabled ? 'translateX(24px)' : 'translateX(0)' }}
+                      />
+                    </button>
+                  </div>
+
+                  {profile.orderLimitEnabled && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-3 p-4 rounded-2xl border-2 space-y-3"
+                        style={{ borderColor: '#FE3B8C44', background: '#fff0f6' }}>
+                        <p className="text-xs font-medium" style={{ color: '#FE3B8C' }}>同時受付の上限数</p>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => updateField('orderLimit', String(Math.max(1, Number(profile.orderLimit) - 1)))}
+                            className="w-10 h-10 rounded-xl border-2 flex items-center justify-center text-lg font-bold transition-all"
+                            style={{ borderColor: '#FE3B8C44', color: '#FE3B8C', background: '#fff' }}>
+                            −
+                          </button>
+                          <input
+                            type="number"
+                            min="1"
+                            max="999"
+                            value={profile.orderLimit}
+                            onChange={e => updateField('orderLimit', e.target.value)}
+                            className="w-20 text-center border-2 rounded-xl py-2 text-xl font-bold text-gray-800 focus:outline-none"
+                            style={{ borderColor: '#FE3B8C44' }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => updateField('orderLimit', String(Number(profile.orderLimit) + 1))}
+                            className="w-10 h-10 rounded-xl border-2 flex items-center justify-center text-lg font-bold transition-all"
+                            style={{ borderColor: '#FE3B8C44', color: '#FE3B8C', background: '#fff' }}>
+                            ＋
+                          </button>
+                          <span className="text-sm text-gray-500">件まで</span>
+                        </div>
+                        <p className="text-xs text-gray-400">上限に達すると新規リクエストは受け付けられなくなります</p>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
             )}

@@ -66,9 +66,11 @@ export async function upsertTalentProfile(userId, profile) {
     total_orders:   profile.totalOrders ?? 0,
     rating:         profile.rating ?? 0,
     review_count:   profile.reviewCount ?? 0,
-    available:      profile.available !== false,
-    setup_complete: profile.setupComplete ?? false,
-    sns_permission: profile.snsPermission ?? 'ok',
+    available:           profile.available !== false,
+    setup_complete:      profile.setupComplete ?? false,
+    sns_permission:      profile.snsPermission ?? 'ok',
+    order_limit_enabled: profile.orderLimitEnabled ?? false,
+    order_limit:         profile.orderLimitEnabled ? (profile.orderLimit ?? 10) : null,
     updated_at:     new Date().toISOString(),
   }
 
@@ -267,9 +269,11 @@ export function dbTalentToApp(row) {
     totalOrders:   row.total_orders,
     rating:        Number(row.rating),
     reviewCount:   row.review_count,
-    setupComplete: row.setup_complete,
-    snsPermission: row.sns_permission ?? 'ok',
-    featured:      false,
+    setupComplete:      row.setup_complete,
+    snsPermission:      row.sns_permission ?? 'ok',
+    orderLimitEnabled:  row.order_limit_enabled ?? false,
+    orderLimit:         row.order_limit ?? null,
+    featured:           false,
     completionRate: 100,
     isRegistered:  true,
     // TalentDetailPage 互換
@@ -301,8 +305,10 @@ export async function fetchTalentProfileForLogin(userId) {
     totalOrders:  data.total_orders,
     rating:       Number(data.rating),
     reviewCount:  data.review_count,
-    available:    data.available,
-    snsPermission: data.sns_permission ?? 'ok',
+    available:         data.available,
+    snsPermission:     data.sns_permission ?? 'ok',
+    orderLimitEnabled: data.order_limit_enabled ?? false,
+    orderLimit:        data.order_limit ?? null,
     setupComplete: true,
   }
 }
